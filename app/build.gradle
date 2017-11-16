@@ -1,0 +1,56 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        applicationId rootProject.ext.app.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.app.versionCode
+        versionName rootProject.ext.app.versionName
+    }
+
+    compileOptions {
+        sourceCompatibility rootProject.ext.android.sourceCompatibilityVersion
+        targetCompatibility rootProject.ext.android.targetCompatibilityVersion
+    }
+
+    signingConfigs {
+        myConfig {
+            storeFile file(rootProject.ext.store.storeKey)
+            storePassword rootProject.ext.store.storePassword
+            keyAlias rootProject.ext.store.keyAlias
+            keyPassword rootProject.ext.store.keyPassword
+            v2SigningEnabled false
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            //是否清理无用资源
+            shrinkResources true
+            //是否启用zipAlign压缩
+            zipAlignEnabled true
+            signingConfig signingConfigs.myConfig
+            versionNameSuffix rootProject.ext.app.versionNameSuffix
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.myConfig
+            versionNameSuffix rootProject.ext.app.versionNameSuffix
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile rootProject.ext.dependencies.design
+//    compile project(":slidemenu")
+}
