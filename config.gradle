@@ -33,6 +33,7 @@ ext {
     dependencies = [
             appcompatV7: 'com.android.support:appcompat-v7:23.0.1',
             design     : 'com.android.support:design:24.0.0',
+            aspectJ    : 'org.aspectj:aspectjrt:1.8.9'
     ]
 
     store = [

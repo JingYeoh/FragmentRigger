@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-aspectjx'
 
 android {
 
@@ -52,5 +53,5 @@ android {
 
 dependencies {
     compile rootProject.ext.dependencies.design
-//    compile project(":slidemenu")
+    compile project(":library")
 }
