@@ -1,7 +1,7 @@
 package com.jkb.fragment.rigger.aop;
 
-import android.app.Activity;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,10 +35,9 @@ public class AspectPuppet {
   @Around("puppetPointCut()")
   public void processPuppetPointCut(JoinPoint point) {
     Object target = point.getTarget();
-    if (!(target instanceof Activity) && !(target instanceof Fragment)) {
+    if (!(target instanceof AppCompatActivity) && !(target instanceof Fragment)) {
       throw new UnsupportedOperationException(
-          "Puppet Annotation class can only used on android.app.Activity or android.support"
-              + ".v4.app.Fragment");
+          "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
     }
   }
 }

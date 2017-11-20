@@ -1,6 +1,11 @@
 package com.jkb.fragment.rigger.aop;
 
-import com.jkb.fragment.rigger.utils.Logger;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import com.jkb.fragment.rigger.annotation.Puppet;
+import com.jkb.fragment.rigger.rigger.Rigger;
+import java.lang.reflect.Method;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -21,31 +26,27 @@ public class AspectPuppetActivity {
 
   //****************PointCut***********************************
 
-  @Pointcut("execution(* android.app.Activity+.onCreate(..))")
+  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onCreate(..)) ")
   public void onCreatePointCut() {
   }
 
-  @Pointcut("execution(* android.app.Activity+.onResumeFragments(..))")
+  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onResumeFragments(..))")
   public void onResumeFragmentsPointCut() {
   }
 
-  @Pointcut("execution(* android.app.Activity+.onPostResume(..))")
-  public void onPostResumePointCut() {
-  }
-
-  @Pointcut("execution(* android.app.Activity+.onPause(..))")
+  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onPause(..))")
   public void onPausePointCut() {
   }
 
-  @Pointcut("execution(* android.app.Activity+.onSaveInstanceState(..))")
+  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onSaveInstanceState(..))")
   public void onSaveInstanceStatePointCut() {
   }
 
-  @Pointcut("execution(* android.app.Activity+.onDestroy(..))")
+  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onDestroy(..))")
   public void onDestroyPointCut() {
   }
 
-  @Pointcut("execution(* android.app.Activity+.onBackPressed(..))")
+  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onBackPressed(..))")
   public void onBackPressedPointCut() {
   }
 
@@ -54,42 +55,110 @@ public class AspectPuppetActivity {
   @Around("onCreatePointCut()")
   public Object onCreateProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
-    Logger.i(joinPoint.getTarget(), joinPoint.getSignature().getName());
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Object[] args = joinPoint.getArgs();
+
+    Method onCreate = getRiggerMethod("onCreate", Object.class, Bundle.class);
+    onCreate.invoke(getRiggerInstance(), puppet, args[0]);
     return result;
   }
 
   @Around("onResumeFragmentsPointCut()")
   public Object onResumeFragmentsProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
-    Logger.i(joinPoint.getTarget(), joinPoint.getSignature().getName());
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+
+    Method onResumeFragments = getRiggerMethod("onResumeFragments", Object.class);
+    onResumeFragments.invoke(getRiggerInstance(), puppet);
     return result;
   }
 
   @Around("onPausePointCut()")
   public Object onPauseProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
-    Logger.i(joinPoint.getTarget(), joinPoint.getSignature().getName());
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+
+    Method onPause = getRiggerMethod("onPause", Object.class);
+    onPause.invoke(getRiggerInstance(), puppet);
     return result;
   }
 
   @Around("onSaveInstanceStatePointCut()")
   public Object onSaveInstanceStateProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
-    Logger.i(joinPoint.getTarget(), joinPoint.getSignature().getName());
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Object[] args = joinPoint.getArgs();
+
+    Method onSaveInstanceState = getRiggerMethod("onSaveInstanceState", Object.class, Bundle.class);
+    onSaveInstanceState.invoke(getRiggerInstance(), puppet, args[0]);
     return result;
   }
 
   @Around("onDestroyPointCut()")
   public Object onDestroyProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
-    Logger.i(joinPoint.getTarget(), joinPoint.getSignature().getName());
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+
+    Method onDestroy = getRiggerMethod("onDestroy", Object.class);
+    onDestroy.invoke(getRiggerInstance(), puppet);
     return result;
   }
 
   @Around("onBackPressedPointCut()")
   public Object onBackPressedProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
-    Logger.i(joinPoint.getTarget(), joinPoint.getSignature().getName());
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+
+    Method onBackPressed = getRiggerMethod("onBackPressed", Object.class);
+    onBackPressed.invoke(getRiggerInstance(), puppet);
     return result;
+  }
+
+  //******************helper***********************
+
+  /**
+   * Returns the instance of Rigger class by reflect.
+   */
+  private Rigger getRiggerInstance() throws Exception {
+    Class<?> riggerClazz = Class.forName(Rigger.class.getName());
+    Method getInstance = riggerClazz.getDeclaredMethod("getInstance");
+    getInstance.setAccessible(true);
+    return (Rigger) getInstance.invoke(null);
+  }
+
+  /**
+   * Returns the method object of Rigger by reflect.
+   */
+  private Method getRiggerMethod(String methodName, Class<?>... params) throws Exception {
+    Rigger rigger = getRiggerInstance();
+    Class<? extends Rigger> clazz = rigger.getClass();
+    Method method = clazz.getDeclaredMethod(methodName, params);
+    method.setAccessible(true);
+    return method;
+  }
+
+  /**
+   * Returns the value of if the class is marked by Puppet annotation.
+   */
+  private boolean isMarkedByPuppet(Object object) {
+    if (!(object instanceof AppCompatActivity) && !(object instanceof Fragment)) {
+      throw new UnsupportedOperationException(
+          "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
+    }
+    Class<?> clazz = object.getClass();
+    Puppet puppet = clazz.getAnnotation(Puppet.class);
+    return puppet != null;
   }
 }
