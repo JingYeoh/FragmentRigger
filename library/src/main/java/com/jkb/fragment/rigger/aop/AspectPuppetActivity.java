@@ -155,7 +155,8 @@ public class AspectPuppetActivity {
   private boolean isMarkedByPuppet(Object object) {
     if (!(object instanceof AppCompatActivity) && !(object instanceof Fragment)) {
       throw new UnsupportedOperationException(
-          "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
+          "Puppet Annotation class can only used on android.app.Activity or android.support"
+              + ".v4.app.Fragment");
     }
     Class<?> clazz = object.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);

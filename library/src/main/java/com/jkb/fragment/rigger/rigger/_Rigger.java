@@ -2,6 +2,7 @@ package com.jkb.fragment.rigger.rigger;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import com.jkb.fragment.rigger.exception.RiggerException;
@@ -18,7 +19,7 @@ import com.jkb.fragment.rigger.exception.RiggerException;
 
 abstract class _Rigger implements IRigger {
 
-  static _Rigger create(Object object) {
+  static _Rigger create(@NonNull Object object) {
     if (object instanceof AppCompatActivity) {
       return new _ActivityRigger((AppCompatActivity) object);
     } else if (object instanceof Fragment) {
