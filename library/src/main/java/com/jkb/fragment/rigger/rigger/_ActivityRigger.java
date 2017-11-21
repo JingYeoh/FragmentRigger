@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
+import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.helper.FragmentExecutor;
 import com.jkb.fragment.rigger.helper.FragmentExecutor.Builder;
@@ -89,7 +90,6 @@ final class _ActivityRigger extends _Rigger {
 
   @Override
   public void onDestroy() {
-    mStackManager = null;
     if (mActivity.isFinishing()) {
       mStackManager.clear();
       mFragmentTransactions.clear();
@@ -120,7 +120,12 @@ final class _ActivityRigger extends _Rigger {
 
   @Override
   public void close(@NonNull Fragment fragment) {
-
+    String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
+    if (!mStackManager.remove(fragmentTAG)) {
+      throwException(new NotExistException(fragmentTAG));
+    }
+    commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+        .remove(fragment));
   }
 
   @Override

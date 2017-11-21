@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import com.jkb.fragment.rigger.annotation.Puppet;
+import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.helper.FragmentExecutor;
 import com.jkb.fragment.rigger.helper.FragmentExecutor.Builder;
@@ -93,11 +94,11 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public void onResume() {
     //commit all saved fragment transaction.
-//    while (true) {
-//      Builder transaction = mFragmentTransactions.poll();
-//      if (transaction == null) break;
-//      commitFragmentTransaction(transaction);
-//    }
+    while (true) {
+      Builder transaction = mFragmentTransactions.poll();
+      if (transaction == null) break;
+      commitFragmentTransaction(transaction);
+    }
   }
 
   @Override
@@ -113,7 +114,10 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void onDestroy() {
-    mStackManager = null;
+    Logger.d(mFragment, "isAdded=" + mFragment.isAdded());
+    Logger.d(mFragment, "isDetached=" + mFragment.isDetached());
+    Logger.d(mFragment, "isRemoving=" + mFragment.isRemoving());
+    Logger.d(mFragment, "isInLayout=" + mFragment.isInLayout());
   }
 
   @Override
@@ -133,7 +137,12 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void close(@NonNull Fragment fragment) {
-
+    String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
+    if (!mStackManager.remove(fragmentTAG)) {
+      throwException(new NotExistException(fragmentTAG));
+    }
+    commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm)
+        .remove(fragment));
   }
 
   @Override

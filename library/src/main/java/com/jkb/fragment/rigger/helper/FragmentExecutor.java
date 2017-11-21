@@ -66,7 +66,8 @@ public class FragmentExecutor {
      * Remove an existing fragment.  If it was added to a container, its view
      * is also removed from that container.
      */
-    public Builder remove(@NonNull Fragment fragment) {
+    public Builder remove(Fragment fragment) {
+      if (fragment == null) return this;
       if (fm.findFragmentByTag(fragment.getTag()) == null) return this;
       ft.detach(fragment);
       ft.remove(fragment);
@@ -84,7 +85,8 @@ public class FragmentExecutor {
     /**
      * Hides an existing fragment.
      */
-    public Builder hide(@NonNull Fragment fragment) {
+    public Builder hide(Fragment fragment) {
+      if (fragment == null) return this;
       if (fm.findFragmentByTag(fragment.getTag()) == null) return this;
       ft.hide(fragment);
       return this;

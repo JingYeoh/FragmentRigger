@@ -2,6 +2,7 @@ package com.jkb.fragment.rigger.helper;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.text.TextUtils;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Stack;
@@ -98,6 +99,19 @@ public final class FragmentStackManager implements Cloneable, Serializable {
    */
   public boolean contain(String fragmentTag) {
     return (mFragmentContainerMap != null && mFragmentStack != null) && mFragmentStack.contains(fragmentTag);
+  }
+
+  /**
+   * Removes the specified object onto the top of the stack.
+   *
+   * @param fragmentTag the fragment that will be removed.
+   */
+  public boolean remove(String fragmentTag) {
+    if (mFragmentStack.contains(fragmentTag)) return false;
+    if (!contain(fragmentTag)) return false;
+    mFragmentStack.remove(fragmentTag);
+    mFragmentContainerMap.remove(fragmentTag);
+    return true;
   }
 
   /**
