@@ -1,11 +1,19 @@
 package com.jkb.fragment.rigger.rigger;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import com.jkb.fragment.rigger.annotation.Puppet;
+import com.jkb.fragment.rigger.exception.RiggerException;
+import com.jkb.fragment.rigger.helper.FragmentExecutor;
+import com.jkb.fragment.rigger.helper.FragmentExecutor.Builder;
+import com.jkb.fragment.rigger.helper.FragmentStackManager;
+import com.jkb.fragment.rigger.utils.Logger;
+import java.util.LinkedList;
 import java.util.UUID;
 
 /**
@@ -21,16 +29,19 @@ import java.util.UUID;
 final class _FragmentRigger extends _Rigger {
 
   private static final String BUNDLE_KEY_FRAGMENT_TAG = "/bundle/key/fragment/tag";
+  private static final String BUNDLE_KEY_FRAGMENT_STATUS_HIDE = "/bundle/key/fragment/status/hide";
 
   private Fragment mFragment;
-  private FragmentManager mFm;
+  private Activity mActivity;
+  private Context mContext;
+  private FragmentManager mParentFm;
   private FragmentManager mChildFm;
   //data
   @IdRes
   private int mContainerViewId;
   private String mFragmentTag;
-  private boolean mIsResumed = false;
-
+  private FragmentStackManager mStackManager;
+  private LinkedList<Builder> mFragmentTransactions;
 
   _FragmentRigger(@NonNull Fragment fragment) {
     this.mFragment = fragment;
@@ -38,41 +49,71 @@ final class _FragmentRigger extends _Rigger {
     Class<? extends Fragment> clazz = fragment.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);
     mContainerViewId = puppet.containerViewId();
+    //init fragment tag
+    mFragmentTag = UUID.randomUUID().toString();
+    //init fragment helper
+    mFragmentTransactions = new LinkedList<>();
+    mStackManager = new FragmentStackManager();
+  }
+
+  @Override
+  public void onAttach(Context context) {
+    mActivity = (Activity) context;
+    mContext = context;
   }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
-    mFm = mFragment.getFragmentManager();
-    if (savedInstanceState == null) {
-      mFragmentTag = UUID.randomUUID().toString();
-    } else {
+    mParentFm = mFragment.getFragmentManager();
+    mChildFm = mFragment.getChildFragmentManager();
+    if (savedInstanceState != null) {
       mFragmentTag = savedInstanceState.getString(BUNDLE_KEY_FRAGMENT_TAG);
+      mStackManager = FragmentStackManager.restoreStack(savedInstanceState);
+      restoreHiddenState(savedInstanceState);
+    }
+  }
+
+  /**
+   * Restore the state of fragment hidden.
+   */
+  private void restoreHiddenState(Bundle savedInstanceState) {
+    boolean isHidden = savedInstanceState.getBoolean(BUNDLE_KEY_FRAGMENT_STATUS_HIDE);
+    if (isHidden) {
+      commitFragmentTransaction(FragmentExecutor.beginTransaction(mParentFm).hide(mFragment));
+    } else {
+      commitFragmentTransaction(FragmentExecutor.beginTransaction(mParentFm).show(mFragment));
     }
   }
 
   @Override
   public void onResumeFragments() {
-    mIsResumed = true;
+    /*This method is called in Activity,here will never be called*/
   }
 
   @Override
   public void onResume() {
-    mIsResumed = true;
+    //commit all saved fragment transaction.
+//    while (true) {
+//      Builder transaction = mFragmentTransactions.poll();
+//      if (transaction == null) break;
+//      commitFragmentTransaction(transaction);
+//    }
   }
 
   @Override
   public void onPause() {
-    mIsResumed = false;
   }
 
   @Override
   public void onSaveInstanceState(Bundle outState) {
     outState.putString(BUNDLE_KEY_FRAGMENT_TAG, mFragmentTag);
+    outState.putBoolean(BUNDLE_KEY_FRAGMENT_STATUS_HIDE, mFragment.isHidden());
+    mStackManager.saveInstanceState(outState);
   }
 
   @Override
   public void onDestroy() {
-
+    mStackManager = null;
   }
 
   @Override
@@ -82,21 +123,46 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public boolean isResumed() {
-    return mIsResumed;
+    return mFragment.isResumed();
   }
 
   @Override
-  public void finish() {
-
+  public void close() {
+    mStackManager.clear();
   }
 
   @Override
-  public void finish(@NonNull Fragment fragment) {
+  public void close(@NonNull Fragment fragment) {
 
   }
 
   @Override
   public String getFragmentTAG() {
     return mFragmentTag;
+  }
+
+  @Override
+  public int getContainerViewId() {
+    return mContainerViewId;
+  }
+
+  /**
+   * Throw the exception.
+   */
+  private void throwException(RiggerException e) {
+    throw e;
+  }
+
+  /**
+   * Commit fragment transaction.if the Activity is not resumed,then this transaction will be saved and commit as the
+   * Activity is resumed.
+   */
+  private void commitFragmentTransaction(@NonNull Builder transaction) {
+    if (isResumed()) {
+      mFragmentTransactions.add(transaction);
+      Logger.w(mFragment, "::Commit transaction---->The Activity is not resumed,the transaction will be saved");
+    } else {
+      transaction.commit();
+    }
   }
 }

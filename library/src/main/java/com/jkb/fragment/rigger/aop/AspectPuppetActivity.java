@@ -2,7 +2,7 @@ package com.jkb.fragment.rigger.aop;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import java.lang.reflect.Method;
@@ -26,27 +26,31 @@ public class AspectPuppetActivity {
 
   //****************PointCut***********************************
 
-  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onCreate(..)) ")
+  @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onCreate(..)) ")
   public void onCreatePointCut() {
   }
 
-  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onResumeFragments(..))")
+  @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onResumeFragments(..))")
   public void onResumeFragmentsPointCut() {
   }
 
-  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onPause(..))")
+  @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onPause(..))")
   public void onPausePointCut() {
   }
 
-  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onSaveInstanceState(..))")
+  @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onResume(..))")
+  public void onResumePointCut() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onSaveInstanceState(..))")
   public void onSaveInstanceStatePointCut() {
   }
 
-  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onDestroy(..))")
+  @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onDestroy(..))")
   public void onDestroyPointCut() {
   }
 
-  @Pointcut("execution(* android.support.v7.app.AppCompatActivity+.onBackPressed(..))")
+  @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onBackPressed(..))")
   public void onBackPressedPointCut() {
   }
 
@@ -85,6 +89,18 @@ public class AspectPuppetActivity {
     if (!isMarkedByPuppet(puppet)) return result;
 
     Method onPause = getRiggerMethod("onPause", Object.class);
+    onPause.invoke(getRiggerInstance(), puppet);
+    return result;
+  }
+
+  @Around("onResumePointCut()")
+  public Object onResumeProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+
+    Method onPause = getRiggerMethod("onResume", Object.class);
     onPause.invoke(getRiggerInstance(), puppet);
     return result;
   }
@@ -153,10 +169,9 @@ public class AspectPuppetActivity {
    * Returns the value of if the class is marked by Puppet annotation.
    */
   private boolean isMarkedByPuppet(Object object) {
-    if (!(object instanceof AppCompatActivity) && !(object instanceof Fragment)) {
+    if (!(object instanceof FragmentActivity) && !(object instanceof Fragment)) {
       throw new UnsupportedOperationException(
-          "Puppet Annotation class can only used on android.app.Activity or android.support"
-              + ".v4.app.Fragment");
+          "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
     }
     Class<?> clazz = object.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);

@@ -1,5 +1,14 @@
 package com.jkb.fragment.rigger.aop;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import com.jkb.fragment.rigger.annotation.Puppet;
+import com.jkb.fragment.rigger.rigger.Rigger;
+import java.lang.reflect.Method;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
@@ -16,8 +25,14 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 public class AspectPuppetFragentLifecycle {
 
+  //****************PointCut***********************************
+
+  @Pointcut("execution(android.support.v4.app.Fragment+.new())")
+  public void constructPointCut() {
+  }
+
   @Pointcut("execution(* android.support.v4.app.Fragment+.onAttach(..))")
-  public void onAttactPointCut() {
+  public void onAttachPointCut() {
   }
 
   @Pointcut("execution(* android.support.v4.app.Fragment+.onCreate(..))")
@@ -34,5 +49,116 @@ public class AspectPuppetFragentLifecycle {
 
   @Pointcut("execution(* android.support.v4.app.Fragment+.onDestroy(..))")
   public void onDestroyPointCut() {
+  }
+
+  //****************Process***********************************
+  @Around("constructPointCut()")
+  public Object constructProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+
+    Method onAttach = getRiggerMethod("onFragmentConstructor", Object.class);
+    onAttach.invoke(getRiggerInstance(), puppet);
+    return result;
+  }
+
+  @Around("onAttachPointCut()")
+  public Object onAttachProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Object[] args = joinPoint.getArgs();
+
+    Method onAttach = getRiggerMethod("onAttach", Object.class, Context.class);
+    onAttach.invoke(getRiggerInstance(), puppet, args[0]);
+    return result;
+  }
+
+  @Around("onCreatePointCut()")
+  public Object onCreateProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Object[] args = joinPoint.getArgs();
+
+    Method onCreate = getRiggerMethod("onCreate", Object.class, Bundle.class);
+    onCreate.invoke(getRiggerInstance(), puppet, args[0]);
+    return result;
+  }
+
+  @Around("onResumePointCut()")
+  public Object onResumeProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+
+    Method onPause = getRiggerMethod("onResume", Object.class);
+    onPause.invoke(getRiggerInstance(), puppet);
+    return result;
+  }
+
+  @Around("onSaveInstanceStatePointCut()")
+  public Object onSaveInstanceStateProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Object[] args = joinPoint.getArgs();
+
+    Method onSaveInstanceState = getRiggerMethod("onSaveInstanceState", Object.class, Bundle.class);
+    onSaveInstanceState.invoke(getRiggerInstance(), puppet, args[0]);
+    return result;
+  }
+
+  @Around("onDestroyPointCut()")
+  public Object onDestroyProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+
+    Method onDestroy = getRiggerMethod("onDestroy", Object.class);
+    onDestroy.invoke(getRiggerInstance(), puppet);
+    return result;
+  }
+  //****************Helper************************************
+
+  /**
+   * Returns the instance of Rigger class by reflect.
+   */
+  private Rigger getRiggerInstance() throws Exception {
+    Class<?> riggerClazz = Class.forName(Rigger.class.getName());
+    Method getInstance = riggerClazz.getDeclaredMethod("getInstance");
+    getInstance.setAccessible(true);
+    return (Rigger) getInstance.invoke(null);
+  }
+
+  /**
+   * Returns the method object of Rigger by reflect.
+   */
+  private Method getRiggerMethod(String methodName, Class<?>... params) throws Exception {
+    Rigger rigger = getRiggerInstance();
+    Class<? extends Rigger> clazz = rigger.getClass();
+    Method method = clazz.getDeclaredMethod(methodName, params);
+    method.setAccessible(true);
+    return method;
+  }
+
+  /**
+   * Returns the value of if the class is marked by Puppet annotation.
+   */
+  private boolean isMarkedByPuppet(Object object) {
+    if (!(object instanceof FragmentActivity) && !(object instanceof Fragment)) {
+      throw new UnsupportedOperationException(
+          "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
+    }
+    Class<?> clazz = object.getClass();
+    Puppet puppet = clazz.getAnnotation(Puppet.class);
+    return puppet != null;
   }
 }

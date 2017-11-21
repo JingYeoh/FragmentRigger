@@ -1,5 +1,6 @@
 package com.jkb.fragment.rigger.rigger;
 
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
@@ -13,7 +14,7 @@ import android.support.v4.app.Fragment;
  * @since Nov 20,2017
  */
 
-interface IRigger {
+public interface IRigger {
 
   /**
    * start show a fragment id parent's containerViewId and hide all fragments that is contained in the containerViewId.
@@ -30,20 +31,26 @@ interface IRigger {
   boolean isResumed();
 
   /**
-   * finish current Activity/Fragment.if this method is called by {@link Fragment},then this fragment will be removed
+   * close current Activity/Fragment.if this method is called by {@link Fragment},then this fragment will be removed
    * from the parent's fragment stack.
    */
-  void finish();
+  void close();
 
   /**
-   * finish the fragment and remove this fragment from stack.
+   * close the fragment and remove this fragment from stack.
    *
    * @param fragment the fragment that will be finished.this is the current's child fragment.
    */
-  void finish(@NonNull Fragment fragment);
+  void close(@NonNull Fragment fragment);
 
   /**
    * Returns the tag of fragment.if the method is called by Activity,then return null.
    */
   String getFragmentTAG();
+
+  /**
+   * Returns the optional identifier of the container this fragment is placed in.
+   */
+  @IdRes
+  int getContainerViewId();
 }

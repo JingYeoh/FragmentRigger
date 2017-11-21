@@ -64,7 +64,8 @@ public final class Rigger {
     Class<?> clazz = object.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);
     if (puppet == null) {
-      throw new RiggerException("Can not find Puppet annotation.please add Puppet annotation in this class");
+      throw new RiggerException("Can not find Puppet annotation.please add Puppet annotation for the class" +
+          object.getClass().getSimpleName());
     }
     IRigger rigger = getInstance().mPuppetMap.get(object);
     if (rigger == null) {
@@ -75,12 +76,34 @@ public final class Rigger {
   }
 
   /**
+   * Returns or puts the object to rigger list.
+   */
+  private _Rigger createRigger(Object object) {
+    _Rigger rigger = (_Rigger) mPuppetMap.get(object);
+    if (rigger == null) {
+      rigger = _Rigger.create(object);
+      mPuppetMap.put(object, rigger);
+    }
+    return rigger;
+  }
+
+  /**
+   * Inject the Fragment's construct method,and add to rigger list.
+   *
+   * @param object Fragment
+   */
+  private void onFragmentConstructor(Object object) {
+    createRigger(object);
+  }
+
+  /**
    * Inject the Fragment's lifecycle method {@link Fragment#onAttach(Context)} ()} to rigger class.
    *
-   * @param fragment the fragment puppet.
+   * @param object the fragment puppet.
    */
-  private void onAttach(Fragment fragment, Context context) {
-
+  private void onAttach(Object object, Context context) {
+    Logger.i(object, TAG_HEADER + "onAttach");
+    createRigger(object).onAttach(context);
   }
 
   /**
@@ -93,40 +116,38 @@ public final class Rigger {
    */
   private void onCreate(Object object, Bundle savedInstanceState) {
     Logger.i(object, TAG_HEADER + "onCreate");
-    _Rigger rigger = (_Rigger) mPuppetMap.get(object);
-    if (rigger == null) {
-      rigger = _Rigger.create(object);
-      mPuppetMap.put(object, rigger);
-    }
-    rigger.onCreate(savedInstanceState);
+    createRigger(object).onCreate(savedInstanceState);
   }
 
   /**
    * Inject the Fragment's lifecycle method {@link Fragment#onResume()} to rigger class.
    */
   private void onResume(Object object) {
-    Logger.i(object, TAG_HEADER + "onCreate");
+    Logger.i(object, TAG_HEADER + "onResume");
+    createRigger(object).onResume();
   }
 
   /**
    * Inject the Activity's lifecycle method {@link AppCompatActivity#onPostResume()} to rigger class.
    */
-  private void onPostResume(AppCompatActivity activity) {
-    Logger.i(activity, TAG_HEADER + "onPostResume");
+  private void onPostResume(Object object) {
+    Logger.i(object, TAG_HEADER + "onPostResume");
   }
 
   /**
    * Inject the Activity's lifecycle method {@link AppCompatActivity#onPostResume()} to rigger class.
    */
-  private void onResumeFragments(AppCompatActivity activity) {
-    Logger.i(activity, TAG_HEADER + "onResumeFragments");
+  private void onResumeFragments(Object object) {
+    Logger.i(object, TAG_HEADER + "onResumeFragments");
+    createRigger(object).onResumeFragments();
   }
 
   /**
    * Inject the AppCompatActivity's lifecycle method {@link AppCompatActivity#onPause()} to rigger class.
    */
-  private void onPause(AppCompatActivity activity) {
-    Logger.i(activity, TAG_HEADER + "onPause");
+  private void onPause(Object object) {
+    Logger.i(object, TAG_HEADER + "onPause");
+    createRigger(object).onPause();
   }
 
   /**
@@ -138,6 +159,7 @@ public final class Rigger {
    */
   private void onSaveInstanceState(Object object, Bundle outState) {
     Logger.i(object, TAG_HEADER + "onSaveInstanceState");
+    createRigger(object).onSaveInstanceState(outState);
   }
 
   /**
@@ -146,13 +168,14 @@ public final class Rigger {
    */
   private void onDestroy(Object object) {
     Logger.i(object, TAG_HEADER + "onDestroy");
+    createRigger(object).onDestroy();
   }
 
   /**
    * Inject the Activity's lifecycle method
    * {@link AppCompatActivity#onBackPressed()} to rigger class.
    */
-  private void onBackPressed(AppCompatActivity object) {
+  private void onBackPressed(Object object) {
     Logger.i(object, TAG_HEADER + "onBackPressed");
   }
 }
