@@ -107,7 +107,7 @@ public final class FragmentStackManager implements Cloneable, Serializable {
    * @param fragmentTag the fragment that will be removed.
    */
   public boolean remove(String fragmentTag) {
-    if (mFragmentStack.contains(fragmentTag)) return false;
+    if (TextUtils.isEmpty(fragmentTag)) return false;
     if (!contain(fragmentTag)) return false;
     mFragmentStack.remove(fragmentTag);
     mFragmentContainerMap.remove(fragmentTag);

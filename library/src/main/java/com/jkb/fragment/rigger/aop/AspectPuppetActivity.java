@@ -132,14 +132,13 @@ public class AspectPuppetActivity {
 
   @Around("onBackPressedPointCut()")
   public Object onBackPressedProcess(ProceedingJoinPoint joinPoint) throws Throwable {
-    Object result = joinPoint.proceed();
+//    Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+    if (!isMarkedByPuppet(puppet)) return joinPoint.proceed();
 
-    Method onBackPressed = getRiggerMethod("onBackPressed", Object.class);
-    onBackPressed.invoke(getRiggerInstance(), puppet);
-    return result;
+    Method onBackPressed = getRiggerMethod("onRiggerBackPressed", Object.class);
+    return onBackPressed.invoke(getRiggerInstance(), puppet);
   }
 
   //******************helper***********************

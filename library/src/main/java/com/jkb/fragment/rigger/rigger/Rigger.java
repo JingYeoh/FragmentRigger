@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.utils.Logger;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -175,7 +176,15 @@ public final class Rigger {
    * Inject the Activity's lifecycle method
    * {@link AppCompatActivity#onBackPressed()} to rigger class.
    */
-  private void onBackPressed(Object object) {
+  private void onRiggerBackPressed(Object object) {
     Logger.i(object, TAG_HEADER + "onBackPressed");
+    //if the object has this method,then call the native method,or call the proxy's method
+    Class<?> clazz = object.getClass();
+    try {
+      Method onBackPressed = clazz.getMethod("onRiggerBackPressed");
+      onBackPressed.invoke(object);
+    } catch (Exception e) {
+      createRigger(object).onRiggerBackPressed();
+    }
   }
 }

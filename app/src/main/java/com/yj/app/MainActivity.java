@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
-import com.yj.app.fragment.TestFragment;
+import com.yj.app.fragment.FirstFragment;
 
 @Puppet(containerViewId = R.id.mainContent)
 public class MainActivity extends AppCompatActivity {
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     findViewById(R.id.main_bt).setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Rigger.getRigger(MainActivity.this).startFragment(TestFragment.newInstance());
+        Rigger.getRigger(MainActivity.this).startFragment(FirstFragment.newInstance());
       }
     });
   }

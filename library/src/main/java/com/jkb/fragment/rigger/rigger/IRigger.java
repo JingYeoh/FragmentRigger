@@ -17,11 +17,23 @@ import android.support.v4.app.Fragment;
 public interface IRigger {
 
   /**
-   * start show a fragment id parent's containerViewId and hide all fragments that is contained in the containerViewId.
+   * Take care of popping the fragment back stack or finishing the activity
+   * as appropriate.the method is called when you click the back key.
+   */
+  void onRiggerBackPressed();
+
+  /**
+   * start show a fragment to be placed in parent's containerView and hide other fragments that is placed in the
+   * containerView.
    *
    * @param fragment the fragment that will be showed.
    */
   void startFragment(@NonNull Fragment fragment);
+
+  /**
+   * Starts show the pop fragment in the stack and hide the others.
+   */
+  void startTopFragment();
 
   /**
    * return the resume status of Activity/Fragment.

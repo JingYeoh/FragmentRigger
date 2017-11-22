@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import java.util.List;
 
 /**
@@ -119,5 +120,14 @@ public class FragmentExecutor {
       }
       return this;
     }
+  }
+
+  /**
+   * Finds a fragment that was identified by the given tag either when inflated
+   * from XML or as supplied when added in a transaction.
+   */
+  public static Fragment findFragmentByTag(FragmentManager fm, String fragmentTag) {
+    if (fm == null || TextUtils.isEmpty(fragmentTag)) return null;
+    return fm.findFragmentByTag(fragmentTag);
   }
 }

@@ -29,4 +29,13 @@ public @interface Puppet {
    */
   @IdRes
   int containerViewId() default 0;
+
+  /**
+   * Optional identifier for the Puppet.
+   * The Puppet will be closed (Activity will be finished,Fragment will be removed) as the bondContainerView is true
+   * when the puppet contain one Fragment(named PopFragment) and the PopFragment is closing.
+   * The Puppet will show the ContentView as the container fragment is empty and the bondContainerView is false,
+   * the Puppet will be closed.
+   */
+  boolean bondContainerView() default false;
 }

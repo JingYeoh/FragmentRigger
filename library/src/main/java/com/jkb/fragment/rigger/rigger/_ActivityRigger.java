@@ -8,15 +8,18 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
+import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentExecutor;
 import com.jkb.fragment.rigger.helper.FragmentExecutor.Builder;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import java.util.LinkedList;
+import java.util.Stack;
 
 /**
  * Activity Rigger.rig the Activity puppet.
@@ -35,6 +38,7 @@ final class _ActivityRigger extends _Rigger {
   //data
   @IdRes
   private int mContainerViewId;
+  private boolean mBindContainerView;
   private FragmentStackManager mStackManager;
   private LinkedList<Builder> mFragmentTransactions;
   private boolean mIsResumed = false;
@@ -44,6 +48,7 @@ final class _ActivityRigger extends _Rigger {
     Class<? extends Activity> clazz = activity.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);
     mContainerViewId = puppet.containerViewId();
+    mBindContainerView = puppet.bondContainerView();
     //init fragment helper
     mFragmentTransactions = new LinkedList<>();
     mStackManager = new FragmentStackManager();
@@ -98,14 +103,55 @@ final class _ActivityRigger extends _Rigger {
   }
 
   @Override
+  public void onRiggerBackPressed() {
+    Stack<String> stack = mStackManager.getFragmentStack();
+    if (stack.size() <= 1 && mBindContainerView) {
+      close();
+      return;
+    }
+    String topFragmentTag = mStackManager.peek();
+    //the stack is empty,close the Activity.
+    if (TextUtils.isEmpty(topFragmentTag)) {
+      close();
+      return;
+    }
+    //call the top fragment's onRiggerBackPressed method.
+    Fragment topFragment = FragmentExecutor.findFragmentByTag(mFm, topFragmentTag);
+    if (topFragment == null) {
+      throwException(new NotExistException(topFragmentTag));
+    }
+    Rigger.getRigger(topFragment).onRiggerBackPressed();
+  }
+
+  @Override
   public void startFragment(@NonNull Fragment fragment) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
     if (!mStackManager.push(fragmentTAG, mContainerViewId)) {
       throwException(new AlreadyExistException(fragmentTAG));
     }
+    if (getContainerViewId() <= 0) {
+      throwException(new UnSupportException("ContainerViewId must be effective in class " + mActivity.getClass()));
+    }
     commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
         .add(getContainerViewId(), fragment, fragmentTAG)
+        .hideAll()
         .show(fragment));
+  }
+
+  @Override
+  public void startTopFragment() {
+    String topFragmentTag = mStackManager.peek();
+    if (TextUtils.isEmpty(topFragmentTag)) {
+      commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm).hideAll());
+      return;
+    }
+    Fragment topFragment = FragmentExecutor.findFragmentByTag(mFm, topFragmentTag);
+    if (topFragment == null) {
+      throwException(new NotExistException(topFragmentTag));
+    }
+    commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+        .hideAll()
+        .show(topFragment));
   }
 
   @Override
@@ -127,6 +173,7 @@ final class _ActivityRigger extends _Rigger {
     commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
         .remove(fragment));
   }
+
 
   @Override
   public String getFragmentTAG() {
