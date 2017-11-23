@@ -86,10 +86,27 @@ public class FragmentExecutor {
     /**
      * Hides an existing fragment.
      */
-    public Builder hide(Fragment fragment) {
-      if (fragment == null) return this;
-      if (fm.findFragmentByTag(fragment.getTag()) == null) return this;
-      ft.hide(fragment);
+    public Builder hide(Fragment... fragments) {
+      if (fragments == null || fragments.length == 0) return this;
+      for (Fragment fragment : fragments) {
+        if (fragment == null) continue;
+        if (fm.findFragmentByTag(fragment.getTag()) == null) continue;
+        ft.hide(fragment);
+      }
+      return this;
+    }
+
+    /**
+     * Hides an existing fragment.
+     */
+    public Builder hide(String... fragmentTags) {
+      if (fragmentTags == null || fragmentTags.length == 0) return this;
+      for (String fragmentTag : fragmentTags) {
+        if (TextUtils.isEmpty(fragmentTag)) continue;
+        Fragment fragment = fm.findFragmentByTag(fragmentTag);
+        if (fragment == null) continue;
+        ft.hide(fragment);
+      }
       return this;
     }
 

@@ -1,7 +1,8 @@
 package com.jkb.fragment.rigger.rigger;
 
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_CONTAINERVIEWID;
+
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.jkb.fragment.rigger.helper.FragmentExecutor;
 import com.jkb.fragment.rigger.helper.FragmentExecutor.Builder;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -45,18 +47,21 @@ final class _ActivityRigger extends _Rigger {
 
   _ActivityRigger(@NonNull AppCompatActivity activity) {
     this.mActivity = activity;
+    //init annotation and container
     Class<? extends Activity> clazz = activity.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);
-    mContainerViewId = puppet.containerViewId();
     mBindContainerView = puppet.bondContainerView();
+    mContainerViewId = puppet.containerViewId();
+    if (mContainerViewId <= 0) {
+      try {
+        Method containerViewId = clazz.getMethod(METHOD_GET_CONTAINERVIEWID);
+        mContainerViewId = (int) containerViewId.invoke(activity);
+      } catch (Exception ignored) {
+      }
+    }
     //init fragment helper
     mFragmentTransactions = new LinkedList<>();
     mStackManager = new FragmentStackManager();
-  }
-
-  @Override
-  public void onAttach(Context context) {
-    /*This method is called in Fragment,here will never be called*/
   }
 
   @Override
@@ -134,7 +139,7 @@ final class _ActivityRigger extends _Rigger {
     }
     commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
         .add(getContainerViewId(), fragment, fragmentTAG)
-        .hideAll()
+        .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
         .show(fragment));
   }
 
@@ -152,6 +157,16 @@ final class _ActivityRigger extends _Rigger {
     commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
         .hideAll()
         .show(topFragment));
+  }
+
+  @Override
+  public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
+
+  }
+
+  @Override
+  public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
+
   }
 
   @Override

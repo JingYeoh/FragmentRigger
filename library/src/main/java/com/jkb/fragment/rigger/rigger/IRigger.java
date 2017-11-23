@@ -3,6 +3,7 @@ package com.jkb.fragment.rigger.rigger;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import com.jkb.fragment.rigger.exception.AlreadyExistException;
 
 /**
  * Rigger interface class.used to define the methods can be called.
@@ -23,7 +24,7 @@ public interface IRigger {
   void onRiggerBackPressed();
 
   /**
-   * start show a fragment to be placed in parent's containerView and hide other fragments that is placed in the
+   * Shows a fragment in parent's containerView and hide other fragments that is placed in the
    * containerView.
    *
    * @param fragment the fragment that will be showed.
@@ -31,25 +32,44 @@ public interface IRigger {
   void startFragment(@NonNull Fragment fragment);
 
   /**
-   * Starts show the pop fragment in the stack and hide the others.
+   * Shows the pop fragment in the stack and hide the others.if the stack is empty,do none operation.
    */
   void startTopFragment();
 
   /**
-   * return the resume status of Activity/Fragment.
+   * Shows a fragment and hide the others which is contained in the containerView.if the fragment is not added in the
+   * stack,then add first.
+   *
+   * @param fragment        the fragment to be showed.
+   * @param containerViewId the fragment's container view's id.
+   */
+  void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId);
+
+  /**
+   * Shows a fragment and remove the others which is contained in the containerView.
+   * if the fragment is not added in the stack,then add first,
+   * if the fragment is already exist,then throw {@link AlreadyExistException}.
+   *
+   * @param fragment        the fragment to be showed.
+   * @param containerViewId the fragment's container view's id.
+   */
+  void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId);
+
+  /**
+   * Returns the resume status of Activity/Fragment.
    *
    * @return is or not resumed.
    */
   boolean isResumed();
 
   /**
-   * close current Activity/Fragment.if this method is called by {@link Fragment},then this fragment will be removed
-   * from the parent's fragment stack.
+   * Closes the current Activity/Fragment.if this method is called by {@link Fragment},then this fragment will be
+   * removed from the parent's fragment stack.
    */
   void close();
 
   /**
-   * close the fragment and remove this fragment from stack.
+   * Closes a fragment and remove it from stack.
    *
    * @param fragment the fragment that will be finished.this is the current's child fragment.
    */

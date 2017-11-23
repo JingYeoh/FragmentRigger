@@ -1,5 +1,7 @@
 package com.jkb.fragment.rigger.rigger;
 
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ONRIGGERBACKPRESSED;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -181,7 +183,7 @@ public final class Rigger {
     //if the object has this method,then call the native method,or call the proxy's method
     Class<?> clazz = object.getClass();
     try {
-      Method onBackPressed = clazz.getMethod("onRiggerBackPressed");
+      Method onBackPressed = clazz.getMethod(METHOD_ONRIGGERBACKPRESSED);
       onBackPressed.invoke(object);
     } catch (Exception e) {
       createRigger(object).onRiggerBackPressed();

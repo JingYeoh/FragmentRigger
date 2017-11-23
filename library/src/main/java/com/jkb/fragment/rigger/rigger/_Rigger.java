@@ -35,7 +35,8 @@ abstract class _Rigger implements IRigger {
    * Called when a fragment is first attached to its context.
    * {@link #onCreate(Bundle)} will be called after this.
    */
-  public abstract void onAttach(Context context);
+  public void onAttach(Context context) {
+  }
 
   /**
    * Called when the activity is starting.This is where most initialization should go.
@@ -51,7 +52,8 @@ abstract class _Rigger implements IRigger {
    * where its fragments are resumed.  Be sure to always call through to
    * the super-class.
    */
-  public abstract void onResumeFragments();
+  public void onResumeFragments() {
+  }
 
   /**
    * Called after {@link Activity#onRestoreInstanceState}, {@link Activity#onRestart}, or
@@ -64,7 +66,8 @@ abstract class _Rigger implements IRigger {
    * Called as part of the activity lifecycle when an activity is going into
    * the background, but has not (yet) been killed.
    */
-  public abstract void onPause();
+  public void onPause() {
+  }
 
   /**
    * Called to retrieve per-instance state from an activity before being killed

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.jkb.fragment.rigger.annotation.Puppet;
 
 /**
  * Base fragment.
@@ -18,27 +19,28 @@ import android.view.ViewGroup;
  *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 22,2017
  */
-
+@Puppet
 public abstract class BaseFragment extends Fragment {
 
-  protected View mRootView;
+  protected static final String BUNDLE_KEY = "/bundle/key";
+  protected View mContentView;
 
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
-    mRootView = inflater.inflate(getRootView(), container, false);
+    mContentView = inflater.inflate(getContentView(), container, false);
     init(savedInstanceState);
-    return mRootView;
+    return mContentView;
   }
 
   @LayoutRes
-  protected abstract int getRootView();
+  protected abstract int getContentView();
 
   protected abstract void init(Bundle savedInstanceState);
 
   protected View findViewById(@IdRes int id) {
-    return mRootView.findViewById(id);
+    return mContentView.findViewById(id);
   }
 }

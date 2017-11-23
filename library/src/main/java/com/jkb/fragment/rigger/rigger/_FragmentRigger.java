@@ -1,5 +1,7 @@
 package com.jkb.fragment.rigger.rigger;
 
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_CONTAINERVIEWID;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,11 +14,11 @@ import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
-import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentExecutor;
 import com.jkb.fragment.rigger.helper.FragmentExecutor.Builder;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.UUID;
@@ -38,7 +40,6 @@ final class _FragmentRigger extends _Rigger {
 
   private Fragment mFragment;
   private Activity mActivity;
-  private Context mContext;
   private FragmentManager mParentFm;
   private FragmentManager mChildFm;
   //data
@@ -54,8 +55,15 @@ final class _FragmentRigger extends _Rigger {
     //init containerViewId
     Class<? extends Fragment> clazz = fragment.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);
-    mContainerViewId = puppet.containerViewId();
     mBindContainerView = puppet.bondContainerView();
+    mContainerViewId = puppet.containerViewId();
+    if (mContainerViewId <= 0) {
+      try {
+        Method containerViewId = clazz.getMethod(METHOD_GET_CONTAINERVIEWID);
+        mContainerViewId = (int) containerViewId.invoke(fragment);
+      } catch (Exception ignored) {
+      }
+    }
     //init fragment tag
     mFragmentTag = UUID.randomUUID().toString();
     //init fragment helper
@@ -66,7 +74,6 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public void onAttach(Context context) {
     mActivity = (Activity) context;
-    mContext = context;
   }
 
   @Override
@@ -93,11 +100,6 @@ final class _FragmentRigger extends _Rigger {
   }
 
   @Override
-  public void onResumeFragments() {
-    /*This method is called in Activity,here will never be called*/
-  }
-
-  @Override
   public void onResume() {
     //commit all saved fragment transaction.
     while (true) {
@@ -105,10 +107,6 @@ final class _FragmentRigger extends _Rigger {
       if (transaction == null) break;
       commitFragmentTransaction(transaction);
     }
-  }
-
-  @Override
-  public void onPause() {
   }
 
   @Override
@@ -120,10 +118,6 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void onDestroy() {
-    Logger.d(mFragment, "isAdded=" + mFragment.isAdded());
-    Logger.d(mFragment, "isDetached=" + mFragment.isDetached());
-    Logger.d(mFragment, "isRemoving=" + mFragment.isRemoving());
-    Logger.d(mFragment, "isInLayout=" + mFragment.isInLayout());
   }
 
   @Override
@@ -149,12 +143,30 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void startFragment(@NonNull Fragment fragment) {
-    String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    if (!mStackManager.push(fragmentTAG, mContainerViewId)) {
-      throwException(new AlreadyExistException(fragmentTAG));
+    //if the fragment has effective containerViewId,then the operation is operated by itself.
+    if (getContainerViewId() > 0) {
+      String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
+      if (!mStackManager.push(fragmentTAG, mContainerViewId)) {
+        throwException(new AlreadyExistException(fragmentTAG));
+      }
+      commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm)
+          .add(getContainerViewId(), fragment, fragmentTAG)
+          .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
+          .show(fragment));
+      return;
     }
-    if (getContainerViewId() <= 0) {
-      throwException(new UnSupportException("ContainerViewId must be effective in class " + mActivity.getClass()));
+    //or the operation should be operated by parent who's container view'id is effective.
+    Fragment startPuppet = mFragment.getParentFragment();
+    while (true) {
+      if (startPuppet == null) break;
+      int containerViewId = Rigger.getRigger(startPuppet).getContainerViewId();
+      if (containerViewId > 0) break;
+      startPuppet = startPuppet.getParentFragment();
+    }
+    if (startPuppet == null) {
+      Rigger.getRigger(mActivity).startFragment(fragment);
+    } else {
+      Rigger.getRigger(startPuppet).startFragment(fragment);
     }
   }
 
@@ -172,6 +184,16 @@ final class _FragmentRigger extends _Rigger {
     commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm)
         .hideAll()
         .show(topFragment));
+  }
+
+  @Override
+  public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
+
+  }
+
+  @Override
+  public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
+
   }
 
   @Override
@@ -226,7 +248,7 @@ final class _FragmentRigger extends _Rigger {
    * Activity is resumed.
    */
   private void commitFragmentTransaction(@NonNull Builder transaction) {
-    if (isResumed()) {
+    if (!isResumed()) {
       mFragmentTransactions.add(transaction);
       Logger.w(mFragment, "::Commit transaction---->The Activity is not resumed,the transaction will be saved");
     } else {

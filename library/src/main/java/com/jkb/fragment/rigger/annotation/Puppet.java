@@ -5,6 +5,7 @@ import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -19,6 +20,7 @@ import java.lang.annotation.Target;
  *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 18,2017
  */
+@Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Puppet {

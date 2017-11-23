@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.text.TextUtils;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Stack;
 
 /**
@@ -112,6 +115,19 @@ public final class FragmentStackManager implements Cloneable, Serializable {
     mFragmentStack.remove(fragmentTag);
     mFragmentContainerMap.remove(fragmentTag);
     return true;
+  }
+
+  /**
+   * Return all fragments which is contained in the containerView.
+   *
+   * @param containerViewId the container view's id
+   */
+  public String[] getFragmentTagByContainerViewId(@IdRes int containerViewId) {
+    List<String> fragmentTags = new ArrayList<>();
+    for (Entry<String, Integer> item : mFragmentContainerMap.entrySet()) {
+      if (item.getValue() == containerViewId) fragmentTags.add(item.getKey());
+    }
+    return fragmentTags.toArray(new String[fragmentTags.size()]);
   }
 
   /**
