@@ -3,6 +3,7 @@ package com.jkb.fragment.rigger.rigger;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 
 /**
@@ -40,6 +41,9 @@ public interface IRigger {
    * Shows a fragment and hide the others which is contained in the containerView.if the fragment is not added in the
    * stack,then add first.
    *
+   * The fragment added by this method is not pushed in the stack.if the method {@link #onRiggerBackPressed()} is
+   * called, this fragment has none operation.
+   *
    * @param fragment        the fragment to be showed.
    * @param containerViewId the fragment's container view's id.
    */
@@ -49,6 +53,9 @@ public interface IRigger {
    * Shows a fragment and remove the others which is contained in the containerView.
    * if the fragment is not added in the stack,then add first,
    * if the fragment is already exist,then throw {@link AlreadyExistException}.
+   *
+   * The fragment added by this method is not pushed in the stack.if the method {@link #onRiggerBackPressed()} is
+   * called, this fragment has none operation.
    *
    * @param fragment        the fragment to be showed.
    * @param containerViewId the fragment's container view's id.
@@ -85,4 +92,9 @@ public interface IRigger {
    */
   @IdRes
   int getContainerViewId();
+
+  /**
+   * Returns the value of bondContainerView in {@link Puppet}.
+   */
+  boolean isBondContainerView();
 }

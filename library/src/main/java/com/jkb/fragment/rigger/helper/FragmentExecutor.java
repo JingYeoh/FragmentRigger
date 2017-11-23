@@ -67,11 +67,30 @@ public class FragmentExecutor {
      * Remove an existing fragment.  If it was added to a container, its view
      * is also removed from that container.
      */
-    public Builder remove(Fragment fragment) {
-      if (fragment == null) return this;
-      if (fm.findFragmentByTag(fragment.getTag()) == null) return this;
-      ft.detach(fragment);
-      ft.remove(fragment);
+    public Builder remove(Fragment... fragments) {
+      if (fragments == null || fragments.length == 0) return this;
+      for (Fragment fragment : fragments) {
+        if (fragment == null) continue;
+        if (fm.findFragmentByTag(fragment.getTag()) == null) continue;
+        ft.detach(fragment);
+        ft.remove(fragment);
+      }
+      return this;
+    }
+
+    /**
+     * Remove an existing fragment.  If it was added to a container, its view
+     * is also removed from that container.
+     */
+    public Builder remove(String... fragments) {
+      if (fragments == null || fragments.length == 0) return this;
+      for (String fragmentTag : fragments) {
+        if (TextUtils.isEmpty(fragmentTag)) continue;
+        Fragment fragment = fm.findFragmentByTag(fragmentTag);
+        if (fragment == null) continue;
+        ft.detach(fragment);
+        ft.remove(fragment);
+      }
       return this;
     }
 

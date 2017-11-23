@@ -21,7 +21,6 @@ import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
-import java.util.Stack;
 
 /**
  * Activity Rigger.rig the Activity puppet.
@@ -109,11 +108,6 @@ final class _ActivityRigger extends _Rigger {
 
   @Override
   public void onRiggerBackPressed() {
-    Stack<String> stack = mStackManager.getFragmentStack();
-    if (stack.size() <= 1 && mBindContainerView) {
-      close();
-      return;
-    }
     String topFragmentTag = mStackManager.peek();
     //the stack is empty,close the Activity.
     if (TextUtils.isEmpty(topFragmentTag)) {
@@ -147,7 +141,9 @@ final class _ActivityRigger extends _Rigger {
   public void startTopFragment() {
     String topFragmentTag = mStackManager.peek();
     if (TextUtils.isEmpty(topFragmentTag)) {
-      commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm).hideAll());
+      commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+          .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
+      );
       return;
     }
     Fragment topFragment = FragmentExecutor.findFragmentByTag(mFm, topFragmentTag);
@@ -155,18 +151,33 @@ final class _ActivityRigger extends _Rigger {
       throwException(new NotExistException(topFragmentTag));
     }
     commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
-        .hideAll()
+        .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
         .show(topFragment));
   }
 
   @Override
   public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
-
+    String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
+    Builder builder = FragmentExecutor.beginTransaction(mFm);
+    if (!mStackManager.add(fragmentTAG, containerViewId)) {
+      builder.add(containerViewId, fragment, fragmentTAG);
+    }
+    commitFragmentTransaction(builder
+        .hide(mStackManager.getFragmentTagByContainerViewId(containerViewId))
+        .show(fragment)
+    );
   }
 
   @Override
   public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
-
+    String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
+    commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+        .remove(mStackManager.getFragmentTagByContainerViewId(containerViewId))
+        .add(containerViewId, fragment, fragmentTAG)
+        .show(fragment)
+    );
+    mStackManager.remove(containerViewId);
+    mStackManager.add(fragmentTAG, containerViewId);
   }
 
   @Override
@@ -185,10 +196,16 @@ final class _ActivityRigger extends _Rigger {
     if (!mStackManager.remove(fragmentTAG)) {
       throwException(new NotExistException(fragmentTAG));
     }
-    commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
-        .remove(fragment));
+    //if the stack is empty and the puppet is bond container view.then finish the activity.
+    if (isBondContainerView() && mStackManager.getFragmentStack().empty()) {
+      close();
+    } else {
+      //if the puppet is not bond container,then remove the fragment onto the container.
+      //and show the Activity's content view.
+      commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+          .remove(fragment));
+    }
   }
-
 
   @Override
   public String getFragmentTAG() {
@@ -199,6 +216,11 @@ final class _ActivityRigger extends _Rigger {
   @Override
   public int getContainerViewId() {
     return mContainerViewId;
+  }
+
+  @Override
+  public boolean isBondContainerView() {
+    return mBindContainerView;
   }
 
   /**

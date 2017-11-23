@@ -34,10 +34,10 @@ public @interface Puppet {
 
   /**
    * Optional identifier for the Puppet.
-   * The Puppet will be closed (Activity will be finished,Fragment will be removed) as the bondContainerView is true
-   * when the puppet contain one Fragment(named PopFragment) and the PopFragment is closing.
-   * The Puppet will show the ContentView as the container fragment is empty and the bondContainerView is false,
-   * the Puppet will be closed.
+   *
+   * The puppet will bind the first Fragment that is first onto the stack.
+   * the puppet will be closed as the first Fragment is closing when the bondContainerView is true.
+   * the puppet will show the content view as the first Fragment is closing when the bondContainerView is false.
    */
   boolean bondContainerView() default false;
 }

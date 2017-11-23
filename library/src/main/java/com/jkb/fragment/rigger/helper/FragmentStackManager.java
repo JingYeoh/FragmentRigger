@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Stack;
@@ -75,6 +76,15 @@ public final class FragmentStackManager implements Cloneable, Serializable {
   }
 
   /**
+   * Adds a fragment onto the list.
+   */
+  public boolean add(String fragmentTag, @IdRes int containerViewId) {
+    if (mFragmentContainerMap.containsKey(fragmentTag)) return false;
+    mFragmentContainerMap.put(fragmentTag, containerViewId);
+    return true;
+  }
+
+  /**
    * Returns the fragmentTag at the top of the stack and removes it.
    */
   public String pop() {
@@ -101,7 +111,7 @@ public final class FragmentStackManager implements Cloneable, Serializable {
    * Returns the value of if the fragment is in the stack.
    */
   public boolean contain(String fragmentTag) {
-    return (mFragmentContainerMap != null && mFragmentStack != null) && mFragmentStack.contains(fragmentTag);
+    return (mFragmentContainerMap != null) && mFragmentContainerMap.get(fragmentTag) != null;
   }
 
   /**
@@ -114,6 +124,23 @@ public final class FragmentStackManager implements Cloneable, Serializable {
     if (!contain(fragmentTag)) return false;
     mFragmentStack.remove(fragmentTag);
     mFragmentContainerMap.remove(fragmentTag);
+    return true;
+  }
+
+  /**
+   * Remove the specified objects onto the stack which is placed into the container view.
+   *
+   * @param containerViewId the container view that fragment is placed in.
+   */
+  public boolean remove(@IdRes int containerViewId) {
+    Iterator<Entry<String, Integer>> iterator = mFragmentContainerMap.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Entry<String, Integer> entry = iterator.next();
+      if (entry.getValue() == containerViewId) {
+        mFragmentStack.remove(entry.getKey());
+        iterator.remove();
+      }
+    }
     return true;
   }
 
