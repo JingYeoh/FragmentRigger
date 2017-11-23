@@ -1,4 +1,4 @@
-package com.yj.app.fragment;
+package com.yj.app.test;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +10,7 @@ import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
 
 /**
- * TODO: Please input the description of this class.
+ * Demo of startFragment method.
  *
  * @author JingYeoh
  *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
@@ -19,12 +19,12 @@ import com.yj.app.base.BaseFragment;
  * @since Nov 21,2017
  */
 @Puppet(containerViewId = R.id.firstContent)
-public class FirstFragment extends BaseFragment implements OnClickListener {
+public class StartFragment extends BaseFragment implements OnClickListener {
 
-  public static FirstFragment newInstance(int count) {
+  public static StartFragment newInstance(int count) {
     Bundle args = new Bundle();
     args.putInt(BUNDLE_KEY, count);
-    FirstFragment fragment = new FirstFragment();
+    StartFragment fragment = new StartFragment();
     fragment.setArguments(args);
     return fragment;
   }
@@ -41,7 +41,7 @@ public class FirstFragment extends BaseFragment implements OnClickListener {
   protected void init(Bundle savedInstanceState) {
     Bundle args = savedInstanceState == null ? getArguments() : savedInstanceState;
     mCount = args.getInt(BUNDLE_KEY);
-    ((TextView) findViewById(R.id.ft_tv)).setText("FirstFragment：" + mCount);
+    ((TextView) findViewById(R.id.ft_tv)).setText("StartFragment：" + mCount);
 
     findViewById(R.id.fs_startFragment).setOnClickListener(this);
   }
@@ -56,7 +56,7 @@ public class FirstFragment extends BaseFragment implements OnClickListener {
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.fs_startFragment:
-        Rigger.getRigger(this).startFragment(FirstFragment.newInstance(mCount + 1));
+        Rigger.getRigger(this).startFragment(StartFragment.newInstance(mCount + 1));
         break;
     }
   }

@@ -64,7 +64,7 @@ final class _FragmentRigger extends _Rigger {
       }
     }
     //init fragment tag
-    mFragmentTag = UUID.randomUUID().toString();
+    mFragmentTag = clazz.getSimpleName() + "__" + UUID.randomUUID().toString();
     //init fragment helper
     mFragmentTransactions = new LinkedList<>();
     mStackManager = new FragmentStackManager();
@@ -233,9 +233,12 @@ final class _FragmentRigger extends _Rigger {
     if (!mStackManager.remove(fragmentTAG)) {
       throwException(new NotExistException(fragmentTAG));
     }
+    //if the stack is empty and the puppet is bond container view.then close the fragment.
     if (isBondContainerView() && mStackManager.getFragmentStack().empty()) {
       close();
     } else {
+      //if the puppet is not bond container,then remove the fragment onto the container.
+      //and show the Fragment's content view.
       commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm)
           .remove(fragment));
     }
