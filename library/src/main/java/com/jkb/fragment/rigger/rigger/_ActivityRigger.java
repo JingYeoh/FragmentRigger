@@ -15,8 +15,8 @@ import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.exception.UnSupportException;
-import com.jkb.fragment.rigger.helper.FragmentExecutor;
-import com.jkb.fragment.rigger.helper.FragmentExecutor.Builder;
+import com.jkb.fragment.rigger.helper.FragmentPerformer;
+import com.jkb.fragment.rigger.helper.FragmentPerformer.Builder;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import java.lang.reflect.Method;
@@ -102,7 +102,7 @@ final class _ActivityRigger extends _Rigger {
     if (mActivity.isFinishing()) {
       mStackManager.clear();
       mFragmentTransactions.clear();
-      commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm).clear());
+      commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm).clear());
     }
   }
 
@@ -115,7 +115,7 @@ final class _ActivityRigger extends _Rigger {
       return;
     }
     //call the top fragment's onRiggerBackPressed method.
-    Fragment topFragment = FragmentExecutor.findFragmentByTag(mFm, topFragmentTag);
+    Fragment topFragment = FragmentPerformer.findFragmentByTag(mFm, topFragmentTag);
     if (topFragment == null) {
       throwException(new NotExistException(topFragmentTag));
     }
@@ -131,7 +131,7 @@ final class _ActivityRigger extends _Rigger {
     if (getContainerViewId() <= 0) {
       throwException(new UnSupportException("ContainerViewId must be effective in class " + mActivity.getClass()));
     }
-    commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+    commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
         .add(getContainerViewId(), fragment, fragmentTAG)
         .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
         .show(fragment));
@@ -141,16 +141,16 @@ final class _ActivityRigger extends _Rigger {
   public void startTopFragment() {
     String topFragmentTag = mStackManager.peek();
     if (TextUtils.isEmpty(topFragmentTag)) {
-      commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+      commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
           .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
       );
       return;
     }
-    Fragment topFragment = FragmentExecutor.findFragmentByTag(mFm, topFragmentTag);
+    Fragment topFragment = FragmentPerformer.findFragmentByTag(mFm, topFragmentTag);
     if (topFragment == null) {
       throwException(new NotExistException(topFragmentTag));
     }
-    commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+    commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
         .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
         .show(topFragment));
   }
@@ -158,7 +158,7 @@ final class _ActivityRigger extends _Rigger {
   @Override
   public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    Builder builder = FragmentExecutor.beginTransaction(mFm);
+    Builder builder = FragmentPerformer.beginTransaction(mFm);
     if (!mStackManager.add(fragmentTAG, containerViewId)) {
       builder.add(containerViewId, fragment, fragmentTAG);
     }
@@ -171,7 +171,7 @@ final class _ActivityRigger extends _Rigger {
   @Override
   public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+    commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
         .remove(mStackManager.getFragmentTagByContainerViewId(containerViewId))
         .add(containerViewId, fragment, fragmentTAG)
         .show(fragment)
@@ -202,7 +202,7 @@ final class _ActivityRigger extends _Rigger {
     } else {
       //if the puppet is not bond container,then remove the fragment onto the container.
       //and show the Activity's content view.
-      commitFragmentTransaction(FragmentExecutor.beginTransaction(mFm)
+      commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
           .remove(fragment));
     }
   }

@@ -18,12 +18,12 @@ import java.util.List;
  * @since Nov 21,2017
  */
 
-public class FragmentExecutor {
+public class FragmentPerformer {
 
   /**
    * Prevents this class from being instantiated.
    */
-  private FragmentExecutor() {
+  private FragmentPerformer() {
   }
 
   public static Builder beginTransaction(FragmentManager fm) {
@@ -37,6 +37,7 @@ public class FragmentExecutor {
 
     public Builder(FragmentManager fm) {
       this.fm = fm;
+      FragmentManager.enableDebugLogging(true);
       ft = fm.beginTransaction();
     }
 

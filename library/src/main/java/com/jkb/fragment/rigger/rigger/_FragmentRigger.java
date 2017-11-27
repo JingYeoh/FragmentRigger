@@ -14,8 +14,8 @@ import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
-import com.jkb.fragment.rigger.helper.FragmentExecutor;
-import com.jkb.fragment.rigger.helper.FragmentExecutor.Builder;
+import com.jkb.fragment.rigger.helper.FragmentPerformer;
+import com.jkb.fragment.rigger.helper.FragmentPerformer.Builder;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import java.lang.reflect.Method;
@@ -92,9 +92,9 @@ final class _FragmentRigger extends _Rigger {
   private void restoreHiddenState(Bundle savedInstanceState) {
     boolean isHidden = savedInstanceState.getBoolean(BUNDLE_KEY_FRAGMENT_STATUS_HIDE);
     if (isHidden) {
-      commitFragmentTransaction(FragmentExecutor.beginTransaction(mParentFm).hide(mFragment));
+      commitFragmentTransaction(FragmentPerformer.beginTransaction(mParentFm).hide(mFragment));
     } else {
-      commitFragmentTransaction(FragmentExecutor.beginTransaction(mParentFm).show(mFragment));
+      commitFragmentTransaction(FragmentPerformer.beginTransaction(mParentFm).show(mFragment));
     }
   }
 
@@ -128,7 +128,7 @@ final class _FragmentRigger extends _Rigger {
       return;
     }
     //call the top fragment's onRiggerBackPressed method.
-    Fragment topFragment = FragmentExecutor.findFragmentByTag(mChildFm, topFragmentTag);
+    Fragment topFragment = FragmentPerformer.findFragmentByTag(mChildFm, topFragmentTag);
     if (topFragment == null) {
       throwException(new NotExistException(topFragmentTag));
     }
@@ -143,7 +143,7 @@ final class _FragmentRigger extends _Rigger {
       if (!mStackManager.push(fragmentTAG, mContainerViewId)) {
         throwException(new AlreadyExistException(fragmentTAG));
       }
-      commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm)
+      commitFragmentTransaction(FragmentPerformer.beginTransaction(mChildFm)
           .add(getContainerViewId(), fragment, fragmentTAG)
           .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
           .show(fragment));
@@ -168,16 +168,16 @@ final class _FragmentRigger extends _Rigger {
   public void startTopFragment() {
     String topFragmentTag = mStackManager.peek();
     if (TextUtils.isEmpty(topFragmentTag)) {
-      commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm)
+      commitFragmentTransaction(FragmentPerformer.beginTransaction(mChildFm)
           .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
       );
       return;
     }
-    Fragment topFragment = FragmentExecutor.findFragmentByTag(mChildFm, topFragmentTag);
+    Fragment topFragment = FragmentPerformer.findFragmentByTag(mChildFm, topFragmentTag);
     if (topFragment == null) {
       throwException(new NotExistException(topFragmentTag));
     }
-    commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm)
+    commitFragmentTransaction(FragmentPerformer.beginTransaction(mChildFm)
         .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
         .show(topFragment));
   }
@@ -185,7 +185,7 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    Builder builder = FragmentExecutor.beginTransaction(mChildFm);
+    Builder builder = FragmentPerformer.beginTransaction(mChildFm);
     if (!mStackManager.add(fragmentTAG, containerViewId)) {
       builder.add(containerViewId, fragment, fragmentTAG);
     }
@@ -198,7 +198,7 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm)
+    commitFragmentTransaction(FragmentPerformer.beginTransaction(mChildFm)
         .remove(mStackManager.getFragmentTagByContainerViewId(containerViewId))
         .add(containerViewId, fragment, fragmentTAG)
         .show(fragment)
@@ -215,7 +215,7 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public void close() {
     mStackManager.clear();
-    commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm).clear());
+    commitFragmentTransaction(FragmentPerformer.beginTransaction(mChildFm).clear());
     //remove this fragment from parent's stack and show the pop fragment.
     Fragment parentFragment = mFragment.getParentFragment();
     if (parentFragment != null) {
@@ -239,7 +239,7 @@ final class _FragmentRigger extends _Rigger {
     } else {
       //if the puppet is not bond container,then remove the fragment onto the container.
       //and show the Fragment's content view.
-      commitFragmentTransaction(FragmentExecutor.beginTransaction(mChildFm)
+      commitFragmentTransaction(FragmentPerformer.beginTransaction(mChildFm)
           .remove(fragment));
     }
   }
