@@ -3,7 +3,6 @@ package com.yj.app;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.base.BaseFragment;
@@ -16,7 +15,6 @@ import com.yj.app.test.StartFragment;
  *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 23,2017
  */
-@Puppet(containerViewId = R.id.ft_content)
 public class TestFragment extends BaseFragment implements OnClickListener {
 
   public static TestFragment newInstance() {
@@ -44,7 +42,7 @@ public class TestFragment extends BaseFragment implements OnClickListener {
     switch (v.getId()) {
       case R.id.fs_startFragment:
         Rigger.getRigger(this).startFragment(StartFragment.newInstance(0));
-//        Rigger.getRigger(this).close();
+        Rigger.getRigger(this).close();
         break;
       case R.id.fs_showFragment:
         break;

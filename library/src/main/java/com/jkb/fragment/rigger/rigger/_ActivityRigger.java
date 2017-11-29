@@ -15,12 +15,8 @@ import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.exception.UnSupportException;
-import com.jkb.fragment.rigger.helper.FragmentPerformer;
-import com.jkb.fragment.rigger.helper.FragmentPerformer.Builder;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
-import com.jkb.fragment.rigger.utils.Logger;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
 
 /**
  * Activity Rigger.rig the Activity puppet.
@@ -35,13 +31,12 @@ import java.util.LinkedList;
 final class _ActivityRigger extends _Rigger {
 
   private AppCompatActivity mActivity;
-  private FragmentManager mFm;
   //data
   @IdRes
   private int mContainerViewId;
   private boolean mBindContainerView;
+  private RiggerTransaction mRiggerTransaction;
   private FragmentStackManager mStackManager;
-  private LinkedList<Builder> mFragmentTransactions;
   private boolean mIsResumed = false;
 
   _ActivityRigger(@NonNull AppCompatActivity activity) {
@@ -59,13 +54,14 @@ final class _ActivityRigger extends _Rigger {
       }
     }
     //init fragment helper
-    mFragmentTransactions = new LinkedList<>();
     mStackManager = new FragmentStackManager();
   }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
-    mFm = mActivity.getSupportFragmentManager();
+    if (mRiggerTransaction == null) {
+      mRiggerTransaction = new RiggerTransactionImpl(this, mActivity.getSupportFragmentManager());
+    }
     if (savedInstanceState != null) {
       mStackManager = FragmentStackManager.restoreStack(savedInstanceState);
     }
@@ -74,12 +70,7 @@ final class _ActivityRigger extends _Rigger {
   @Override
   public void onResumeFragments() {
     mIsResumed = true;
-    //commit all saved fragment transaction.
-    while (true) {
-      Builder transaction = mFragmentTransactions.poll();
-      if (transaction == null) break;
-      commitFragmentTransaction(transaction);
-    }
+    mRiggerTransaction.commit();
   }
 
   @Override
@@ -101,8 +92,7 @@ final class _ActivityRigger extends _Rigger {
   public void onDestroy() {
     if (mActivity.isFinishing()) {
       mStackManager.clear();
-      mFragmentTransactions.clear();
-      commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm).clear());
+      mRiggerTransaction.removeAll();
     }
   }
 
@@ -115,7 +105,7 @@ final class _ActivityRigger extends _Rigger {
       return;
     }
     //call the top fragment's onRiggerBackPressed method.
-    Fragment topFragment = FragmentPerformer.findFragmentByTag(mFm, topFragmentTag);
+    Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
     if (topFragment == null) {
       throwException(new NotExistException(topFragmentTag));
     }
@@ -131,51 +121,50 @@ final class _ActivityRigger extends _Rigger {
     if (getContainerViewId() <= 0) {
       throwException(new UnSupportException("ContainerViewId must be effective in class " + mActivity.getClass()));
     }
-    commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
-        .add(getContainerViewId(), fragment, fragmentTAG)
+    mRiggerTransaction.add(mContainerViewId, fragment, fragmentTAG)
         .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
-        .show(fragment));
+        .show(fragmentTAG)
+        .commit();
   }
 
   @Override
   public void startTopFragment() {
     String topFragmentTag = mStackManager.peek();
     if (TextUtils.isEmpty(topFragmentTag)) {
-      commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
-          .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
-      );
+      mRiggerTransaction.hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
+          .commit();
       return;
     }
-    Fragment topFragment = FragmentPerformer.findFragmentByTag(mFm, topFragmentTag);
-    if (topFragment == null) {
-      throwException(new NotExistException(topFragmentTag));
-    }
-    commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
-        .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
-        .show(topFragment));
+    mRiggerTransaction.hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
+        .show(topFragmentTag)
+        .commit();
   }
 
   @Override
   public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    Builder builder = FragmentPerformer.beginTransaction(mFm);
     if (!mStackManager.add(fragmentTAG, containerViewId)) {
-      builder.add(containerViewId, fragment, fragmentTAG);
+      mRiggerTransaction.add(containerViewId, fragment, fragmentTAG);
     }
-    commitFragmentTransaction(builder
-        .hide(mStackManager.getFragmentTagByContainerViewId(containerViewId))
-        .show(fragment)
-    );
+    mRiggerTransaction.hide(mStackManager.getFragmentTagByContainerViewId(containerViewId))
+        .show(fragmentTAG)
+        .commit();
+  }
+
+  @Override
+  public void hideFragment(@NonNull Fragment fragment) {
+    String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
+    mRiggerTransaction.hide(fragmentTAG)
+        .commit();
   }
 
   @Override
   public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
+    mRiggerTransaction.add(containerViewId, fragment, fragmentTAG)
         .remove(mStackManager.getFragmentTagByContainerViewId(containerViewId))
-        .add(containerViewId, fragment, fragmentTAG)
-        .show(fragment)
-    );
+        .show(fragmentTAG)
+        .commit();
     mStackManager.remove(containerViewId);
     mStackManager.add(fragmentTAG, containerViewId);
   }
@@ -202,8 +191,8 @@ final class _ActivityRigger extends _Rigger {
     } else {
       //if the puppet is not bond container,then remove the fragment onto the container.
       //and show the Activity's content view.
-      commitFragmentTransaction(FragmentPerformer.beginTransaction(mFm)
-          .remove(fragment));
+      mRiggerTransaction.remove(fragmentTAG)
+          .commit();
     }
   }
 
@@ -228,18 +217,5 @@ final class _ActivityRigger extends _Rigger {
    */
   private void throwException(RiggerException e) {
     throw e;
-  }
-
-  /**
-   * Commit fragment transaction.if the Activity is not resumed,then this transaction will be saved and commit as the
-   * Activity is resumed.
-   */
-  private void commitFragmentTransaction(@NonNull Builder transaction) {
-    if (!isResumed()) {
-      mFragmentTransactions.add(transaction);
-      Logger.w(mActivity, "::Commit transaction---->The Activity is not resumed,the transaction will be saved");
-    } else {
-      transaction.commit();
-    }
   }
 }

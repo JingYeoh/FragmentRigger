@@ -50,6 +50,13 @@ public interface IRigger {
   void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId);
 
   /**
+   * Hides a existing fragment.
+   *
+   * @param fragment The fragment to be hidden.
+   */
+  void hideFragment(@NonNull Fragment fragment);
+
+  /**
    * Shows a fragment and remove the others which is contained in the containerView.
    * if the fragment is not added in the stack,then add first,
    * if the fragment is already exist,then throw {@link AlreadyExistException}.

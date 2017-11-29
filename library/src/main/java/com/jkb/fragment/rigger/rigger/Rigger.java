@@ -72,8 +72,7 @@ public final class Rigger {
     }
     IRigger rigger = getInstance().mPuppetMap.get(object);
     if (rigger == null) {
-      throw new RiggerException(
-          "UnKnown error,please make sure your config is right.or you can contact the author or post a issue.");
+      throw new RiggerException("UnKnown error " + object + "is not a puppet object");
     }
     return rigger;
   }
