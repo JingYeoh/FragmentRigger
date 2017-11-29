@@ -28,7 +28,7 @@ public final class Rigger {
 
   private static final String TAG_HEADER = "<<Rigger>>";
   private static volatile Rigger sInstance = null;
-  private Map<Object, IRigger> mPuppetMap;
+  private Map<Integer, IRigger> mPuppetMap;
 
   /**
    * Prevents this class from being instantiated.
@@ -70,7 +70,9 @@ public final class Rigger {
       throw new RiggerException("Can not find Puppet annotation.please add Puppet annotation for the class" +
           object.getClass().getSimpleName());
     }
-    IRigger rigger = getInstance().mPuppetMap.get(object);
+    //get the object's address code.
+    int code = System.identityHashCode(object);
+    IRigger rigger = getInstance().mPuppetMap.get(code);
     if (rigger == null) {
       throw new RiggerException("UnKnown error " + object + "is not a puppet object");
     }
@@ -81,10 +83,13 @@ public final class Rigger {
    * Returns or puts the object to rigger list.
    */
   private _Rigger createRigger(Object object) {
-    _Rigger rigger = (_Rigger) mPuppetMap.get(object);
+    //get the object's address code.
+    int code = System.identityHashCode(object);
+    _Rigger rigger = (_Rigger) mPuppetMap.get(code);
     if (rigger == null) {
       rigger = _Rigger.create(object);
-      mPuppetMap.put(object, rigger);
+      mPuppetMap.put(code, rigger);
+      Logger.i(this, "add puppet " + object + " to rigger list");
     }
     return rigger;
   }
@@ -92,9 +97,9 @@ public final class Rigger {
   /**
    * Inject the Fragment's construct method,and add to rigger list.
    *
-   * @param object Fragment
+   * @param object Fragment/Activity
    */
-  private void onFragmentConstructor(Object object) {
+  private void onPuppetConstructor(Object object) {
     createRigger(object);
   }
 

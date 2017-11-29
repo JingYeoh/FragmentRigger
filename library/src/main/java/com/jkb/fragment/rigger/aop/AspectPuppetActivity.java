@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
+import com.jkb.fragment.rigger.utils.Logger;
 import java.lang.reflect.Method;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -25,6 +26,10 @@ import org.aspectj.lang.annotation.Pointcut;
 public class AspectPuppetActivity {
 
   //****************PointCut***********************************
+
+  @Pointcut("execution(android.support.v4.app.FragmentActivity+.new())")
+  public void constructPointCut() {
+  }
 
   @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onCreate(..)) ")
   public void onCreatePointCut() {
@@ -55,6 +60,17 @@ public class AspectPuppetActivity {
   }
 
   //****************Process***********************************
+
+  @Around("constructPointCut()")
+  public Object constructProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Method onAttach = getRiggerMethod("onPuppetConstructor", Object.class);
+    onAttach.invoke(getRiggerInstance(), puppet);
+    return result;
+  }
 
   @Around("onCreatePointCut()")
   public Object onCreateProcess(ProceedingJoinPoint joinPoint) throws Throwable {

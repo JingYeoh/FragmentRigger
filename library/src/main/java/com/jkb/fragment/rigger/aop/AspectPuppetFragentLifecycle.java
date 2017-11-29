@@ -59,7 +59,7 @@ public class AspectPuppetFragentLifecycle {
     //Only inject the class that marked by Puppet annotation.
     if (!isMarkedByPuppet(puppet)) return result;
 
-    Method onAttach = getRiggerMethod("onFragmentConstructor", Object.class);
+    Method onAttach = getRiggerMethod("onPuppetConstructor", Object.class);
     onAttach.invoke(getRiggerInstance(), puppet);
     return result;
   }

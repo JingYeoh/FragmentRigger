@@ -42,7 +42,7 @@ public class TestFragment extends BaseFragment implements OnClickListener {
     switch (v.getId()) {
       case R.id.fs_startFragment:
         Rigger.getRigger(this).startFragment(StartFragment.newInstance(0));
-        Rigger.getRigger(this).close();
+//        Rigger.getRigger(this).close();
         break;
       case R.id.fs_showFragment:
         break;

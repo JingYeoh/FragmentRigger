@@ -39,6 +39,7 @@ final class _FragmentRigger extends _Rigger {
   private int mContainerViewId;
   private boolean mBindContainerView;
   private RiggerTransaction mRiggerTransaction;
+  private RiggerTransaction mParentRiggerTransaction;
   private String mFragmentTag;
   private FragmentStackManager mStackManager;
 
@@ -80,6 +81,9 @@ final class _FragmentRigger extends _Rigger {
     if (mRiggerTransaction == null) {
       mRiggerTransaction = new RiggerTransactionImpl(this, mFragment.getChildFragmentManager());
     }
+    if (mParentRiggerTransaction == null) {
+      mParentRiggerTransaction = new RiggerTransactionImpl(this, mFragment.getFragmentManager());
+    }
     if (savedInstanceState != null) {
       mFragmentTag = savedInstanceState.getString(BUNDLE_KEY_FRAGMENT_TAG);
       mStackManager = FragmentStackManager.restoreStack(savedInstanceState);
@@ -92,17 +96,17 @@ final class _FragmentRigger extends _Rigger {
    */
   private void restoreHiddenState(Bundle savedInstanceState) {
     boolean isHidden = savedInstanceState.getBoolean(BUNDLE_KEY_FRAGMENT_STATUS_HIDE);
-    IRigger rigger = Rigger.getRigger(getHost());
     if (isHidden) {
-      rigger.hideFragment(mFragment);
+      mParentRiggerTransaction.hide(getFragmentTAG()).commit();
     } else {
-      rigger.showFragment(mFragment, rigger.getContainerViewId());
+      mParentRiggerTransaction.show(getFragmentTAG()).commit();
     }
   }
 
   @Override
   public void onResume() {
     //commit all saved fragment transaction.
+    mParentRiggerTransaction.commit();
     mRiggerTransaction.commit();
   }
 
@@ -220,8 +224,8 @@ final class _FragmentRigger extends _Rigger {
       Rigger.getRigger(parentFragment).startTopFragment();
       return;
     }
-    Rigger.getRigger(mActivity).close(mFragment);
-    Rigger.getRigger(mActivity).startTopFragment();
+    Rigger.getRigger(getHost()).close(mFragment);
+    Rigger.getRigger(getHost()).startTopFragment();
   }
 
   @Override
