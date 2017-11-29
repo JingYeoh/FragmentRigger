@@ -6,6 +6,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
+import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
 
@@ -44,6 +45,7 @@ public class StartFragment extends BaseFragment implements OnClickListener {
     ((TextView) findViewById(R.id.ft_tv)).setText("StartFragment：" + mCount);
 
     findViewById(R.id.fs_startFragment).setOnClickListener(this);
+    Logger.d(this, "mHost=" + getHost());
   }
 
   @Override
