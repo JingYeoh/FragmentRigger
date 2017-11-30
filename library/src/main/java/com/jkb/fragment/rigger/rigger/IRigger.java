@@ -130,16 +130,15 @@ public interface IRigger {
   boolean isBondContainerView();
 
   /**
-   * Called when an fragment you started exits, giving you the requestCode
-   * you started it with, the resultCode it returned, and any additional
-   * data from it.
+   * Call this to set the result that your fragment will return to its
+   * caller.
    *
-   * @param requestCode The integer request code originally supplied to
-   *                    startFragmentForResult(), allowing you to identify who this
-   *                    result came from.
-   * @param resultCode  The integer result code returned by the child fragment
-   *                    through its setResult().
-   * @param data        A Bundle, which can return result data to the caller.
+   * @param resultCode The result code to propagate back to the originating
+   *                   fragment, often RESULT_CANCELED or RESULT_OK
+   * @param bundle     The data to propagate back to the originating fragment.
+   *
+   * @see Rigger#RESULT_OK
+   * @see Rigger#RESULT_CANCELED
    */
-  void onFragmentResult(int requestCode, int resultCode, Bundle data);
+  void setResult(int resultCode, Bundle bundle);
 }

@@ -14,6 +14,8 @@ import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
+import com.jkb.fragment.rigger.utils.Logger;
+import com.jkb.fragment.rigger.utils.RiggerConsts;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
@@ -43,7 +45,10 @@ final class _FragmentRigger extends _Rigger {
   private String mFragmentTag;
   private FragmentStackManager mStackManager;
 
-  _FragmentRigger(@NonNull Fragment fragment) {
+  private int mRequestCode = -1;
+  private boolean mIsForResult = false;
+
+  private _FragmentRigger(@NonNull Fragment fragment) {
     this.mFragment = fragment;
     //init containerViewId
     Class<? extends Fragment> clazz = fragment.getClass();
@@ -78,17 +83,30 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
+    //init rigger transaction
     if (mRiggerTransaction == null) {
       mRiggerTransaction = new RiggerTransactionImpl(this, mFragment.getChildFragmentManager());
     }
     if (mParentRiggerTransaction == null) {
       mParentRiggerTransaction = new RiggerTransactionImpl(this, mFragment.getFragmentManager());
     }
+    //init params of startForResult
+    initResultParams(savedInstanceState);
+    //restore attributes
     if (savedInstanceState != null) {
       mFragmentTag = savedInstanceState.getString(BUNDLE_KEY_FRAGMENT_TAG);
       mStackManager = FragmentStackManager.restoreStack(savedInstanceState);
       restoreHiddenState(savedInstanceState);
     }
+  }
+
+  /**
+   * Init the params of {@link #startFragmentForResult(Fragment, int)}
+   */
+  private void initResultParams(Bundle savedInstanceState) {
+    Bundle bundle = savedInstanceState == null ? mFragment.getArguments() : savedInstanceState;
+    mRequestCode = bundle.getInt(BUNDLE_KEY_REQUEST_CODE);
+    mIsForResult = bundle.getBoolean(BUNDLE_KEY_FOR_RESULT);
   }
 
   /**
@@ -114,6 +132,8 @@ final class _FragmentRigger extends _Rigger {
   public void onSaveInstanceState(Bundle outState) {
     outState.putString(BUNDLE_KEY_FRAGMENT_TAG, mFragmentTag);
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_STATUS_HIDE, mFragment.isHidden());
+    outState.putBoolean(BUNDLE_KEY_FOR_RESULT, mIsForResult);
+    outState.putInt(BUNDLE_KEY_REQUEST_CODE, mRequestCode);
     mStackManager.saveInstanceState(outState);
   }
 
@@ -285,8 +305,26 @@ final class _FragmentRigger extends _Rigger {
   }
 
   @Override
-  public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
-
+  public void setResult(int resultCode, Bundle bundle) {
+    //get the host object.
+    Fragment startPuppet = mFragment.getParentFragment();
+    while (true) {
+      if (startPuppet == null) break;
+      int containerViewId = Rigger.getRigger(startPuppet).getContainerViewId();
+      if (containerViewId > 0) break;
+      startPuppet = startPuppet.getParentFragment();
+    }
+    Object host = startPuppet == null ? mActivity : startPuppet;
+    //invoke the host#onFragmentResult method.
+    Class<?> clazz = host.getClass();
+    try {
+      Method method = clazz.getMethod(RiggerConsts.METHOD_ONFRAGMENTRESULT, Integer.class, Integer.class, Bundle.class);
+      method.invoke(host, mRequestCode, resultCode, bundle);
+    } catch (NoSuchMethodException ignored) {
+      Logger.w(this, "Not found method " + RiggerConsts.METHOD_ONFRAGMENTRESULT + " in class " + clazz.getSimpleName());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   /**

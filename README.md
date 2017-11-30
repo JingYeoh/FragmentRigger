@@ -6,10 +6,21 @@
 
 ### 特性：
 - [x] **超强大Api支持**
-- [x] **Fragment基础跳转**
-- [x] **Fragment多层嵌套**
-- [x] **解决Fragment中可能遇到的bug**
-- [x] **解决在`内存重启`时可能发生的异常**
+- [x] **解决Fragment中常见的异常及Bug**
 - [x] **事物提交永不丢失**
+- [x] **扩展原生方法，添加`onBackPressed`等常见的方法支持**
+- [ ] **当前栈成员的实时打印**
 - [ ] **Fragment转场动画**
 - [ ] **Fragment懒加载**
+
+### 解决的Bug
+* ~~Fragment界面重叠~~
+* ~~Fragment多级嵌套~~
+* ~~Fragment栈的管理问题~~
+* ~~Fragment事务提交失败~~
+* ~~Activity在非onResume状态下提交事物~~
+* ~~Fragment事务提交不能立即执行导致两次提交事件冲突~~
+* ~~`内存重启`时的一系列异常~~
+* ~~屏幕翻转时的数据保存及回复~~
+* ~~Can not perform this action after onSaveInstanceState~~
+* 转场动画

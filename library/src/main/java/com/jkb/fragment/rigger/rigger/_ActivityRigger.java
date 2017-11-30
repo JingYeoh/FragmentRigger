@@ -221,7 +221,7 @@ final class _ActivityRigger extends _Rigger {
 
   @Override
   public String getFragmentTAG() {
-     /*This method is called by Fragment,here is useless*/
+    throwException(new UnSupportException("getFragmentTAG() method can only called in Fragment"));
     return null;
   }
 
@@ -236,8 +236,8 @@ final class _ActivityRigger extends _Rigger {
   }
 
   @Override
-  public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
-
+  public void setResult(int resultCode, Bundle bundle) {
+    throwException(new UnSupportException("setResult() method can only called in Fragment"));
   }
 
   /**

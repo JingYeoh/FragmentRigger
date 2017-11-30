@@ -26,6 +26,11 @@ import java.util.Map;
 
 public final class Rigger {
 
+  /** Standard fragment result: operation canceled. */
+  public static final int RESULT_CANCELED = 0;
+  /** Standard fragment result: operation succeeded. */
+  public static final int RESULT_OK = -1;
+
   private static final String TAG_HEADER = "<<Rigger>>";
   private static volatile Rigger sInstance = null;
   private Map<Integer, IRigger> mPuppetMap;

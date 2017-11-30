@@ -14,5 +14,6 @@ public interface RiggerConsts {
 
   String METHOD_GET_CONTAINERVIEWID = "getContainerViewId";
   String METHOD_ONRIGGERBACKPRESSED = "onRiggerBackPressed";
+  String METHOD_ONFRAGMENTRESULT = "onFragmentResult";
 
 }
