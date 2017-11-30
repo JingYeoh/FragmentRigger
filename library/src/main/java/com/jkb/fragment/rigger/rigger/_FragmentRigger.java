@@ -167,6 +167,16 @@ final class _FragmentRigger extends _Rigger {
   }
 
   @Override
+  public void startFragmentForResult(@NonNull Fragment fragment, int requestCode) {
+    Bundle arguments = fragment.getArguments();
+    if (arguments == null) arguments = new Bundle();
+    arguments.putBoolean(BUNDLE_KEY_FOR_RESULT, true);
+    arguments.putInt(BUNDLE_KEY_REQUEST_CODE, requestCode);
+    fragment.setArguments(arguments);
+    startFragment(fragment);
+  }
+
+  @Override
   public void startTopFragment() {
     String topFragmentTag = mStackManager.peek();
     mRiggerTransaction.hide(mStackManager.getFragmentTags(getContainerViewId()));
@@ -272,6 +282,11 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public boolean isBondContainerView() {
     return mBindContainerView;
+  }
+
+  @Override
+  public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
+
   }
 
   /**

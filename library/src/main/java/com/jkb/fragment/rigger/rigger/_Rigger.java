@@ -20,6 +20,9 @@ import com.jkb.fragment.rigger.exception.RiggerException;
 
 abstract class _Rigger implements IRigger {
 
+  static final String BUNDLE_KEY_FOR_RESULT = "/bundle/key/for/result";
+  static final String BUNDLE_KEY_REQUEST_CODE = "/bundle/key/request/code";
+
   static _Rigger create(@NonNull Object object) {
     if (object instanceof AppCompatActivity) {
       return new _ActivityRigger((AppCompatActivity) object);

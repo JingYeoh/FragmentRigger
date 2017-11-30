@@ -1,5 +1,6 @@
 package com.jkb.fragment.rigger.rigger;
 
+import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -25,12 +26,21 @@ public interface IRigger {
   void onRiggerBackPressed();
 
   /**
-   * Shows a fragment in parent's containerView and hide other fragments that is placed in the
+   * Adds and show a fragment in parent's containerView and hide other fragments that is placed in the
    * containerView.
    *
    * @param fragment the fragment that will be showed.
    */
   void startFragment(@NonNull Fragment fragment);
+
+  /**
+   * Adds and shows a fragment for which you would like a result when it closed.
+   * When this fragment is exists,your onFragmentResult() method will be called with the given requestCode.
+   *
+   * @param fragment    The fragment to be started.
+   * @param requestCode If >= 0,this code will be returned in onFragmentResult() method when fragment exits.
+   */
+  void startFragmentForResult(@NonNull Fragment fragment, int requestCode);
 
   /**
    * Shows the pop fragment in the stack and hide the others.if the stack is empty,do none operation.
@@ -57,7 +67,7 @@ public interface IRigger {
   void showFragment(@NonNull String tag);
 
   /**
-   * Hides a existing fragment.
+   * Hides an existing fragment.
    *
    * @param fragment The fragment to be hidden.
    */
@@ -118,4 +128,18 @@ public interface IRigger {
    * Returns the value of bondContainerView in {@link Puppet}.
    */
   boolean isBondContainerView();
+
+  /**
+   * Called when an fragment you started exits, giving you the requestCode
+   * you started it with, the resultCode it returned, and any additional
+   * data from it.
+   *
+   * @param requestCode The integer request code originally supplied to
+   *                    startFragmentForResult(), allowing you to identify who this
+   *                    result came from.
+   * @param resultCode  The integer result code returned by the child fragment
+   *                    through its setResult().
+   * @param data        A Bundle, which can return result data to the caller.
+   */
+  void onFragmentResult(int requestCode, int resultCode, Bundle data);
 }
