@@ -146,7 +146,7 @@ final class _FragmentRigger extends _Rigger {
         throwException(new AlreadyExistException(fragmentTAG));
       }
       mRiggerTransaction.add(mContainerViewId, fragment, fragmentTAG)
-          .hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
+          .hide(mStackManager.getFragmentTags(getContainerViewId()))
           .show(fragmentTAG)
           .commit();
       return;
@@ -169,25 +169,31 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public void startTopFragment() {
     String topFragmentTag = mStackManager.peek();
-    if (TextUtils.isEmpty(topFragmentTag)) {
-      mRiggerTransaction.hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
-          .commit();
-      return;
+    mRiggerTransaction.hide(mStackManager.getFragmentTags(getContainerViewId()));
+    if (!TextUtils.isEmpty(topFragmentTag)) {
+      mRiggerTransaction.show(topFragmentTag);
     }
-    mRiggerTransaction.hide(mStackManager.getFragmentTagByContainerViewId(getContainerViewId()))
-        .show(topFragmentTag)
-        .commit();
+    mRiggerTransaction.commit();
   }
 
   @Override
   public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    if (!mStackManager.add(fragmentTAG, containerViewId)) {
+    if (mStackManager.add(fragmentTAG, containerViewId)) {
       mRiggerTransaction.add(containerViewId, fragment, fragmentTAG);
     }
-    mRiggerTransaction.hide(mStackManager.getFragmentTagByContainerViewId(containerViewId))
+    mRiggerTransaction.hide(mStackManager.getFragmentTags(containerViewId))
         .show(fragmentTAG)
         .commit();
+  }
+
+  @Override
+  public void showFragment(@NonNull String tag) {
+    int containerViewId = mStackManager.getContainer(tag);
+    if (containerViewId == 0) {
+      throwException(new NotExistException(tag));
+    }
+    showFragment(mRiggerTransaction.find(tag), containerViewId);
   }
 
   @Override
@@ -198,10 +204,18 @@ final class _FragmentRigger extends _Rigger {
   }
 
   @Override
+  public void hideFragment(@NonNull String tag) {
+    if (!mStackManager.contain(tag)) {
+      throwException(new NotExistException(tag));
+    }
+    hideFragment(mRiggerTransaction.find(tag));
+  }
+
+  @Override
   public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
     mRiggerTransaction.add(containerViewId, fragment, fragmentTAG)
-        .remove(mStackManager.getFragmentTagByContainerViewId(containerViewId))
+        .remove(mStackManager.getFragmentTags(containerViewId))
         .show(fragmentTAG)
         .commit();
     mStackManager.remove(containerViewId);

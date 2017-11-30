@@ -1,4 +1,4 @@
-package com.yj.app.test;
+package com.yj.app.test.start;
 
 import android.os.Bundle;
 import android.view.View;

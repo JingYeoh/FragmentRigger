@@ -50,11 +50,25 @@ public interface IRigger {
   void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId);
 
   /**
+   * Shows an existing fragment and hide the others which is contained in the containerView.
+   *
+   * @param tag the tag name of fragment to be showed.
+   */
+  void showFragment(@NonNull String tag);
+
+  /**
    * Hides a existing fragment.
    *
    * @param fragment The fragment to be hidden.
    */
   void hideFragment(@NonNull Fragment fragment);
+
+  /**
+   * Hides an existing fragment and hide the others which is contained in the containerView.
+   *
+   * @param tag the tag name of fragment to be hidden.
+   */
+  void hideFragment(@NonNull String tag);
 
   /**
    * Shows a fragment and remove the others which is contained in the containerView.

@@ -111,7 +111,19 @@ public final class FragmentStackManager implements Cloneable, Serializable {
    * Returns the value of if the fragment is in the stack.
    */
   public boolean contain(String fragmentTag) {
-    return (mFragmentContainerMap != null) && mFragmentContainerMap.get(fragmentTag) != null;
+    return (mFragmentContainerMap != null) && mFragmentContainerMap.containsKey(fragmentTag);
+  }
+
+  /**
+   * Returns the container view id of the fragment.
+   *
+   * @param tag the tag name for fragment to be found.
+   *
+   * @return 0 the default content.the effective id otherwise.
+   */
+  public int getContainer(String tag) {
+    if (!contain(tag)) return 0;
+    return mFragmentContainerMap.get(tag);
   }
 
   /**
@@ -149,7 +161,7 @@ public final class FragmentStackManager implements Cloneable, Serializable {
    *
    * @param containerViewId the container view's id
    */
-  public String[] getFragmentTagByContainerViewId(@IdRes int containerViewId) {
+  public String[] getFragmentTags(@IdRes int containerViewId) {
     List<String> fragmentTags = new ArrayList<>();
     for (Entry<String, Integer> item : mFragmentContainerMap.entrySet()) {
       if (item.getValue() == containerViewId) fragmentTags.add(item.getKey());

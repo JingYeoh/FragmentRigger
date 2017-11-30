@@ -1,12 +1,16 @@
 package com.yj.app;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.base.BaseFragment;
-import com.yj.app.test.StartFragment;
+import com.yj.app.test.replace.ReplaceFragment;
+import com.yj.app.test.show.ShowFragment;
+import com.yj.app.test.start.StartFragment;
 
 /**
  * @author JingYeoh
@@ -32,6 +36,7 @@ public class TestFragment extends BaseFragment implements OnClickListener {
   @Override
   protected void init(Bundle savedInstanceState) {
     findViewById(R.id.fs_startFragment).setOnClickListener(this);
+    findViewById(R.id.fs_startFragmentDelay).setOnClickListener(this);
     findViewById(R.id.fs_showFragment).setOnClickListener(this);
     findViewById(R.id.fs_replaceFragment).setOnClickListener(this);
     Logger.d(this, "mHost=" + getHost());
@@ -42,12 +47,35 @@ public class TestFragment extends BaseFragment implements OnClickListener {
     switch (v.getId()) {
       case R.id.fs_startFragment:
         Rigger.getRigger(this).startFragment(StartFragment.newInstance(0));
-//        Rigger.getRigger(this).close();
+        Rigger.getRigger(this).close();
+        break;
+      case R.id.fs_startFragmentDelay:
+        startDelayed();
         break;
       case R.id.fs_showFragment:
+        Rigger.getRigger(this).startFragment(ShowFragment.newInstance());
         break;
       case R.id.fs_replaceFragment:
+        Rigger.getRigger(this).startFragment(ReplaceFragment.newInstance());
         break;
     }
+  }
+
+  private Handler mHandler = new Handler() {
+    @Override
+    public void handleMessage(Message msg) {
+      super.handleMessage(msg);
+      Rigger.getRigger(TestFragment.this).startFragment(StartFragment.newInstance(0));
+    }
+  };
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    if (mHandler != null) mHandler.removeMessages(111);
+  }
+
+  private void startDelayed() {
+    mHandler.sendEmptyMessageDelayed(111, 1000);
   }
 }

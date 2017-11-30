@@ -9,6 +9,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="startFragment"/>
+  <Button
+    android:id="@+id/fs_startFragmentDelay"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="delay startFragment"/>
 
   <Button
     android:id="@+id/fs_showFragment"
