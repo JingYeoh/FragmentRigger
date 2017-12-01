@@ -14,7 +14,7 @@ import android.util.Log;
 
 public class Logger {
 
-  public static boolean isAllowToPrint = true;
+  public static boolean DEBUG = false;
 
   /**
    * Send an {@link Log#INFO} log message.
@@ -24,7 +24,7 @@ public class Logger {
    * @param msg The message you would like logged.
    */
   public static void i(String tag, String msg) {
-    if (isAllowToPrint) {
+    if (DEBUG) {
       Log.i(tag, msg);
     }
   }
@@ -37,7 +37,7 @@ public class Logger {
    * @param msg The message you would like logged.
    */
   public static void v(String tag, String msg) {
-    if (isAllowToPrint) {
+    if (DEBUG) {
       Log.v(tag, msg);
     }
   }
@@ -50,7 +50,7 @@ public class Logger {
    * @param msg The message you would like logged.
    */
   public static void w(String tag, String msg) {
-    if (isAllowToPrint) {
+    if (DEBUG) {
       Log.w(tag, msg);
     }
   }
@@ -63,7 +63,7 @@ public class Logger {
    * @param msg The message you would like logged.
    */
   public static void e(String tag, String msg) {
-    if (isAllowToPrint) {
+    if (DEBUG) {
       Log.e(tag, msg);
     }
   }
@@ -76,7 +76,7 @@ public class Logger {
    * @param msg The message you would like logged.
    */
   public static void d(String tag, String msg) {
-    if (isAllowToPrint) {
+    if (DEBUG) {
       Log.d(tag, msg);
     }
   }

@@ -57,6 +57,17 @@ public final class Rigger {
   }
 
   /**
+   * Control whether the framework's internal fragment rigger debugging
+   * logs are turned on.  If enabled, you will see output in logcat as
+   * the framework performs fragment operations.
+   *
+   * @param enable default is false.
+   */
+  public static void enableDebugLogging(boolean enable) {
+    Logger.DEBUG = enable;
+  }
+
+  /**
    * Returns the Rigger that can rig the puppet object.
    *
    * @param object puppet class.must be a child class of {@link Fragment} or {@link AppCompatActivity}

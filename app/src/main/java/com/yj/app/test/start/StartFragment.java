@@ -45,6 +45,7 @@ public class StartFragment extends BaseFragment implements OnClickListener {
     ((TextView) findViewById(R.id.ft_tv)).setText("StartFragment：" + mCount);
 
     findViewById(R.id.fs_startFragment).setOnClickListener(this);
+    findViewById(R.id.fs_print).setOnClickListener(this);
     Logger.d(this, "mHost=" + getHost());
   }
 
@@ -59,6 +60,9 @@ public class StartFragment extends BaseFragment implements OnClickListener {
     switch (v.getId()) {
       case R.id.fs_startFragment:
         Rigger.getRigger(this).startFragment(StartFragment.newInstance(mCount + 1));
+        break;
+      case R.id.fs_print:
+        Rigger.getRigger(this).printStack();
         break;
     }
   }

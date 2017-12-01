@@ -9,6 +9,7 @@ public class MainActivity extends BaseActivity {
 
   @Override
   protected void init(Bundle savedInstanceState) {
+    Rigger.enableDebugLogging(true);
     if (savedInstanceState == null) {
       Rigger.getRigger(this).startFragment(TestFragment.newInstance());
     }

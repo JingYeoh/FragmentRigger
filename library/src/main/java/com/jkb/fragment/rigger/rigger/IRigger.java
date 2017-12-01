@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
+import java.util.Stack;
 
 /**
  * Rigger interface class.used to define the methods can be called.
@@ -153,4 +154,14 @@ public interface IRigger {
    * @see Rigger#RESULT_CANCELED
    */
   void setResult(int resultCode, Bundle bundle);
+
+  /**
+   * Returns the current fragment stack.
+   */
+  Stack<String> getFragmentStack();
+
+  /**
+   * Printf the current stack in logcat.
+   */
+  void printStack();
 }
