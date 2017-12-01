@@ -49,8 +49,8 @@ abstract class _Rigger implements IRigger {
   private Object mPuppetTarget;
   //data
   @IdRes
-  int mContainerViewId;
-  boolean mBindContainerView;
+  private int mContainerViewId;
+  private boolean mBindContainerView;
   RiggerTransaction mRiggerTransaction;
   FragmentStackManager mStackManager;
 
