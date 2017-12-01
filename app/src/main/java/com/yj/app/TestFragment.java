@@ -10,6 +10,7 @@ import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.base.BaseFragment;
 import com.yj.app.test.replace.ReplaceFragment;
 import com.yj.app.test.show.ShowFragment;
+import com.yj.app.test.start.ResultFragment;
 import com.yj.app.test.start.StartFragment;
 
 /**
@@ -39,6 +40,7 @@ public class TestFragment extends BaseFragment implements OnClickListener {
     findViewById(R.id.fs_startFragmentDelay).setOnClickListener(this);
     findViewById(R.id.fs_showFragment).setOnClickListener(this);
     findViewById(R.id.fs_replaceFragment).setOnClickListener(this);
+    findViewById(R.id.fs_startFragmentForResult).setOnClickListener(this);
     Logger.d(this, "mHost=" + getHost());
   }
 
@@ -51,6 +53,9 @@ public class TestFragment extends BaseFragment implements OnClickListener {
         break;
       case R.id.fs_startFragmentDelay:
         startDelayed();
+        break;
+      case R.id.fs_startFragmentForResult:
+        Rigger.getRigger(this).startFragmentForResult(this, ResultFragment.newInstance(), 1000);
         break;
       case R.id.fs_showFragment:
         Rigger.getRigger(this).startFragment(ShowFragment.newInstance());
@@ -77,5 +82,13 @@ public class TestFragment extends BaseFragment implements OnClickListener {
 
   private void startDelayed() {
     mHandler.sendEmptyMessageDelayed(111, 1000);
+  }
+
+  public void onFragmentResult(int requestCode, int resultCode, Bundle args) {
+    Logger.i(this, "requestCode=" + requestCode);
+    Logger.i(this, "resultCode=" + resultCode);
+    if (resultCode != Rigger.RESULT_OK) return;
+    String string = args.getString(BUNDLE_KEY);
+    Logger.i(this, string);
   }
 }

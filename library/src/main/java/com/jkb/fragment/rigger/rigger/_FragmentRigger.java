@@ -5,6 +5,7 @@ import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_CONTAINERVIE
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
+import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.rigger.utils.RiggerConsts;
@@ -45,10 +47,9 @@ final class _FragmentRigger extends _Rigger {
   private String mFragmentTag;
   private FragmentStackManager mStackManager;
 
-  private int mRequestCode = -1;
-  private boolean mIsForResult = false;
+  private Message mForResultTarget;
 
-  private _FragmentRigger(@NonNull Fragment fragment) {
+  _FragmentRigger(@NonNull Fragment fragment) {
     this.mFragment = fragment;
     //init containerViewId
     Class<? extends Fragment> clazz = fragment.getClass();
@@ -105,8 +106,7 @@ final class _FragmentRigger extends _Rigger {
    */
   private void initResultParams(Bundle savedInstanceState) {
     Bundle bundle = savedInstanceState == null ? mFragment.getArguments() : savedInstanceState;
-    mRequestCode = bundle.getInt(BUNDLE_KEY_REQUEST_CODE);
-    mIsForResult = bundle.getBoolean(BUNDLE_KEY_FOR_RESULT);
+    mForResultTarget = bundle.getParcelable(BUNDLE_KEY_FOR_RESULT);
   }
 
   /**
@@ -132,8 +132,7 @@ final class _FragmentRigger extends _Rigger {
   public void onSaveInstanceState(Bundle outState) {
     outState.putString(BUNDLE_KEY_FRAGMENT_TAG, mFragmentTag);
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_STATUS_HIDE, mFragment.isHidden());
-    outState.putBoolean(BUNDLE_KEY_FOR_RESULT, mIsForResult);
-    outState.putInt(BUNDLE_KEY_REQUEST_CODE, mRequestCode);
+    outState.putParcelable(BUNDLE_KEY_FOR_RESULT, mForResultTarget);
     mStackManager.saveInstanceState(outState);
   }
 
@@ -187,13 +186,20 @@ final class _FragmentRigger extends _Rigger {
   }
 
   @Override
-  public void startFragmentForResult(@NonNull Fragment fragment, int requestCode) {
+  public void startFragmentForResult(Object receive, @NonNull Fragment fragment, int requestCode) {
     Bundle arguments = fragment.getArguments();
     if (arguments == null) arguments = new Bundle();
-    arguments.putBoolean(BUNDLE_KEY_FOR_RESULT, true);
-    arguments.putInt(BUNDLE_KEY_REQUEST_CODE, requestCode);
+    Message message = Message.obtain();
+    message.obj = receive;
+    message.arg1 = requestCode;
+    arguments.putParcelable(BUNDLE_KEY_FOR_RESULT, message);
     fragment.setArguments(arguments);
     startFragment(fragment);
+  }
+
+  @Override
+  public void startFragmentForResult(@NonNull Fragment fragment, int requestCode) {
+    startFragmentForResult(null, fragment, requestCode);
   }
 
   @Override
@@ -306,20 +312,26 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void setResult(int resultCode, Bundle bundle) {
-    //get the host object.
-    Fragment startPuppet = mFragment.getParentFragment();
-    while (true) {
-      if (startPuppet == null) break;
-      int containerViewId = Rigger.getRigger(startPuppet).getContainerViewId();
-      if (containerViewId > 0) break;
-      startPuppet = startPuppet.getParentFragment();
+    if (mForResultTarget == null) {
+      throwException(new UnSupportException("class " + this + " is not started by startFragmentForResult() method"));
     }
-    Object host = startPuppet == null ? mActivity : startPuppet;
+    //get the host object.
+    Object host = mForResultTarget.obj;
+    if (host == null) {
+      Fragment startPuppet = mFragment.getParentFragment();
+      while (true) {
+        if (startPuppet == null) break;
+        int containerViewId = Rigger.getRigger(startPuppet).getContainerViewId();
+        if (containerViewId > 0) break;
+        startPuppet = startPuppet.getParentFragment();
+      }
+      host = startPuppet == null ? mActivity : startPuppet;
+    }
     //invoke the host#onFragmentResult method.
     Class<?> clazz = host.getClass();
     try {
-      Method method = clazz.getMethod(RiggerConsts.METHOD_ONFRAGMENTRESULT, Integer.class, Integer.class, Bundle.class);
-      method.invoke(host, mRequestCode, resultCode, bundle);
+      Method method = clazz.getMethod(RiggerConsts.METHOD_ONFRAGMENTRESULT, int.class, int.class, Bundle.class);
+      method.invoke(host, mForResultTarget.arg1, resultCode, bundle);
     } catch (NoSuchMethodException ignored) {
       Logger.w(this, "Not found method " + RiggerConsts.METHOD_ONFRAGMENTRESULT + " in class " + clazz.getSimpleName());
     } catch (Exception e) {

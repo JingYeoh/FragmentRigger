@@ -37,6 +37,18 @@ public interface IRigger {
    * Adds and shows a fragment for which you would like a result when it closed.
    * When this fragment is exists,your onFragmentResult() method will be called with the given requestCode.
    *
+   * @param receive     The receive object of onFragmentResult method called back.
+   * @param fragment    The fragment to be started.
+   * @param requestCode If >= 0,this code will be returned in onFragmentResult() method when fragment exits.
+   */
+  void startFragmentForResult(Object receive, @NonNull Fragment fragment, int requestCode);
+
+  /**
+   * Adds and shows a fragment for which you would like a result when it closed.
+   * When this fragment is exists,your onFragmentResult() method will be called with the given requestCode.
+   * The onFragmentResult() method might not be called in the class that called this method, onFragmentResult() method
+   * will be called in the class that have the fragment's container.
+   *
    * @param fragment    The fragment to be started.
    * @param requestCode If >= 0,this code will be returned in onFragmentResult() method when fragment exits.
    */

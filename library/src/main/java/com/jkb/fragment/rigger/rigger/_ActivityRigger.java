@@ -4,6 +4,7 @@ import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_CONTAINERVIE
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -127,13 +128,20 @@ final class _ActivityRigger extends _Rigger {
   }
 
   @Override
-  public void startFragmentForResult(@NonNull Fragment fragment, int requestCode) {
+  public void startFragmentForResult(Object receive, @NonNull Fragment fragment, int requestCode) {
     Bundle arguments = fragment.getArguments();
     if (arguments == null) arguments = new Bundle();
-    arguments.putBoolean(BUNDLE_KEY_FOR_RESULT, true);
-    arguments.putInt(BUNDLE_KEY_REQUEST_CODE, requestCode);
+    Message message = Message.obtain();
+    message.obj = receive;
+    message.arg1 = requestCode;
+    arguments.putParcelable(BUNDLE_KEY_FOR_RESULT, message);
     fragment.setArguments(arguments);
     startFragment(fragment);
+  }
+
+  @Override
+  public void startFragmentForResult(@NonNull Fragment fragment, int requestCode) {
+    startFragmentForResult(null, fragment, requestCode);
   }
 
   @Override
@@ -221,7 +229,7 @@ final class _ActivityRigger extends _Rigger {
 
   @Override
   public String getFragmentTAG() {
-    throwException(new UnSupportException("getFragmentTAG() method can only called in Fragment"));
+    throwException(new UnSupportException("getFragmentTAG() method can only be called by Fragment"));
     return null;
   }
 
@@ -237,7 +245,7 @@ final class _ActivityRigger extends _Rigger {
 
   @Override
   public void setResult(int resultCode, Bundle bundle) {
-    throwException(new UnSupportException("setResult() method can only called in Fragment"));
+    throwException(new UnSupportException("setResult() method can only be called by Fragment"));
   }
 
   /**
