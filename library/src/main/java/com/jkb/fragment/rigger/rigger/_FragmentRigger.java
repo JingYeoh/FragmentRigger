@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.rigger.utils.RiggerConsts;
@@ -117,14 +116,7 @@ final class _FragmentRigger extends _Rigger {
   public void startFragment(@NonNull Fragment fragment) {
     //if the fragment has effective containerViewId,then the operation is operated by itself.
     if (getContainerViewId() > 0) {
-      String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-      if (!mStackManager.push(fragmentTAG, mContainerViewId)) {
-        throwException(new AlreadyExistException(fragmentTAG));
-      }
-      mRiggerTransaction.add(mContainerViewId, fragment, fragmentTAG)
-          .hide(mStackManager.getFragmentTags(getContainerViewId()))
-          .show(fragmentTAG)
-          .commit();
+      super.startFragment(fragment);
       return;
     }
     //or the operation should be operated by parent who's container view'id is effective.

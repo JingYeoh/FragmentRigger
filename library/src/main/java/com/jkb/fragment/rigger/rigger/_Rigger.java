@@ -13,8 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import com.jkb.fragment.rigger.annotation.Puppet;
+import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
+import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import java.lang.reflect.Method;
 import java.util.Stack;
@@ -44,6 +46,7 @@ abstract class _Rigger implements IRigger {
     }
   }
 
+  private Object mPuppetTarget;
   //data
   @IdRes
   int mContainerViewId;
@@ -52,15 +55,16 @@ abstract class _Rigger implements IRigger {
   FragmentStackManager mStackManager;
 
   _Rigger(Object puppetTarget) {
+    this.mPuppetTarget = puppetTarget;
     //init containerViewId
-    Class<?> clazz = puppetTarget.getClass();
+    Class<?> clazz = mPuppetTarget.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);
     mBindContainerView = puppet.bondContainerView();
     mContainerViewId = puppet.containerViewId();
     if (mContainerViewId <= 0) {
       try {
         Method containerViewId = clazz.getMethod(METHOD_GET_CONTAINERVIEWID);
-        mContainerViewId = (int) containerViewId.invoke(puppetTarget);
+        mContainerViewId = (int) containerViewId.invoke(mPuppetTarget);
       } catch (Exception ignored) {
       }
     }
@@ -137,6 +141,21 @@ abstract class _Rigger implements IRigger {
       throwException(new NotExistException(topFragmentTag));
     }
     Rigger.getRigger(topFragment).onRiggerBackPressed();
+  }
+
+  @Override
+  public void startFragment(@NonNull Fragment fragment) {
+    String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
+    if (!mStackManager.push(fragmentTAG, mContainerViewId)) {
+      throwException(new AlreadyExistException(fragmentTAG));
+    }
+    if (getContainerViewId() <= 0) {
+      throwException(new UnSupportException("ContainerViewId must be effective in class " + mPuppetTarget.getClass()));
+    }
+    mRiggerTransaction.add(mContainerViewId, fragment, fragmentTAG)
+        .hide(mStackManager.getFragmentTags(getContainerViewId()))
+        .show(fragmentTAG)
+        .commit();
   }
 
   @Override

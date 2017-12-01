@@ -2,9 +2,7 @@ package com.jkb.fragment.rigger.rigger;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 
 /**
@@ -66,21 +64,6 @@ final class _ActivityRigger extends _Rigger {
   }
 
   @Override
-  public void startFragment(@NonNull Fragment fragment) {
-    String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    if (!mStackManager.push(fragmentTAG, mContainerViewId)) {
-      throwException(new AlreadyExistException(fragmentTAG));
-    }
-    if (getContainerViewId() <= 0) {
-      throwException(new UnSupportException("ContainerViewId must be effective in class " + mActivity.getClass()));
-    }
-    mRiggerTransaction.add(mContainerViewId, fragment, fragmentTAG)
-        .hide(mStackManager.getFragmentTags(getContainerViewId()))
-        .show(fragmentTAG)
-        .commit();
-  }
-
-  @Override
   public boolean isResumed() {
     return mIsResumed;
   }
@@ -94,16 +77,6 @@ final class _ActivityRigger extends _Rigger {
   public String getFragmentTAG() {
     throwException(new UnSupportException("getFragmentTAG() method can only be called by Fragment"));
     return null;
-  }
-
-  @Override
-  public int getContainerViewId() {
-    return mContainerViewId;
-  }
-
-  @Override
-  public boolean isBondContainerView() {
-    return mBindContainerView;
   }
 
   @Override
