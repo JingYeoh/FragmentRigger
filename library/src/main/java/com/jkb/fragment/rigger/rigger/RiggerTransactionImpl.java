@@ -20,14 +20,14 @@ final class RiggerTransactionImpl extends RiggerTransaction {
   private FragmentManager mFragmentManager;
   private _Rigger mRigger;
 
-  static final int OP_NULL = 0;
-  static final int OP_ADD = 1;
-  static final int OP_REPLACE = 2;
-  static final int OP_REMOVE = 3;
-  static final int OP_HIDE = 4;
-  static final int OP_SHOW = 5;
-  static final int OP_DETACH = 6;
-  static final int OP_ATTACH = 7;
+  private static final int OP_NULL = 0;
+  private static final int OP_ADD = 1;
+  private static final int OP_REPLACE = 2;
+  private static final int OP_REMOVE = 3;
+  private static final int OP_HIDE = 4;
+  private static final int OP_SHOW = 5;
+  private static final int OP_DETACH = 6;
+  private static final int OP_ATTACH = 7;
 
   private static final class Op {
 

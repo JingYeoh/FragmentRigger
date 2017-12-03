@@ -18,6 +18,7 @@ import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
+import com.jkb.fragment.rigger.utils.Logger;
 import java.lang.reflect.Method;
 import java.util.Stack;
 
@@ -141,6 +142,23 @@ abstract class _Rigger implements IRigger {
       throwException(new NotExistException(topFragmentTag));
     }
     Rigger.getRigger(topFragment).onRiggerBackPressed();
+  }
+
+  @Override
+  public void addFragment(@IdRes int containerViewId, int lazyLoadLimit, Fragment... fragments) {
+    // TODO: 17-12-3 测试记录：Fragment在ADD之后默认显示的为show的状态，并且调用了onViewCreated方法。注意懒加载概念，是否需要该方法。
+    if (fragments == null) {
+      Logger.w(this, "the fragments to be added is null.");
+      return;
+    }
+    lazyLoadLimit = lazyLoadLimit > fragments.length ? fragments.length : lazyLoadLimit;
+    for (Fragment fragment : fragments) {
+      mRiggerTransaction.add(containerViewId, fragment, Rigger.getRigger(fragment).getFragmentTAG());
+    }
+    for (int i = 0; i < lazyLoadLimit; i++) {
+      fragments[i].setUserVisibleHint(true);
+    }
+    mRiggerTransaction.commit();
   }
 
   @Override

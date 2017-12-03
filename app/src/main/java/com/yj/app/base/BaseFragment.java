@@ -28,11 +28,16 @@ public abstract class BaseFragment extends Fragment {
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
+                           @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
     mContentView = inflater.inflate(getContentView(), container, false);
-    init(savedInstanceState);
     return mContentView;
+  }
+
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    init(savedInstanceState);
   }
 
   @LayoutRes

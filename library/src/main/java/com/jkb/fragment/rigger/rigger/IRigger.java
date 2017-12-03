@@ -27,7 +27,20 @@ public interface IRigger {
   void onRiggerBackPressed();
 
   /**
-   * Adds and show a fragment in parent's containerView and hide other fragments that is placed in the
+   * Add fragments to parent's state.these fragments will not be added into the stack.
+   * you can use these fragments with method {@link #showFragment(Fragment, int)}/{@link #showFragment(String)}
+   * or {@link #replaceFragment(Fragment, int)}.
+   *
+   * @param containerViewId containerViewId Optional identifier of the container this fragment is
+   *                        to be placed in.  If 0, it will not be placed in a container.
+   * @param lazyLoadLimit   the limit number lazy load.the lazy load will be executed in the top fragment that added.
+   *                        default value is 0.
+   * @param fragments       the fragments to be added.
+   */
+  void addFragment(@IdRes int containerViewId, int lazyLoadLimit, Fragment... fragments);
+
+  /**
+   * Adds and show a fragment into parent's containerView and hide other fragments that is placed in the
    * containerView.
    *
    * @param fragment the fragment that will be showed.

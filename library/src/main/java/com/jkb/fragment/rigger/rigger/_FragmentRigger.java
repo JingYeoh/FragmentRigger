@@ -143,15 +143,10 @@ final class _FragmentRigger extends _Rigger {
   public void close() {
     mStackManager.clear();
     mRiggerTransaction.removeAll();
-    //remove this fragment from parent's stack and show the pop fragment.
-    Fragment parentFragment = mFragment.getParentFragment();
-    if (parentFragment != null) {
-      Rigger.getRigger(parentFragment).close(mFragment);
-      Rigger.getRigger(parentFragment).startTopFragment();
-      return;
-    }
-    Rigger.getRigger(getHost()).close(mFragment);
-    Rigger.getRigger(getHost()).startTopFragment();
+    Object host = mFragment.getParentFragment();
+    host = host == null ? getHost() : host;
+    Rigger.getRigger(host).close(mFragment);
+    Rigger.getRigger(host).startTopFragment();
   }
 
   @Override
