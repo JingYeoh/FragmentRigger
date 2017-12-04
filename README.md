@@ -10,8 +10,8 @@
 - [x] **事务提交永不丢失**
 - [x] **扩展原生方法，添加`onBackPressed`等常见的方法支持**
 - [x] **当前栈成员树状图打印**
-- [ ] **Fragment转场动画**
 - [ ] **Fragment懒加载**
+- [ ] **Fragment转场动画**
 
 ### 解决的问题
 * ~~Fragment界面重叠~~
@@ -23,6 +23,7 @@
 * ~~`内存重启`时的一系列异常~~
 * ~~屏幕翻转时的数据保存及恢复~~
 * ~~Can not perform this action after onSaveInstanceState~~
+* 在ViewPager中及其他场景中的懒加载问题
 * 转场动画
 
 ### 如何使用
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity
 public class TestFragment extends Fragment
 ```
 
-**2、使用框架操作`Fragment`**
+**2、使用框架操纵`Fragment`**
 >我们没有继承类，只需要声明一个注解就可以使用本框架，在使用框架提供的`Fragment`操纵的方法的时候通过代理类来使用。
 
 ```java
