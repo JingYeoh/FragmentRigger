@@ -7,7 +7,7 @@ import android.view.View.OnClickListener;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
-import com.yj.app.test.ContentFragment;
+import com.yj.app.test.ContainerFragment;
 import java.util.ArrayList;
 
 /**
@@ -40,9 +40,10 @@ public class ShowFragment extends BaseFragment implements OnClickListener {
       mFragmentTags = new ArrayList<>();
       Fragment[] fragments = new Fragment[4];
       for (int i = 0; i < 4; i++) {
-        fragments[i] = ContentFragment.newInstance(i + "");
+        fragments[i] = ContainerFragment.newInstance(i + "");
+        mFragmentTags.add(Rigger.getRigger(fragments[i]).getFragmentTAG());
       }
-      Rigger.getRigger(this).addFragment(R.id.fs_content, 0, fragments);
+      Rigger.getRigger(this).addFragment(R.id.fs_content, fragments);
 //      Rigger.getRigger(this).showFragment(mFragmentTags.get(0));
     } else {
       mFragmentTags = savedInstanceState.getStringArrayList(BUNDLE_KEY);

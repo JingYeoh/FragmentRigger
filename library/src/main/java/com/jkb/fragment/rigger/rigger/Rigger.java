@@ -1,12 +1,15 @@
 package com.jkb.fragment.rigger.rigger;
 
-import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ONRIGGERBACKPRESSED;
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPRESSED;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.utils.Logger;
@@ -131,7 +134,7 @@ public final class Rigger {
 
   /**
    * Inject the Activity/Fragment's lifecycle method
-   * {@link AppCompatActivity#onCreate(Bundle)}/{@link Fragment#onAttach(Context)} ()} to rigger class.
+   * {@link AppCompatActivity#onCreate(Bundle)}/{@link Fragment#onCreate(Bundle)} to rigger class.
    *
    * @param object             the puppet class.
    * @param savedInstanceState If the activity/fragment is being re-created from
@@ -140,6 +143,20 @@ public final class Rigger {
   private void onCreate(Object object, Bundle savedInstanceState) {
     Logger.i(object, TAG_HEADER + "onCreate");
     createRigger(object).onCreate(savedInstanceState);
+  }
+
+  /**
+   * Inject the Activity/Fragment's lifecycle method
+   * {@link Fragment#onCreateView(LayoutInflater, ViewGroup, Bundle)} to rigger class.
+   *
+   * @param object             the puppet class.
+   * @param savedInstanceState If the activity/fragment is being re-created from
+   *                           a previous saved state, this is the state.
+   */
+  private Object onCreateView(Object object, LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
+    Logger.i(object, TAG_HEADER + "onCreateView");
+    return createRigger(object).onCreateView(inflater, container, savedInstanceState);
   }
 
   /**
@@ -203,7 +220,7 @@ public final class Rigger {
     //if the object has this method,then call the native method,or call the proxy's method
     Class<?> clazz = object.getClass();
     try {
-      Method onBackPressed = clazz.getMethod(METHOD_ONRIGGERBACKPRESSED);
+      Method onBackPressed = clazz.getMethod(METHOD_ON_RIGGER_BACKPRESSED);
       onBackPressed.invoke(object);
     } catch (Exception e) {
       createRigger(object).onRiggerBackPressed();

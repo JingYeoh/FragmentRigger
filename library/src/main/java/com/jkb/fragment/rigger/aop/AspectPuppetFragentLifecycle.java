@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import java.lang.reflect.Method;
@@ -37,6 +39,10 @@ public class AspectPuppetFragentLifecycle {
 
   @Pointcut("execution(* android.support.v4.app.Fragment+.onCreate(..))")
   public void onCreatePointCut() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onCreateView(..))")
+  public void onCreateViewPointCut() {
   }
 
   @Pointcut("execution(* android.support.v4.app.Fragment+.onResume(..))")
@@ -88,6 +94,20 @@ public class AspectPuppetFragentLifecycle {
     Method onCreate = getRiggerMethod("onCreate", Object.class, Bundle.class);
     onCreate.invoke(getRiggerInstance(), puppet, args[0]);
     return result;
+  }
+
+  @Around("onCreateViewPointCut()")
+  public Object onCreateViewProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Object[] args = joinPoint.getArgs();
+
+    Method onCreate = getRiggerMethod("onCreateView", Object.class, LayoutInflater.class, ViewGroup.class,
+        Bundle.class);
+    Object riggerResult = onCreate.invoke(getRiggerInstance(), puppet, args[0], args[1], args[2]);
+    return riggerResult == null ? result : riggerResult;
   }
 
   @Around("onResumePointCut()")

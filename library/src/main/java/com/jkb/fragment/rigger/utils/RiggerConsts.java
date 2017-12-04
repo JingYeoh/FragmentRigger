@@ -12,8 +12,34 @@ package com.jkb.fragment.rigger.utils;
 
 public interface RiggerConsts {
 
+  /**
+   * getContainerViewId method's name.this method must be defined with the specified params.
+   * For example:
+   * public int getContainerViewId()
+   */
   String METHOD_GET_CONTAINERVIEWID = "getContainerViewId";
-  String METHOD_ONRIGGERBACKPRESSED = "onRiggerBackPressed";
-  String METHOD_ONFRAGMENTRESULT = "onFragmentResult";
-
+  /**
+   * OnBackPressed method's name.this method must be defined with the specified params.
+   * For example:
+   * public void onRiggerBackPressed()
+   */
+  String METHOD_ON_RIGGER_BACKPRESSED = "onRiggerBackPressed";
+  /**
+   * onFragmentResult method's name,this method must be defined with the specified params.
+   * For example:
+   * public void onFragmentResult(int requestCode,int resultCode,Bundle args)
+   */
+  String METHOD_ON_FRAGMENT_RESULT = "onFragmentResult";
+  /**
+   * Method for lazy load.this method must be defined with the specified params.
+   * For example:
+   * public void onLazyLoadViewCreated(Bundle savedInstanceState)
+   */
+  String METHOD_ON_LAZYLOAD_VIEW_CREATED = "onLazyLoadViewCreated";
+  /**
+   * getLazyLoadContainerViewId method's name.this method must be defined with the specified params.
+   * For example:
+   * public int getLazyLoadContainerViewId()
+   */
+  String METHOD_GET_LAZYLOAD_CONTAINERVIEWID = "getLazyLoadContainerViewId";
 }

@@ -31,6 +31,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="replaceFragment"/>
+  <Button
+    android:id="@+id/fs_lazyload"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="lazyLoad"/>
   <FrameLayout
     android:id="@+id/ft_content"
     android:layout_width="match_parent"

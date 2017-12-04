@@ -24,3 +24,34 @@
 * ~~屏幕翻转时的数据保存及恢复~~
 * ~~Can not perform this action after onSaveInstanceState~~
 * 转场动画
+
+### 如何使用
+>本框架以**使用成本最低的Fragment框架**为目标，提供了强大的Api支持。
+和已有的大部分`Fragment`框架不同，不需要继承任何父类，只需要添加一行注解即可。
+在操纵`Fragment`的时候只需要通过代理类来操作，本框架完全采用一种插入式的方式来降低使用成本。
+
+**1、声明为框架的支持类**
+>在需要使用本框架的`Activity/Fragment`上添加注解`@Puppet`即可。
+
+```java
+//MainActivity.java
+@Puppet(containerViewId = R.id.atyContent)//containerViewId是你需要操纵的Fragment在add时候的container view
+public class MainActivity extends AppCompatActivity
+```
+```java
+//TestFragment.java
+@Puppet
+public class TestFragment extends Fragment
+```
+
+**2、使用框架操作`Fragment`**
+>我们没有继承类，只需要声明一个注解就可以使用本框架，在使用框架提供的`Fragment`操纵的方法的时候通过代理类来使用。
+
+```java
+//在Activity中show一个Fragment
+public class MainActivity extends AppCompatActivity{
+  ...
+  //add并show一个Fragment
+   Rigger.getRigger(this).startFragment(TestFragment.newInstance());
+}
+```

@@ -6,7 +6,7 @@ import android.view.View.OnClickListener;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
-import com.yj.app.test.ContentFragment;
+import com.yj.app.test.ContainerFragment;
 import java.util.UUID;
 
 /**
@@ -34,7 +34,7 @@ public class ReplaceFragment extends BaseFragment implements OnClickListener {
   @Override
   protected void init(Bundle savedInstanceState) {
     if (savedInstanceState == null) {
-      ContentFragment fragment = ContentFragment.newInstance(UUID.randomUUID().toString());
+      ContainerFragment fragment = ContainerFragment.newInstance(UUID.randomUUID().toString());
       Rigger.getRigger(this).replaceFragment(fragment, R.id.fs_content);
     }
     initListener();
@@ -55,7 +55,7 @@ public class ReplaceFragment extends BaseFragment implements OnClickListener {
       case R.id.fs_bt_3:
       case R.id.fs_bt_4:
         Rigger.getRigger(this)
-            .replaceFragment(ContentFragment.newInstance(UUID.randomUUID().toString()), R.id.fs_content);
+            .replaceFragment(ContainerFragment.newInstance(UUID.randomUUID().toString()), R.id.fs_content);
         break;
     }
   }

@@ -33,11 +33,9 @@ public interface IRigger {
    *
    * @param containerViewId containerViewId Optional identifier of the container this fragment is
    *                        to be placed in.  If 0, it will not be placed in a container.
-   * @param lazyLoadLimit   the limit number lazy load.the lazy load will be executed in the top fragment that added.
-   *                        default value is 0.
    * @param fragments       the fragments to be added.
    */
-  void addFragment(@IdRes int containerViewId, int lazyLoadLimit, Fragment... fragments);
+  void addFragment(@IdRes int containerViewId, Fragment... fragments);
 
   /**
    * Adds and show a fragment into parent's containerView and hide other fragments that is placed in the

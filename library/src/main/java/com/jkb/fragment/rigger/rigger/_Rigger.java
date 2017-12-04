@@ -8,10 +8,15 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
@@ -77,7 +82,7 @@ abstract class _Rigger implements IRigger {
    * Called when a fragment is first attached to its context.
    * {@link #onCreate(Bundle)} will be called after this.
    */
-  public void onAttach(Context context) {
+  void onAttach(Context context) {
   }
 
   /**
@@ -86,10 +91,28 @@ abstract class _Rigger implements IRigger {
    * @param savedInstanceState If the activity/fragment is being re-created from
    *                           a previous saved state, this is the state.
    */
-  public void onCreate(Bundle savedInstanceState) {
+  void onCreate(Bundle savedInstanceState) {
     if (savedInstanceState != null) {
       mStackManager = FragmentStackManager.restoreStack(savedInstanceState);
     }
+  }
+
+  /**
+   * Called to have the fragment instantiate its user interface view.
+   *
+   * @param inflater           The LayoutInflater object that can be used to inflate
+   *                           any views in the fragment,
+   * @param container          If non-null, this is the parent view that the fragment's
+   *                           UI should be attached to.  The fragment should not add the view itself,
+   *                           but this can be used to generate the LayoutParams of the view.
+   * @param savedInstanceState If non-null, this fragment is being re-constructed
+   *                           from a previous saved state as given here.
+   *
+   * @return Return the View for the fragment's UI, or null.
+   */
+  View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
+    return null;
   }
 
   /**
@@ -98,7 +121,7 @@ abstract class _Rigger implements IRigger {
    * where its fragments are resumed.  Be sure to always call through to
    * the super-class.
    */
-  public void onResumeFragments() {
+  void onResumeFragments() {
   }
 
   /**
@@ -106,13 +129,13 @@ abstract class _Rigger implements IRigger {
    * {@link #onPause}, for your activity to start interacting with the user.
    * This is a good place to begin animations
    */
-  public abstract void onResume();
+  abstract void onResume();
 
   /**
    * Called as part of the activity lifecycle when an activity is going into
    * the background, but has not (yet) been killed.
    */
-  public void onPause() {
+  void onPause() {
   }
 
   /**
@@ -121,12 +144,12 @@ abstract class _Rigger implements IRigger {
    *
    * @param outState Bundle in which to place your saved state.
    */
-  public abstract void onSaveInstanceState(Bundle outState);
+  abstract void onSaveInstanceState(Bundle outState);
 
   /**
    * Perform any final cleanup before an activity is destroyed.
    */
-  public abstract void onDestroy();
+  abstract void onDestroy();
 
   @Override
   public void onRiggerBackPressed() {
@@ -145,18 +168,19 @@ abstract class _Rigger implements IRigger {
   }
 
   @Override
-  public void addFragment(@IdRes int containerViewId, int lazyLoadLimit, Fragment... fragments) {
-    // TODO: 17-12-3 测试记录：Fragment在ADD之后默认显示的为show的状态，并且调用了onViewCreated方法。注意懒加载概念，是否需要该方法。
+  public void addFragment(@IdRes int containerViewId, Fragment... fragments) {
     if (fragments == null) {
       Logger.w(this, "the fragments to be added is null.");
       return;
     }
-    lazyLoadLimit = lazyLoadLimit > fragments.length ? fragments.length : lazyLoadLimit;
     for (Fragment fragment : fragments) {
-      mRiggerTransaction.add(containerViewId, fragment, Rigger.getRigger(fragment).getFragmentTAG());
-    }
-    for (int i = 0; i < lazyLoadLimit; i++) {
-      fragments[i].setUserVisibleHint(true);
+      String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
+      if (mStackManager.add(fragmentTAG, containerViewId)) {
+        mRiggerTransaction.add(containerViewId, fragment, fragmentTAG);
+        mRiggerTransaction.hide(fragmentTAG);
+      } else {
+        throwException(new AlreadyExistException(fragmentTAG));
+      }
     }
     mRiggerTransaction.commit();
   }
@@ -212,6 +236,10 @@ abstract class _Rigger implements IRigger {
     mRiggerTransaction.hide(mStackManager.getFragmentTags(containerViewId))
         .show(fragmentTAG)
         .commit();
+    LazyLoad lazyLoad = fragment.getClass().getAnnotation(LazyLoad.class);
+    if (lazyLoad.value()) {
+      fragment.setUserVisibleHint(true);
+    }
   }
 
   @Override
