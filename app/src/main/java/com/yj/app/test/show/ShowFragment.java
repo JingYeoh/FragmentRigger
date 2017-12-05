@@ -44,7 +44,7 @@ public class ShowFragment extends BaseFragment implements OnClickListener {
         mFragmentTags.add(Rigger.getRigger(fragments[i]).getFragmentTAG());
       }
       Rigger.getRigger(this).addFragment(R.id.fs_content, fragments);
-//      Rigger.getRigger(this).showFragment(mFragmentTags.get(0));
+      Rigger.getRigger(this).showFragment(mFragmentTags.get(0));
     } else {
       mFragmentTags = savedInstanceState.getStringArrayList(BUNDLE_KEY);
     }

@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import java.lang.reflect.Method;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -42,7 +44,7 @@ public class AspectPuppetFragentLifecycle {
   public void onCreatePointCut() {
   }
 
-  @Pointcut("execution(* android.support.v4.app.Fragment+.onViewCreated(..))")
+  @Pointcut("call(* android.support.v4.app.Fragment+.onViewCreated(..))")
   public void onViewCreatedPointCut() {
   }
 
@@ -119,17 +121,15 @@ public class AspectPuppetFragentLifecycle {
     return riggerResult == null ? result : riggerResult;
   }
 
-  @Around("onViewCreatedPointCut()")
-  public Object onViewCreatedProcess(ProceedingJoinPoint joinPoint) throws Throwable {
-    Object result = joinPoint.proceed();
+  @After("onViewCreatedPointCut()")
+  public void onViewCreatedProcess(JoinPoint joinPoint) throws Throwable {
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+    if (!isMarkedByPuppet(puppet)) return;
     Object[] args = joinPoint.getArgs();
 
     Method onCreate = getRiggerMethod("onViewCreated", Object.class, View.class, Bundle.class);
     onCreate.invoke(getRiggerInstance(), puppet, args[0], args[1]);
-    return result;
   }
 
   @Around("onResumePointCut()")

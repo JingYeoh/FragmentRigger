@@ -10,7 +10,7 @@
 - [x] **事务提交永不丢失**
 - [x] **扩展原生方法，添加`onBackPressed`等常见的方法支持**
 - [x] **当前栈成员树状图打印**
-- [ ] **Fragment懒加载**
+- [x] **Fragment懒加载**
 - [ ] **Fragment转场动画**
 
 ### 解决的问题
@@ -23,7 +23,7 @@
 * ~~`内存重启`时的一系列异常~~
 * ~~屏幕翻转时的数据保存及恢复~~
 * ~~Can not perform this action after onSaveInstanceState~~
-* ~~在ViewPager中的懒加载问题~~
+* ~~在ViewPager中的懒加载及其他场景下的懒加载~~
 * 转场动画
 
 ### 如何使用

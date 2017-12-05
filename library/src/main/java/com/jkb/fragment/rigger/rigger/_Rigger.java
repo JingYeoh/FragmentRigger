@@ -203,6 +203,7 @@ abstract class _Rigger implements IRigger {
       } else {
         throwException(new AlreadyExistException(fragmentTAG));
       }
+      fragment.setUserVisibleHint(false);
     }
     mRiggerTransaction.commit();
   }
@@ -255,13 +256,16 @@ abstract class _Rigger implements IRigger {
     if (mStackManager.add(fragmentTAG, containerViewId)) {
       mRiggerTransaction.add(containerViewId, fragment, fragmentTAG);
     }
-    mRiggerTransaction.hide(mStackManager.getFragmentTags(containerViewId))
+    String[] fragmentTags = mStackManager.getFragmentTags(containerViewId);
+    for (String tag : fragmentTags) {
+      Fragment hideFrag = mRiggerTransaction.find(tag);
+      if (hideFrag == null) continue;
+      hideFrag.setUserVisibleHint(false);
+    }
+    fragment.setUserVisibleHint(true);
+    mRiggerTransaction.hide(fragmentTags)
         .show(fragmentTAG)
         .commit();
-    LazyLoad lazyLoad = fragment.getClass().getAnnotation(LazyLoad.class);
-    if (lazyLoad.value()) {
-      fragment.setUserVisibleHint(true);
-    }
   }
 
   @Override

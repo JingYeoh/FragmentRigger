@@ -34,7 +34,10 @@ public class ContainerFragment extends BaseFragment {
 
   @Override
   protected void init(Bundle savedInstanceState) {
-    Logger.d(this, "isUserHintVisible=" + getUserVisibleHint());
+    Logger.d(this, "init isUserHintVisible=" + getUserVisibleHint());
+    Bundle args = savedInstanceState == null ? getArguments() : savedInstanceState;
+    value = args.getString(BUNDLE_KEY);
+
   }
 
   @Override
@@ -45,8 +48,6 @@ public class ContainerFragment extends BaseFragment {
 
   public void onLazyLoadViewCreated(Bundle savedInstanceState) {
     Logger.d(this, "onLazyLoadViewCreated()");
-    Bundle args = savedInstanceState == null ? getArguments() : savedInstanceState;
-    value = args.getString(BUNDLE_KEY);
     ((TextView) findViewById(R.id.fc_tv)).setText(value);
   }
 }
