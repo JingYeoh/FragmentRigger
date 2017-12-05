@@ -19,7 +19,7 @@ public interface RiggerConsts {
    */
   String METHOD_GET_CONTAINERVIEWID = "getContainerViewId";
   /**
-   * OnBackPressed method's name.this method must be defined with the specified params.
+   * onBackPressed method's name.this method must be defined with the specified params.
    * For example:
    * public void onRiggerBackPressed()
    */
@@ -36,10 +36,4 @@ public interface RiggerConsts {
    * public void onLazyLoadViewCreated(Bundle savedInstanceState)
    */
   String METHOD_ON_LAZYLOAD_VIEW_CREATED = "onLazyLoadViewCreated";
-  /**
-   * getLazyLoadContainerViewId method's name.this method must be defined with the specified params.
-   * For example:
-   * public int getLazyLoadContainerViewId()
-   */
-  String METHOD_GET_LAZYLOAD_CONTAINERVIEWID = "getLazyLoadContainerViewId";
 }

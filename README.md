@@ -23,7 +23,7 @@
 * ~~`内存重启`时的一系列异常~~
 * ~~屏幕翻转时的数据保存及恢复~~
 * ~~Can not perform this action after onSaveInstanceState~~
-* 在ViewPager中及其他场景中的懒加载问题
+* ~~在ViewPager中的懒加载问题~~
 * 转场动画
 
 ### 如何使用

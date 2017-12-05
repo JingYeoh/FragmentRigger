@@ -116,6 +116,17 @@ abstract class _Rigger implements IRigger {
   }
 
   /**
+   * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+   * has returned, but before any saved state has been restored in to the view.
+   *
+   * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+   * @param savedInstanceState If non-null, this fragment is being re-constructed
+   *                           from a previous saved state as given here.
+   */
+  void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+  }
+
+  /**
    * This is the fragment-orientated version of {@link #onResume()} that you
    * can override to perform operations in the Activity at the same point
    * where its fragments are resumed.  Be sure to always call through to
@@ -150,6 +161,17 @@ abstract class _Rigger implements IRigger {
    * Perform any final cleanup before an activity is destroyed.
    */
   abstract void onDestroy();
+
+  /**
+   * Set a hint to the system about whether this fragment's UI is currently visible
+   * to the user. This hint defaults to true and is persistent across fragment instance
+   * state save and restore.
+   *
+   * @param isVisibleToUser true if this fragment's UI is currently visible to the user (default),
+   *                        false if it is not.
+   */
+  void setUserVisibleHint(boolean isVisibleToUser) {
+  }
 
   @Override
   public void onRiggerBackPressed() {

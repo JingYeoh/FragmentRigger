@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.RiggerException;
@@ -160,6 +161,14 @@ public final class Rigger {
   }
 
   /**
+   * Inject the Fragment's lifecycle method {@link Fragment#onViewCreated(View, Bundle)}
+   */
+  private void onViewCreated(Object object, View view, @Nullable Bundle savedInstanceState) {
+    Logger.i(object, TAG_HEADER + "onViewCreated");
+    createRigger(object).onViewCreated(view, savedInstanceState);
+  }
+
+  /**
    * Inject the Fragment's lifecycle method {@link Fragment#onResume()} to rigger class.
    */
   private void onResume(Object object) {
@@ -225,5 +234,13 @@ public final class Rigger {
     } catch (Exception e) {
       createRigger(object).onRiggerBackPressed();
     }
+  }
+
+  /**
+   * Inject the method {@link Fragment#setUserVisibleHint(boolean)}.
+   */
+  private void setUserVisibleHint(Object object, boolean isVisibleToUser) {
+    Logger.i(object, TAG_HEADER + "setUserVisibleHint");
+    createRigger(object).setUserVisibleHint(isVisibleToUser);
   }
 }

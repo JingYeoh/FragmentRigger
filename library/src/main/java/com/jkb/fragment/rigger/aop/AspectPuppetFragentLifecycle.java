@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
@@ -41,6 +42,10 @@ public class AspectPuppetFragentLifecycle {
   public void onCreatePointCut() {
   }
 
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onViewCreated(..))")
+  public void onViewCreatedPointCut() {
+  }
+
   @Pointcut("execution(* android.support.v4.app.Fragment+.onCreateView(..))")
   public void onCreateViewPointCut() {
   }
@@ -55,6 +60,10 @@ public class AspectPuppetFragentLifecycle {
 
   @Pointcut("execution(* android.support.v4.app.Fragment+.onDestroy(..))")
   public void onDestroyPointCut() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.Fragment+.setUserVisibleHint(..))")
+  public void setUserVisibleHintPointCut() {
   }
 
   //****************Process***********************************
@@ -110,6 +119,19 @@ public class AspectPuppetFragentLifecycle {
     return riggerResult == null ? result : riggerResult;
   }
 
+  @Around("onViewCreatedPointCut()")
+  public Object onViewCreatedProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Object[] args = joinPoint.getArgs();
+
+    Method onCreate = getRiggerMethod("onViewCreated", Object.class, View.class, Bundle.class);
+    onCreate.invoke(getRiggerInstance(), puppet, args[0], args[1]);
+    return result;
+  }
+
   @Around("onResumePointCut()")
   public Object onResumeProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
@@ -144,6 +166,19 @@ public class AspectPuppetFragentLifecycle {
 
     Method onDestroy = getRiggerMethod("onDestroy", Object.class);
     onDestroy.invoke(getRiggerInstance(), puppet);
+    return result;
+  }
+
+  @Around("setUserVisibleHintPointCut()")
+  public Object setUserVisibleHintProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Object[] args = joinPoint.getArgs();
+
+    Method onDestroy = getRiggerMethod("setUserVisibleHint", Object.class, boolean.class);
+    onDestroy.invoke(getRiggerInstance(), puppet, args[0]);
     return result;
   }
   //****************Helper************************************

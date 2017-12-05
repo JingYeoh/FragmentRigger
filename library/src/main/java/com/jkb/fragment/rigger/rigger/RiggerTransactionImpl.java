@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import com.jkb.fragment.rigger.exception.NotExistException;
 import com.jkb.fragment.rigger.utils.Logger;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -175,21 +174,30 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         break;
         case OP_REMOVE: {
           Fragment f = find(op.fragmentTag);
-          if (f == null) throw new NotExistException("Op:Remove." + op.fragmentTag);
-          ft.remove(f);
-          mAdded.remove(op.fragmentTag);
+          if (f == null) {
+            Logger.w(this, "Op:Remove.can not find fragment " + op.fragmentTag);
+          } else {
+            ft.remove(f);
+            mAdded.remove(op.fragmentTag);
+          }
         }
         break;
         case OP_SHOW: {
           Fragment f = find(op.fragmentTag);
-          if (f == null) throw new NotExistException("Op:Show." + op.fragmentTag);
-          ft.show(f);
+          if (f == null) {
+            Logger.w(this, "Op:Show.can not find fragment " + op.fragmentTag);
+          } else {
+            ft.show(f);
+          }
         }
         break;
         case OP_HIDE: {
           Fragment f = find(op.fragmentTag);
-          if (f == null) throw new NotExistException("Op:Hide." + op.fragmentTag);
-          ft.hide(f);
+          if (f == null) {
+            Logger.w(this, "Op:Hide.can not find fragment " + op.fragmentTag);
+          } else {
+            ft.hide(f);
+          }
         }
         break;
       }

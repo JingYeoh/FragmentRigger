@@ -51,7 +51,7 @@ public interface IRigger {
    *
    * @param receive     The receive object of onFragmentResult method called back.
    * @param fragment    The fragment to be started.
-   * @param requestCode If >= 0,this code will be returned in onFragmentResult() method when fragment exits.
+   * @param requestCode If >= 0,this codepublic will be returned in onFragmentResult() method when fragment exits.
    */
   void startFragmentForResult(Object receive, @NonNull Fragment fragment, int requestCode);
 

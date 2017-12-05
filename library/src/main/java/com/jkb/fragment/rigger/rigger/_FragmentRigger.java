@@ -12,8 +12,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.utils.Logger;
@@ -36,6 +34,7 @@ final class _FragmentRigger extends _Rigger {
   private static final String BUNDLE_KEY_FRAGMENT_TAG = "/bundle/key/fragment/tag";
   private static final String BUNDLE_KEY_FRAGMENT_STATUS_HIDE = "/bundle/key/fragment/status/hide";
   private static final String BUNDLE_KEY_FRAGMENT_LAZYLOAD_ABLE = "/bundle/key/fragment/lazyLoad/able";
+  private static final String BUNDLE_KEY_FRAGMENT_LAZYLOAD_INVOKE = "/bundle/key/fragment/lazyLoad/invoke";
   private static final String BUNDLE_KEY_FRAGMENT_VIEW_INIT = "/bundle/key/fragment/view/init";
 
   private Fragment mFragment;
@@ -43,9 +42,11 @@ final class _FragmentRigger extends _Rigger {
   //data
   private RiggerTransaction mParentRiggerTransaction;
   private String mFragmentTag;
+  private Bundle mSavedFragmentState;
   //lazy load
   private boolean mAbleLazyLoad = false;
-  private boolean mIsInitView = false;
+  private boolean mHasInitView = false;
+  private boolean mHasInvokeLazyLoad = false;
 
   private Message mForResultTarget;
 
@@ -77,6 +78,8 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    mSavedFragmentState = savedInstanceState;
     //init rigger transaction
     if (mRiggerTransaction == null) {
       mRiggerTransaction = new RiggerTransactionImpl(this, mFragment.getChildFragmentManager());
@@ -89,7 +92,8 @@ final class _FragmentRigger extends _Rigger {
     //restore attributes
     if (savedInstanceState != null) {
       mAbleLazyLoad = savedInstanceState.getBoolean(BUNDLE_KEY_FRAGMENT_LAZYLOAD_ABLE);
-      mIsInitView = savedInstanceState.getBoolean(BUNDLE_KEY_FRAGMENT_VIEW_INIT);
+      mHasInitView = savedInstanceState.getBoolean(BUNDLE_KEY_FRAGMENT_VIEW_INIT);
+      mHasInvokeLazyLoad = savedInstanceState.getBoolean(BUNDLE_KEY_FRAGMENT_LAZYLOAD_INVOKE);
       mFragmentTag = savedInstanceState.getString(BUNDLE_KEY_FRAGMENT_TAG);
       restoreHiddenState(savedInstanceState);
     }
@@ -98,34 +102,18 @@ final class _FragmentRigger extends _Rigger {
   @Override
   View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
-    if (mAbleLazyLoad) {
-      Method onLazyLoadViewCreated = null;
-      try {
-        onLazyLoadViewCreated = mFragment.getClass()
-            .getMethod(METHOD_ON_LAZYLOAD_VIEW_CREATED, Bundle.class);
-      } catch (NoSuchMethodException e) {
-        Logger.e(mFragment, "can not find method " + METHOD_ON_LAZYLOAD_VIEW_CREATED);
-      }
-      if (onLazyLoadViewCreated == null) {
-        throwException(new UnSupportException("can not find method " + METHOD_ON_LAZYLOAD_VIEW_CREATED));
-      }
-      if (mFragment.getUserVisibleHint() && !mIsInitView) {
-        mIsInitView = true;
-        try {
-          onLazyLoadViewCreated.invoke(mFragment, savedInstanceState);
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-        return null;
-      } else {
-        View loadContainer;
-        loadContainer = new FrameLayout(mActivity.getApplicationContext());
-        loadContainer
-            .setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-        return loadContainer;
-      }
-    }
+    mSavedFragmentState = savedInstanceState;
+    mHasInitView = true;
+    initLazyLoadStatus();
     return null;
+  }
+
+  @Override
+  void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    mHasInitView = true;
+    mSavedFragmentState = savedInstanceState;
+    invokeOnLazyLoadViewCreated();
   }
 
   /**
@@ -160,13 +148,20 @@ final class _FragmentRigger extends _Rigger {
     outState.putString(BUNDLE_KEY_FRAGMENT_TAG, mFragmentTag);
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_STATUS_HIDE, mFragment.isHidden());
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_LAZYLOAD_ABLE, mAbleLazyLoad);
-    outState.putBoolean(BUNDLE_KEY_FRAGMENT_VIEW_INIT, mIsInitView);
+    outState.putBoolean(BUNDLE_KEY_FRAGMENT_LAZYLOAD_INVOKE, mHasInvokeLazyLoad);
+    outState.putBoolean(BUNDLE_KEY_FRAGMENT_VIEW_INIT, mHasInitView);
     outState.putParcelable(BUNDLE_KEY_FOR_RESULT, mForResultTarget);
     mStackManager.saveInstanceState(outState);
   }
 
   @Override
   public void onDestroy() {
+    initLazyLoadStatus();
+  }
+
+  @Override
+  public void setUserVisibleHint(boolean isVisibleToUser) {
+    invokeOnLazyLoadViewCreated();
   }
 
   @Override
@@ -236,6 +231,44 @@ final class _FragmentRigger extends _Rigger {
     } catch (NoSuchMethodException ignored) {
       Logger
           .w(this, "Not found method " + RiggerConsts.METHOD_ON_FRAGMENT_RESULT + " in class " + clazz.getSimpleName());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
+   * Init lazy load status.
+   * When the method {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} ia called.this fragment must be rebuild
+   * a new instance.
+   */
+  private void initLazyLoadStatus() {
+    mHasInitView = false;
+    mHasInvokeLazyLoad = false;
+  }
+
+  /**
+   * Invoke method onLazyLoadViewCreated.
+   */
+  private void invokeOnLazyLoadViewCreated() {
+    //make sure the method onLazyViewCreated will be called after onViewCreated.
+    if (!mAbleLazyLoad || !mHasInitView) return;
+    if (!mFragment.getUserVisibleHint()) return;
+    //make sure the method onLazyViewCreated will be called only once.
+    if (mHasInvokeLazyLoad) return;
+
+    Method onLazyLoadViewCreated = null;
+    try {
+      onLazyLoadViewCreated = mFragment.getClass()
+          .getMethod(METHOD_ON_LAZYLOAD_VIEW_CREATED, Bundle.class);
+    } catch (NoSuchMethodException e) {
+      Logger.e(mFragment, "can not find method " + METHOD_ON_LAZYLOAD_VIEW_CREATED);
+    }
+    if (onLazyLoadViewCreated == null) {
+      throwException(new UnSupportException("can not find method " + METHOD_ON_LAZYLOAD_VIEW_CREATED));
+    }
+    try {
+      onLazyLoadViewCreated.invoke(mFragment, mSavedFragmentState);
+      mHasInvokeLazyLoad = true;
     } catch (Exception e) {
       e.printStackTrace();
     }
