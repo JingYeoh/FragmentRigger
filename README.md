@@ -49,10 +49,10 @@ public class TestFragment extends Fragment
 >我们没有继承类，只需要声明一个注解就可以使用本框架，在使用框架提供的`Fragment`操纵的方法的时候通过代理类来使用。
 
 ```java
-//在Activity中show一个Fragment
+@Puppet(containerViewId = R.id.atyContent)
 public class MainActivity extends AppCompatActivity{
   ...
-  //add并show一个Fragment
+  //add并show一个Fragment并添加至栈中，此时添加的Fragment是在@Puppet中的containerViewId中的
    Rigger.getRigger(this).startFragment(TestFragment.newInstance());
 }
 ```
