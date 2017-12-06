@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.rigger.utils.Logger;
@@ -19,6 +20,7 @@ import com.yj.app.base.BaseFragment;
  *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 21,2017
  */
+@Animator(enter = R.anim.push_left_in_no_alpha, exit = R.anim.push_left_out_no_alpha)
 @Puppet(containerViewId = R.id.firstContent)
 public class StartFragment extends BaseFragment implements OnClickListener {
 

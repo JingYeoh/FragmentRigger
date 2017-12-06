@@ -36,11 +36,15 @@ final class RiggerTransactionImpl extends RiggerTransaction {
     Fragment fragment;
     String fragmentTag;
     int containerViewId;
+    int enterAnim;
+    int exitAnim;
   }
 
   private Op mHead;
   private Op mTail;
   private int mNumOp;
+  private int mEnterAnim;
+  private int mExitAnim;
   private LinkedList<Op> mTransactions;
   private Map<String, Fragment> mAdded;
 
@@ -58,6 +62,8 @@ final class RiggerTransactionImpl extends RiggerTransaction {
       mTail.next = op;
       mTail = op;
     }
+    op.enterAnim = mEnterAnim;
+    op.exitAnim = mExitAnim;
     mNumOp++;
   }
 
@@ -151,6 +157,12 @@ final class RiggerTransactionImpl extends RiggerTransaction {
   }
 
   @Override
+  void setCustomAnimations(int enter, int exit) {
+    mEnterAnim = enter;
+    mExitAnim = exit;
+  }
+
+  @Override
   boolean isEmpty() {
     return mNumOp == 0;
   }
@@ -169,6 +181,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
     while (op != null) {
       switch (op.cmd) {
         case OP_ADD: {
+          ft.setCustomAnimations(op.enterAnim, op.exitAnim);
           ft.add(op.containerViewId, op.fragment, op.fragmentTag);
         }
         break;

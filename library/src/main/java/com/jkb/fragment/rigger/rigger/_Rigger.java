@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
@@ -111,7 +110,7 @@ abstract class _Rigger implements IRigger {
    * @return Return the View for the fragment's UI, or null.
    */
   View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
+                    @Nullable Bundle savedInstanceState) {
     return null;
   }
 
@@ -198,7 +197,7 @@ abstract class _Rigger implements IRigger {
     for (Fragment fragment : fragments) {
       String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
       if (mStackManager.add(fragmentTAG, containerViewId)) {
-        mRiggerTransaction.add(containerViewId, fragment, fragmentTAG);
+        addFragmentAndBindAnim(fragment, containerViewId);
         mRiggerTransaction.hide(fragmentTAG);
       } else {
         throwException(new AlreadyExistException(fragmentTAG));
@@ -217,8 +216,8 @@ abstract class _Rigger implements IRigger {
     if (getContainerViewId() <= 0) {
       throwException(new UnSupportException("ContainerViewId must be effective in class " + mPuppetTarget.getClass()));
     }
-    mRiggerTransaction.add(mContainerViewId, fragment, fragmentTAG)
-        .hide(mStackManager.getFragmentTags(getContainerViewId()))
+    addFragmentAndBindAnim(fragment, mContainerViewId);
+    mRiggerTransaction.hide(mStackManager.getFragmentTags(getContainerViewId()))
         .show(fragmentTAG)
         .commit();
   }
@@ -254,7 +253,7 @@ abstract class _Rigger implements IRigger {
   public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
     if (mStackManager.add(fragmentTAG, containerViewId)) {
-      mRiggerTransaction.add(containerViewId, fragment, fragmentTAG);
+      addFragmentAndBindAnim(fragment, containerViewId);
     }
     String[] fragmentTags = mStackManager.getFragmentTags(containerViewId);
     for (String tag : fragmentTags) {
@@ -295,8 +294,8 @@ abstract class _Rigger implements IRigger {
   @Override
   public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    mRiggerTransaction.add(containerViewId, fragment, fragmentTAG)
-        .remove(mStackManager.getFragmentTags(containerViewId))
+    addFragmentAndBindAnim(fragment, containerViewId);
+    mRiggerTransaction.remove(mStackManager.getFragmentTags(containerViewId))
         .show(fragmentTAG)
         .commit();
     mStackManager.remove(containerViewId);
@@ -371,6 +370,15 @@ abstract class _Rigger implements IRigger {
       sb.append(tag);
       printStack(sb, childRigger, childStack, level + 1);
     }
+  }
+
+  /**
+   * Add a fragment and set the fragment's animations
+   */
+  private void addFragmentAndBindAnim(Fragment fragment, int containerViewId) {
+    _FragmentRigger rigger = (_FragmentRigger) Rigger.getRigger(fragment);
+    mRiggerTransaction.setCustomAnimations(rigger.mEnterAnim, rigger.mExitAnim);
+    mRiggerTransaction.add(containerViewId, fragment, rigger.getFragmentTAG());
   }
 
   /**

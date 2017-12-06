@@ -37,6 +37,7 @@ final class _FragmentRigger extends _Rigger {
   private static final String BUNDLE_KEY_FRAGMENT_LAZYLOAD_ABLE = "/bundle/key/fragment/lazyLoad/able";
   private static final String BUNDLE_KEY_FRAGMENT_LAZYLOAD_INVOKE = "/bundle/key/fragment/lazyLoad/invoke";
   private static final String BUNDLE_KEY_FRAGMENT_VIEW_INIT = "/bundle/key/fragment/view/init";
+  private static final String BUNDLE_KEY_FRAGMENT_ANIMATION = "/bundle/key/fragment/animation";
 
   private Fragment mFragment;
   private Activity mActivity;
@@ -44,6 +45,8 @@ final class _FragmentRigger extends _Rigger {
   private RiggerTransaction mParentRiggerTransaction;
   private String mFragmentTag;
   private Bundle mSavedFragmentState;
+  int mEnterAnim;
+  int mExitAnim;
   //lazy load
   private boolean mAbleLazyLoad = false;
   private boolean mHasInitView = false;
@@ -62,8 +65,8 @@ final class _FragmentRigger extends _Rigger {
     }
     Animator animator = clazz.getAnnotation(Animator.class);
     if (animator != null) {
-      int enterAnim = animator.enter();
-      int exitAnim = animator.exit();
+      mEnterAnim = animator.enter();
+      mExitAnim = animator.exit();
     }
     //init fragment tag
     mFragmentTag = fragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
@@ -101,6 +104,8 @@ final class _FragmentRigger extends _Rigger {
       mHasInitView = savedInstanceState.getBoolean(BUNDLE_KEY_FRAGMENT_VIEW_INIT);
       mHasInvokeLazyLoad = savedInstanceState.getBoolean(BUNDLE_KEY_FRAGMENT_LAZYLOAD_INVOKE);
       mFragmentTag = savedInstanceState.getString(BUNDLE_KEY_FRAGMENT_TAG);
+      mEnterAnim = savedInstanceState.getInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 1, 0);
+      mExitAnim = savedInstanceState.getInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 2, 0);
       restoreHiddenState(savedInstanceState);
     }
   }
@@ -152,6 +157,8 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public void onSaveInstanceState(Bundle outState) {
     outState.putString(BUNDLE_KEY_FRAGMENT_TAG, mFragmentTag);
+    outState.putInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 1, mEnterAnim);
+    outState.putInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 2, mExitAnim);
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_STATUS_HIDE, mFragment.isHidden());
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_LAZYLOAD_ABLE, mAbleLazyLoad);
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_LAZYLOAD_INVOKE, mHasInvokeLazyLoad);

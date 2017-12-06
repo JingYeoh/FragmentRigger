@@ -27,11 +27,11 @@ public @interface Animator {
    * entering animation resource id.
    */
   @AnimRes
-  int enter();
+  int enter() default 0;
 
   /**
    * exiting animation resource id.
    */
   @AnimRes
-  int exit();
+  int exit() default 0;
 }
