@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.utils.Logger;
@@ -58,6 +59,11 @@ final class _FragmentRigger extends _Rigger {
     LazyLoad lazyLoad = clazz.getAnnotation(LazyLoad.class);
     if (lazyLoad != null) {
       mAbleLazyLoad = lazyLoad.value();
+    }
+    Animator animator = clazz.getAnnotation(Animator.class);
+    if (animator != null) {
+      int enterAnim = animator.enter();
+      int exitAnim = animator.exit();
     }
     //init fragment tag
     mFragmentTag = fragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
