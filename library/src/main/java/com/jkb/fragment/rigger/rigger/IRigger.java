@@ -69,7 +69,7 @@ public interface IRigger {
   /**
    * Shows the pop fragment in the stack and hide the others.if the stack is empty,do none operation.
    */
-  void startTopFragment();
+  void startPopFragment();
 
   /**
    * Shows a fragment and hide the others which is contained in the containerView.if the fragment is not added in the

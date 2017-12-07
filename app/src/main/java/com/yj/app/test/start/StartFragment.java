@@ -20,7 +20,8 @@ import com.yj.app.base.BaseFragment;
  *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 21,2017
  */
-@Animator(enter = R.anim.push_left_in_no_alpha, exit = R.anim.push_left_out_no_alpha)
+@Animator(enter = R.anim.push_left_in_no_alpha, exit = R.anim.push_right_out_no_alpha,
+    popEnter = R.anim.push_right_in_no_alpha, popExit = R.anim.push_left_out_no_alpha)
 @Puppet(containerViewId = R.id.firstContent)
 public class StartFragment extends BaseFragment implements OnClickListener {
 
@@ -44,10 +45,11 @@ public class StartFragment extends BaseFragment implements OnClickListener {
   protected void init(Bundle savedInstanceState) {
     Bundle args = savedInstanceState == null ? getArguments() : savedInstanceState;
     mCount = args.getInt(BUNDLE_KEY);
-    ((TextView) findViewById(R.id.ft_tv)).setText("StartFragment：" + mCount);
+    ((TextView) findViewById(R.id.ft_tv)).setText(String.valueOf(mCount));
 
     findViewById(R.id.fs_startFragment).setOnClickListener(this);
     findViewById(R.id.fs_print).setOnClickListener(this);
+    findViewById(R.id.fs_close).setOnClickListener(this);
     Logger.d(this, "mHost=" + getHost());
   }
 
@@ -65,6 +67,9 @@ public class StartFragment extends BaseFragment implements OnClickListener {
         break;
       case R.id.fs_print:
         Rigger.getRigger(this).printStack();
+        break;
+      case R.id.fs_close:
+        Rigger.getRigger(this).close();
         break;
     }
   }

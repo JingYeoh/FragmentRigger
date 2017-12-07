@@ -29,6 +29,7 @@ final class _ActivityRigger extends _Rigger {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    mContext = mActivity;
     if (mRiggerTransaction == null) {
       mRiggerTransaction = new RiggerTransactionImpl(this, mActivity.getSupportFragmentManager());
     }

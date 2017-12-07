@@ -13,19 +13,25 @@
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:gravity="center"
-      android:text="TestFragment"/>
+      android:text="1"/>
     <Button
       android:id="@+id/fs_startFragment"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:text="startFragment"/>
+      android:text="start"/>
     <Button
       android:id="@+id/fs_print"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:text="print stack"/>
+      android:text="print"/>
+    <Button
+      android:id="@+id/fs_close"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:text="close"/>
   </LinearLayout>
 
   <FrameLayout

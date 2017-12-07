@@ -24,14 +24,32 @@ import java.lang.annotation.Target;
 public @interface Animator {
 
   /**
-   * entering animation resource id.
+   * This animator will worked on the target fragment.
+   * This animator will be started when the target fragment is entering.
    */
   @AnimRes
   int enter() default 0;
 
   /**
-   * exiting animation resource id.
+   * This animator will worked on the target fragment.
+   * This animator will be started when the target fragment is exiting
    */
   @AnimRes
   int exit() default 0;
+
+  /**
+   * This animator will worked on the pop fragment that is on target fragment's same level.
+   * This animator will be started when the target fragment is exiting and the target fragment's same level pop
+   * fragment is showing.
+   */
+  @AnimRes
+  int popEnter() default 0;
+
+  /**
+   * This animator will worked on the pop fragment that is on target fragment's same level.
+   * This animator will be started when the target fragment is entering and the target fragment's same level pop
+   * fragment is exiting.
+   */
+  @AnimRes
+  int popExit() default 0;
 }

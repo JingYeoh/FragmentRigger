@@ -12,6 +12,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.exception.UnSupportException;
@@ -45,8 +47,11 @@ final class _FragmentRigger extends _Rigger {
   private RiggerTransaction mParentRiggerTransaction;
   private String mFragmentTag;
   private Bundle mSavedFragmentState;
+  //anim
   int mEnterAnim;
   int mExitAnim;
+  int mPopEnterAnim;
+  int mPopExitAnim;
   //lazy load
   private boolean mAbleLazyLoad = false;
   private boolean mHasInitView = false;
@@ -67,6 +72,8 @@ final class _FragmentRigger extends _Rigger {
     if (animator != null) {
       mEnterAnim = animator.enter();
       mExitAnim = animator.exit();
+      mPopEnterAnim = animator.popEnter();
+      mPopExitAnim = animator.popExit();
     }
     //init fragment tag
     mFragmentTag = fragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
@@ -83,6 +90,7 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public void onAttach(Context context) {
     mActivity = (Activity) context;
+    mContext = context;
   }
 
   @Override
@@ -106,6 +114,8 @@ final class _FragmentRigger extends _Rigger {
       mFragmentTag = savedInstanceState.getString(BUNDLE_KEY_FRAGMENT_TAG);
       mEnterAnim = savedInstanceState.getInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 1, 0);
       mExitAnim = savedInstanceState.getInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 2, 0);
+      mPopEnterAnim = savedInstanceState.getInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 3, 0);
+      mPopExitAnim = savedInstanceState.getInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 4, 0);
       restoreHiddenState(savedInstanceState);
     }
   }
@@ -159,6 +169,8 @@ final class _FragmentRigger extends _Rigger {
     outState.putString(BUNDLE_KEY_FRAGMENT_TAG, mFragmentTag);
     outState.putInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 1, mEnterAnim);
     outState.putInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 2, mExitAnim);
+    outState.putInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 3, mPopEnterAnim);
+    outState.putInt(BUNDLE_KEY_FRAGMENT_ANIMATION + 4, mPopExitAnim);
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_STATUS_HIDE, mFragment.isHidden());
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_LAZYLOAD_ABLE, mAbleLazyLoad);
     outState.putBoolean(BUNDLE_KEY_FRAGMENT_LAZYLOAD_INVOKE, mHasInvokeLazyLoad);
@@ -206,12 +218,18 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void close() {
+    if (mExitAnim != 0 && !mFragment.isHidden()) {
+      Animation animation = AnimationUtils.loadAnimation(mActivity, mExitAnim);
+      if (animation != null) {
+        mFragment.getView().startAnimation(animation);
+      }
+    }
     mStackManager.clear();
     mRiggerTransaction.removeAll();
     Object host = mFragment.getParentFragment();
     host = host == null ? getHost() : host;
     Rigger.getRigger(host).close(mFragment);
-    Rigger.getRigger(host).startTopFragment();
+    ((_Rigger) Rigger.getRigger(host)).startPopFragment(mPopEnterAnim);
   }
 
   @Override

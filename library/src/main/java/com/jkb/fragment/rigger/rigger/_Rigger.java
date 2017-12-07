@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
@@ -52,6 +54,7 @@ abstract class _Rigger implements IRigger {
   }
 
   private Object mPuppetTarget;
+  protected Context mContext;
   //data
   @IdRes
   private int mContainerViewId;
@@ -110,7 +113,7 @@ abstract class _Rigger implements IRigger {
    * @return Return the View for the fragment's UI, or null.
    */
   View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                    @Nullable Bundle savedInstanceState) {
+      @Nullable Bundle savedInstanceState) {
     return null;
   }
 
@@ -240,10 +243,25 @@ abstract class _Rigger implements IRigger {
   }
 
   @Override
-  public void startTopFragment() {
+  public void startPopFragment() {
+    startPopFragment(0);
+  }
+
+  /**
+   * show pop fragment and start animation.
+   */
+  void startPopFragment(int anim) {
+    Animation animation = null;
+    if (anim > 0) {
+      animation = AnimationUtils.loadAnimation(mContext, anim);
+    }
     String topFragmentTag = mStackManager.peek();
     mRiggerTransaction.hide(mStackManager.getFragmentTags(getContainerViewId()));
-    if (!TextUtils.isEmpty(topFragmentTag)) {
+    Fragment fragment = mRiggerTransaction.find(topFragmentTag);
+    if (!TextUtils.isEmpty(topFragmentTag) && fragment != null) {
+      if (animation != null) {
+        fragment.getView().startAnimation(animation);
+      }
       mRiggerTransaction.show(topFragmentTag);
     }
     mRiggerTransaction.commit();
@@ -312,10 +330,11 @@ abstract class _Rigger implements IRigger {
     if (isBondContainerView() && mStackManager.getFragmentStack().empty()) {
       close();
     } else {
+      //Hide first,the exit animator should be showed and remove after.
+      mRiggerTransaction.hide(fragmentTAG).commit();
       //if the puppet is not bond container,then remove the fragment onto the container.
       //and show the Fragment's content view.
-      mRiggerTransaction.remove(fragmentTAG)
-          .commit();
+      mRiggerTransaction.remove(fragmentTAG).commit();
     }
   }
 
@@ -377,7 +396,7 @@ abstract class _Rigger implements IRigger {
    */
   private void addFragmentAndBindAnim(Fragment fragment, int containerViewId) {
     _FragmentRigger rigger = (_FragmentRigger) Rigger.getRigger(fragment);
-    mRiggerTransaction.setCustomAnimations(rigger.mEnterAnim, rigger.mExitAnim);
+    mRiggerTransaction.setCustomAnimations(rigger.mEnterAnim, rigger.mPopExitAnim);
     mRiggerTransaction.add(containerViewId, fragment, rigger.getFragmentTAG());
   }
 
