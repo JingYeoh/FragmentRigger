@@ -218,10 +218,16 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void close() {
+    //start the exiting animation.
     if (mExitAnim != 0 && !mFragment.isHidden()) {
-      Animation animation = AnimationUtils.loadAnimation(mActivity, mExitAnim);
-      if (animation != null) {
-        mFragment.getView().startAnimation(animation);
+      boolean isParentBond = Rigger.getRigger(getHost()).isBondContainerView();
+      int parentStackSize = Rigger.getRigger(getHost()).getFragmentStack().size();
+      //the exiting animation will not execute when the host's mBindContainerView is true and hots's stack size is one.
+      if (!isParentBond && parentStackSize > 1) {
+        Animation animation = AnimationUtils.loadAnimation(mActivity, mExitAnim);
+        if (animation != null) {
+          mFragment.getView().startAnimation(animation);
+        }
       }
     }
     mStackManager.clear();

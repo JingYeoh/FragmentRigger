@@ -25,7 +25,7 @@
 * ~~屏幕翻转时的数据保存及恢复~~
 * ~~Can not perform this action after onSaveInstanceState~~
 * ~~在ViewPager中的懒加载及其他场景下的懒加载~~
-* ~~转场动画中可能遇到的问题~~
+* ~~不同场景下转场动画不执行问题~~
 
 ### 如何使用
 >本框架以**使用成本最低的Fragment框架**为目标，提供了强大的Api支持。

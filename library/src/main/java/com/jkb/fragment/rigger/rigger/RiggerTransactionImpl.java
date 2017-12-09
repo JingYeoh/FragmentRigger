@@ -179,9 +179,9 @@ final class RiggerTransactionImpl extends RiggerTransaction {
     if (op == null) return;
     FragmentTransaction ft = mFragmentManager.beginTransaction();
     while (op != null) {
+      ft.setCustomAnimations(op.enterAnim, op.exitAnim);
       switch (op.cmd) {
         case OP_ADD: {
-          ft.setCustomAnimations(op.enterAnim, op.exitAnim);
           ft.add(op.containerViewId, op.fragment, op.fragmentTag);
         }
         break;

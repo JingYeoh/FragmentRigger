@@ -200,7 +200,7 @@ abstract class _Rigger implements IRigger {
     for (Fragment fragment : fragments) {
       String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
       if (mStackManager.add(fragmentTAG, containerViewId)) {
-        addFragmentAndBindAnim(fragment, containerViewId);
+        addFragmentWithAnim(fragment, containerViewId);
         mRiggerTransaction.hide(fragmentTAG);
       } else {
         throwException(new AlreadyExistException(fragmentTAG));
@@ -219,10 +219,9 @@ abstract class _Rigger implements IRigger {
     if (getContainerViewId() <= 0) {
       throwException(new UnSupportException("ContainerViewId must be effective in class " + mPuppetTarget.getClass()));
     }
-    addFragmentAndBindAnim(fragment, mContainerViewId);
-    mRiggerTransaction.hide(mStackManager.getFragmentTags(getContainerViewId()))
-        .show(fragmentTAG)
-        .commit();
+    addFragmentWithAnim(fragment, mContainerViewId);
+    mRiggerTransaction.hide(mStackManager.getFragmentTags(getContainerViewId()));
+    mRiggerTransaction.show(fragmentTAG).commit();
   }
 
   @Override
@@ -257,11 +256,13 @@ abstract class _Rigger implements IRigger {
     }
     String topFragmentTag = mStackManager.peek();
     mRiggerTransaction.hide(mStackManager.getFragmentTags(getContainerViewId()));
-    Fragment fragment = mRiggerTransaction.find(topFragmentTag);
-    if (!TextUtils.isEmpty(topFragmentTag) && fragment != null) {
+    Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
+    if (!TextUtils.isEmpty(topFragmentTag) && topFragment != null) {
       if (animation != null) {
-        fragment.getView().startAnimation(animation);
+        topFragment.getView().startAnimation(animation);
+        //cancel the default animation and use the custom animation.
       }
+      mRiggerTransaction.setCustomAnimations(0, 0);
       mRiggerTransaction.show(topFragmentTag);
     }
     mRiggerTransaction.commit();
@@ -271,7 +272,7 @@ abstract class _Rigger implements IRigger {
   public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
     if (mStackManager.add(fragmentTAG, containerViewId)) {
-      addFragmentAndBindAnim(fragment, containerViewId);
+      addFragmentWithAnim(fragment, containerViewId);
     }
     String[] fragmentTags = mStackManager.getFragmentTags(containerViewId);
     for (String tag : fragmentTags) {
@@ -280,9 +281,9 @@ abstract class _Rigger implements IRigger {
       hideFrag.setUserVisibleHint(false);
     }
     fragment.setUserVisibleHint(true);
-    mRiggerTransaction.hide(fragmentTags)
-        .show(fragmentTAG)
-        .commit();
+    mRiggerTransaction.hide(fragmentTags);
+    showFragmentWithAnim(fragment);
+    mRiggerTransaction.commit();
   }
 
   @Override
@@ -312,7 +313,7 @@ abstract class _Rigger implements IRigger {
   @Override
   public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    addFragmentAndBindAnim(fragment, containerViewId);
+    addFragmentWithAnim(fragment, containerViewId);
     mRiggerTransaction.remove(mStackManager.getFragmentTags(containerViewId))
         .show(fragmentTAG)
         .commit();
@@ -394,10 +395,19 @@ abstract class _Rigger implements IRigger {
   /**
    * Add a fragment and set the fragment's animations
    */
-  private void addFragmentAndBindAnim(Fragment fragment, int containerViewId) {
+  private void addFragmentWithAnim(Fragment fragment, int containerViewId) {
     _FragmentRigger rigger = (_FragmentRigger) Rigger.getRigger(fragment);
     mRiggerTransaction.setCustomAnimations(rigger.mEnterAnim, rigger.mPopExitAnim);
     mRiggerTransaction.add(containerViewId, fragment, rigger.getFragmentTAG());
+  }
+
+  /**
+   * Show a fragment and set the fragment's animations
+   */
+  private void showFragmentWithAnim(Fragment fragment) {
+    _FragmentRigger rigger = (_FragmentRigger) Rigger.getRigger(fragment);
+    mRiggerTransaction.setCustomAnimations(rigger.mPopEnterAnim, rigger.mExitAnim);
+    mRiggerTransaction.show(rigger.getFragmentTAG());
   }
 
   /**
