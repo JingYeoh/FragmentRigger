@@ -87,6 +87,23 @@ final class _FragmentRigger extends _Rigger {
     return parent == null ? mActivity : parent;
   }
 
+  /**
+   * Returns the container host.
+   */
+  private Object getContainerHost() {
+    Fragment parent = mFragment.getParentFragment();
+    while (true) {
+      if (parent == null) break;
+      int containerViewId = Rigger.getRigger(parent).getContainerViewId();
+      if (containerViewId > 0) break;
+      parent = parent.getParentFragment();
+    }
+    if (parent == null) {
+      return mActivity;
+    }
+    return parent;
+  }
+
   @Override
   public void onAttach(Context context) {
     mActivity = (Activity) context;
@@ -197,18 +214,7 @@ final class _FragmentRigger extends _Rigger {
       return;
     }
     //or the operation should be operated by parent who's container view'id is effective.
-    Fragment startPuppet = mFragment.getParentFragment();
-    while (true) {
-      if (startPuppet == null) break;
-      int containerViewId = Rigger.getRigger(startPuppet).getContainerViewId();
-      if (containerViewId > 0) break;
-      startPuppet = startPuppet.getParentFragment();
-    }
-    if (startPuppet == null) {
-      Rigger.getRigger(mActivity).startFragment(fragment);
-    } else {
-      Rigger.getRigger(startPuppet).startFragment(fragment);
-    }
+    Rigger.getRigger(getContainerHost()).startFragment(fragment);
   }
 
   @Override
@@ -220,10 +226,10 @@ final class _FragmentRigger extends _Rigger {
   public void close() {
     //start the exiting animation.
     if (mExitAnim != 0 && !mFragment.isHidden()) {
-      boolean isParentBond = Rigger.getRigger(getHost()).isBondContainerView();
-      int parentStackSize = Rigger.getRigger(getHost()).getFragmentStack().size();
+      boolean isParentBond = Rigger.getRigger(getContainerHost()).isBondContainerView();
+      int parentStackSize = Rigger.getRigger(getContainerHost()).getFragmentStack().size();
       //the exiting animation will not execute when the host's mBindContainerView is true and hots's stack size is one.
-      if (!isParentBond && parentStackSize > 1) {
+      if (!isParentBond || parentStackSize > 0) {
         Animation animation = AnimationUtils.loadAnimation(mActivity, mExitAnim);
         if (animation != null) {
           mFragment.getView().startAnimation(animation);
@@ -232,10 +238,8 @@ final class _FragmentRigger extends _Rigger {
     }
     mStackManager.clear();
     mRiggerTransaction.removeAll();
-    Object host = mFragment.getParentFragment();
-    host = host == null ? getHost() : host;
-    Rigger.getRigger(host).close(mFragment);
-    ((_Rigger) Rigger.getRigger(host)).startPopFragment(mPopEnterAnim);
+    Rigger.getRigger(getContainerHost()).close(mFragment);
+    ((_Rigger) Rigger.getRigger(getContainerHost())).startPopFragment(mPopEnterAnim);
   }
 
   @Override

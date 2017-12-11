@@ -331,8 +331,6 @@ abstract class _Rigger implements IRigger {
     if (isBondContainerView() && mStackManager.getFragmentStack().empty()) {
       close();
     } else {
-      //Hide first,the exit animator should be showed and remove after.
-      mRiggerTransaction.hide(fragmentTAG).commit();
       //if the puppet is not bond container,then remove the fragment onto the container.
       //and show the Fragment's content view.
       mRiggerTransaction.remove(fragmentTAG).commit();

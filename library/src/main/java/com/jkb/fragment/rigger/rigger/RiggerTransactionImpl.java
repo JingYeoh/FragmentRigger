@@ -179,9 +179,9 @@ final class RiggerTransactionImpl extends RiggerTransaction {
     if (op == null) return;
     FragmentTransaction ft = mFragmentManager.beginTransaction();
     while (op != null) {
-      ft.setCustomAnimations(op.enterAnim, op.exitAnim);
       switch (op.cmd) {
         case OP_ADD: {
+          ft.setCustomAnimations(op.enterAnim, op.exitAnim);
           ft.add(op.containerViewId, op.fragment, op.fragmentTag);
         }
         break;
@@ -196,6 +196,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         }
         break;
         case OP_SHOW: {
+          ft.setCustomAnimations(op.enterAnim, op.exitAnim);
           Fragment f = find(op.fragmentTag);
           if (f == null) {
             Logger.w(this, "Op:Show.can not find fragment " + op.fragmentTag);
@@ -205,6 +206,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         }
         break;
         case OP_HIDE: {
+          ft.setCustomAnimations(op.enterAnim, op.exitAnim);
           Fragment f = find(op.fragmentTag);
           if (f == null) {
             Logger.w(this, "Op:Hide.can not find fragment " + op.fragmentTag);
