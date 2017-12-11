@@ -1,16 +1,12 @@
 # FragmentRigger
+<figure class="rigger">
 <img src="images/R.png" width="150px"/>
 <img src="images/i.png" width="150px"/>
 <img src="images/g.png" width="150px"/>
 <img src="images/g.png" width="150px"/>
 <img src="images/e.png" width="150px"/>
 <img src="images/r.png" width="150px"/>
-![R](/images/R.png)
-![i](/images/i.png)
-![g](/images/g.png)
-![g](/images/g.png)
-![e](/images/e.png)
-![r](/images/r.png)
+</figure>
 
 :boom:一个强大的Fragment框架。
 
