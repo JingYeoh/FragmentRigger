@@ -1,5 +1,5 @@
 # FragmentRigger
-<figure class="rigger">
+<figure class="half">
 <img src="images/R.png" width="150px"/>
 <img src="images/i.png" width="150px"/>
 <img src="images/g.png" width="150px"/>
