@@ -8,12 +8,12 @@
 <img src="images/r.png" width="150px"/>
 </figure>
 
-![R](/images/R.png =150x150)
-![i](/images/i.png =150x150)
-![g](/images/g.png =150x150)
-![g](/images/g.png =150x150)
-![e](/images/e.png =150x150)
-![r](/images/r.png =150x150)
+![R](/images/R.png)
+![i](/images/i.png)
+![g](/images/g.png)
+![g](/images/g.png)
+![e](/images/e.png)
+![r](/images/r.png)
 
 :boom:一个强大的Fragment框架。
 
