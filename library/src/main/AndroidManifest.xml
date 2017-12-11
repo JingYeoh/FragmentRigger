@@ -1,13 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest package="com.jkb.fragment.rigger">
 
-          package="com.jkb.fragment.rigger"
->
-
-    <application android:allowBackup="true"
-                 android:label="@string/app_name"
-                 android:supportsRtl="true"
-    >
-
-    </application>
+  <application>
+  </application>
 
 </manifest>

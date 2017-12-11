@@ -16,8 +16,8 @@ ext {
 
             userOrg       : 'jkb',
             groupId       : 'com.justkiddingbaby',
-            artifactId    : 'fragmentrigger',
-            desc          : 'A proxy frame of fragment to make you use fragment and activity easier.',
+            artifactId    : 'fragment-rigger',
+            desc          : 'A powerfual library to manage Fragments.',
             website       : 'https://github.com/JustKiddingBaby/FragmentRigger'
     ]
 
