@@ -1,13 +1,4 @@
 # FragmentRigger
-<figure class="six">
-<img src="images/R.png" width="150px"/>
-<img src="images/i.png" width="150px"/>
-<img src="images/g.png" width="150px"/>
-<img src="images/g.png" width="150px"/>
-<img src="images/e.png" width="150px"/>
-<img src="images/r.png" width="150px"/>
-</figure>
-
 ![R](/images/R.png)
 ![i](/images/i.png)
 ![g](/images/g.png)
