@@ -1,5 +1,5 @@
 # FragmentRigger
-<figure class="half">
+<figure class="six">
 <img src="images/R.png" width="150px"/>
 <img src="images/i.png" width="150px"/>
 <img src="images/g.png" width="150px"/>
@@ -7,6 +7,13 @@
 <img src="images/e.png" width="150px"/>
 <img src="images/r.png" width="150px"/>
 </figure>
+
+![R](/images/R.png =150x150)
+![i](/images/i.png =150x150)
+![g](/images/g.png =150x150)
+![g](/images/g.png =150x150)
+![e](/images/e.png =150x150)
+![r](/images/r.png =150x150)
 
 :boom:一个强大的Fragment框架。
 
