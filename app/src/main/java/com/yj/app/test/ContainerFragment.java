@@ -2,7 +2,6 @@ package com.yj.app.test;
 
 import android.os.Bundle;
 import android.widget.TextView;
-import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.R;
@@ -15,8 +14,6 @@ import com.yj.app.base.BaseFragment;
  *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 30,2017
  */
-@Animator(enter = R.anim.push_left_in_no_alpha, exit = R.anim.push_right_out_no_alpha,
-    popEnter = R.anim.push_right_in_no_alpha, popExit = R.anim.push_left_out_no_alpha)
 @LazyLoad
 public class ContainerFragment extends BaseFragment {
 
@@ -52,5 +49,12 @@ public class ContainerFragment extends BaseFragment {
   public void onLazyLoadViewCreated(Bundle savedInstanceState) {
     Logger.d(this, "onLazyLoadViewCreated()");
     ((TextView) findViewById(R.id.fc_tv)).setText(value);
+  }
+
+  public int[] getPuppetAnimations() {
+    return new int[]{
+        R.anim.push_left_in_no_alpha, R.anim.push_right_out_no_alpha,
+        R.anim.push_right_in_no_alpha, R.anim.push_left_out_no_alpha
+    };
   }
 }

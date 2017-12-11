@@ -36,4 +36,16 @@ public interface RiggerConsts {
    * public void onLazyLoadViewCreated(Bundle savedInstanceState)
    */
   String METHOD_ON_LAZYLOAD_VIEW_CREATED = "onLazyLoadViewCreated";
+
+  /**
+   * Method for .this method must be defined with the specified params.
+   * This method return value is a string array.the array's max size is four.
+   * Return[0]:enterAnim
+   * Return[1]:exitAnim
+   * Return[2]:popEnterAnim
+   * Return[3]:popExitAnim
+   * For example:
+   * public int[] getPuppetAnimations()
+   */
+  String METHOD_GET_PUPPET_ANIMATIONS = "getPuppetAnimations";
 }

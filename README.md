@@ -3,7 +3,7 @@
 ![SDK](https://img.shields.io/badge/SDK-12%2B-green.svg)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)
 [![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](https://opensource.org/licenses/MIT)
-[![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-blue.svg)](http://blog.justkiddingbaby.com/)
+[![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)
 
 :boom:一个强大的Fragment框架。
 >这可能是使用成本最低的Fragment框架了，无需继承！！！无需继承！！！无需继承！！！重要的话说三遍！！
@@ -33,7 +33,7 @@
 * ~~在ViewPager中的懒加载及其他场景下的懒加载~~
 * ~~不同场景下转场动画不执行问题~~
 
-### 如何使用
+### 使用例子
 >本框架以**使用成本最低的Fragment框架**为目标，提供了强大的Api支持。
 和已有的大部分`Fragment`框架不同，不需要继承任何父类，只需要添加一行注解即可。
 在操纵`Fragment`的时候只需要通过代理类来操作，本框架完全采用一种插入式的方式来降低使用成本。

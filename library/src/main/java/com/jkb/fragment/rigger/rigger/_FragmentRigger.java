@@ -1,5 +1,6 @@
 package com.jkb.fragment.rigger.rigger;
 
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIMATIONS;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_LAZYLOAD_VIEW_CREATED;
 
 import android.app.Activity;
@@ -68,6 +69,16 @@ final class _FragmentRigger extends _Rigger {
     if (lazyLoad != null) {
       mAbleLazyLoad = lazyLoad.value();
     }
+    //init fragment animator
+    initFragmentAnimators(clazz);
+    //init fragment tag
+    mFragmentTag = fragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
+  }
+
+  /**
+   * Init fragment animators.
+   */
+  private void initFragmentAnimators(Class<? extends Fragment> clazz) {
     Animator animator = clazz.getAnnotation(Animator.class);
     if (animator != null) {
       mEnterAnim = animator.enter();
@@ -75,16 +86,24 @@ final class _FragmentRigger extends _Rigger {
       mPopEnterAnim = animator.popEnter();
       mPopExitAnim = animator.popExit();
     }
-    //init fragment tag
-    mFragmentTag = fragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
-  }
-
-  /**
-   * Returns the host object of fragment.
-   */
-  private Object getHost() {
-    Fragment parent = mFragment.getParentFragment();
-    return parent == null ? mActivity : parent;
+    try {
+      Method method = clazz.getMethod(METHOD_GET_PUPPET_ANIMATIONS);
+      Object values = method.invoke(mFragment);
+      if (!(values instanceof int[])) {
+        throwException(
+            new UnSupportException("Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's type must be int[]"));
+      }
+      int[] animators = (int[]) values;
+      if (animators == null || animators.length != 4) {
+        throwException(
+            new UnSupportException("Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's length must be 4"));
+      }
+      mEnterAnim = animators[0];
+      mExitAnim = animators[1];
+      mPopEnterAnim = animators[2];
+      mPopExitAnim = animators[3];
+    } catch (Exception ignore) {
+    }
   }
 
   /**
