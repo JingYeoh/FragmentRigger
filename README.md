@@ -1,11 +1,19 @@
 # FragmentRigger
+![R](/images/R.png)
+![i](/images/i.png)
+![g](/images/g.png)
+![g](/images/g.png)
+![e](/images/e.png)
+![r](/images/r.png)
+
+:boom:一个强大的Fragment框架。
+
 ![Release](https://img.shields.io/badge/release-1.0.0-brightgreen.svg)
 ![SDK](https://img.shields.io/badge/SDK-12%2B-green.svg)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)
 [![License](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](https://opensource.org/licenses/MIT)
 [![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)
 
-:boom:一个强大的Fragment框架。
 >这可能是使用成本最低的Fragment框架了，无需继承！！！无需继承！！！无需继承！！！重要的话说三遍！！
 在使用`FragmentRigger`的时候，使用成本只有一行注解！！！
 原理是把`Fragment`/`Activity`生命周期相关方法定义为切点，通过ASpectJ绑定并使用代理类进行操作。
