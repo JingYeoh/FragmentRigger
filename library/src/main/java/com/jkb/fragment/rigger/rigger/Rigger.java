@@ -1,7 +1,5 @@
 package com.jkb.fragment.rigger.rigger;
 
-import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPRESSED;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.utils.Logger;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -224,16 +221,9 @@ public final class Rigger {
    * Inject the Activity's lifecycle method
    * {@link AppCompatActivity#onBackPressed()} to rigger class.
    */
-  private void onRiggerBackPressed(Object object) {
+  private void onBackPressed(Object object) {
     Logger.i(object, TAG_HEADER + "onBackPressed");
-    //if the object has this method,then call the native method,or call the proxy's method
-    Class<?> clazz = object.getClass();
-    try {
-      Method onBackPressed = clazz.getMethod(METHOD_ON_RIGGER_BACKPRESSED);
-      onBackPressed.invoke(object);
-    } catch (Exception e) {
-      createRigger(object).onRiggerBackPressed();
-    }
+    createRigger(object).onRiggerBackPressed();
   }
 
   /**

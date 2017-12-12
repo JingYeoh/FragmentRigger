@@ -153,7 +153,7 @@ public class AspectPuppetActivity {
     //Only inject the class that marked by Puppet annotation.
     if (!isMarkedByPuppet(puppet)) return joinPoint.proceed();
 
-    Method onBackPressed = getRiggerMethod("onRiggerBackPressed", Object.class);
+    Method onBackPressed = getRiggerMethod("onBackPressed", Object.class);
     return onBackPressed.invoke(getRiggerInstance(), puppet);
   }
 

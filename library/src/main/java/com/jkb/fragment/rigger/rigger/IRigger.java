@@ -24,7 +24,7 @@ public interface IRigger {
    * Take care of popping the fragment back stack or finishing the activity
    * as appropriate.the method is called when you click the back key.
    */
-  void onRiggerBackPressed();
+  void onBackPressed();
 
   /**
    * Add fragments to parent's state.these fragments will not be added into the stack.
@@ -75,7 +75,7 @@ public interface IRigger {
    * Shows a fragment and hide the others which is contained in the containerView.if the fragment is not added in the
    * stack,then add first.
    *
-   * The fragment added by this method is not pushed in the stack.if the method {@link #onRiggerBackPressed()} is
+   * The fragment added by this method is not pushed in the stack.if the method {@link #onBackPressed()} is
    * called, this fragment has none operation.
    *
    * @param fragment        the fragment to be showed.
@@ -109,7 +109,7 @@ public interface IRigger {
    * if the fragment is not added in the stack,then add first,
    * if the fragment is already exist,then throw {@link AlreadyExistException}.
    *
-   * The fragment added by this method is not pushed in the stack.if the method {@link #onRiggerBackPressed()} is
+   * The fragment added by this method is not pushed in the stack.if the method {@link #onBackPressed()} is
    * called, this fragment has none operation.
    *
    * @param fragment        the fragment to be showed.

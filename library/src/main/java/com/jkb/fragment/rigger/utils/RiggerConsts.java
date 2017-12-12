@@ -21,7 +21,7 @@ public interface RiggerConsts {
   /**
    * onBackPressed method's name.this method must be defined with the specified params.
    * For example:
-   * public void onRiggerBackPressed()
+   * public void onBackPressed()
    */
   String METHOD_ON_RIGGER_BACKPRESSED = "onRiggerBackPressed";
   /**

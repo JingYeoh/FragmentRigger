@@ -1,6 +1,7 @@
 package com.jkb.fragment.rigger.rigger;
 
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_CONTAINERVIEWID;
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPRESSED;
 
 import android.app.Activity;
 import android.content.Context;
@@ -175,20 +176,33 @@ abstract class _Rigger implements IRigger {
   void setUserVisibleHint(boolean isVisibleToUser) {
   }
 
+  /**
+   * If the puppet contain onRiggerBackPressed method, then intercept the {@link #onBackPressed()} method.
+   */
+  void onRiggerBackPressed() {
+    Class<?> clazz = mPuppetTarget.getClass();
+    try {
+      Method onBackPressed = clazz.getMethod(METHOD_ON_RIGGER_BACKPRESSED);
+      onBackPressed.invoke(mPuppetTarget);
+    } catch (Exception e) {
+      onBackPressed();
+    }
+  }
+
   @Override
-  public void onRiggerBackPressed() {
+  public void onBackPressed() {
     String topFragmentTag = mStackManager.peek();
     //the stack is empty,close the Activity.
     if (TextUtils.isEmpty(topFragmentTag)) {
       close();
       return;
     }
-    //call the top fragment's onRiggerBackPressed method.
+    //call the top fragment's onBackPressed method.
     Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
     if (topFragment == null) {
       throwException(new NotExistException(topFragmentTag));
     }
-    Rigger.getRigger(topFragment).onRiggerBackPressed();
+    ((_Rigger) Rigger.getRigger(topFragment)).onRiggerBackPressed();
   }
 
   @Override

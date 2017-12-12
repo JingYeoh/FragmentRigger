@@ -10,6 +10,7 @@ import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.base.BaseFragment;
 import com.yj.app.test.lazyload.LazyLoadFragment;
 import com.yj.app.test.replace.ReplaceFragment;
+import com.yj.app.test.share.SharedElementFragment;
 import com.yj.app.test.show.ShowFragment;
 import com.yj.app.test.start.ResultFragment;
 import com.yj.app.test.start.StartFragment;
@@ -43,7 +44,7 @@ public class TestFragment extends BaseFragment implements OnClickListener {
     findViewById(R.id.fs_replaceFragment).setOnClickListener(this);
     findViewById(R.id.fs_startFragmentForResult).setOnClickListener(this);
     findViewById(R.id.fs_lazyload).setOnClickListener(this);
-    Logger.d(this, "mHost=" + getHost());
+    findViewById(R.id.fs_share).setOnClickListener(this);
   }
 
   @Override
@@ -67,6 +68,9 @@ public class TestFragment extends BaseFragment implements OnClickListener {
         break;
       case R.id.fs_lazyload:
         Rigger.getRigger(this).startFragment(LazyLoadFragment.newInstance());
+        break;
+      case R.id.fs_share:
+        Rigger.getRigger(this).startFragment(SharedElementFragment.newInstance());
         break;
     }
   }
