@@ -13,7 +13,6 @@ ext {
     rigger = [
             publishCode   : 1,
             publishVersion: "1.0.0",
-
             userOrg       : 'jkb',
             groupId       : 'com.justkiddingbaby',
             artifactId    : 'fragment-rigger',
