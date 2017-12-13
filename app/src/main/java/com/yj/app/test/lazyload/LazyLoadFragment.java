@@ -25,6 +25,7 @@ public class LazyLoadFragment extends BaseFragment {
 
   private ViewPager viewPager;
   private TabLayout tabLayout;
+  private int mSelectedPosition = 0;
   private LazyLoadAdapter lazyLoadAdapter;
 
   @Override
@@ -35,10 +36,20 @@ public class LazyLoadFragment extends BaseFragment {
   @Override
   protected void init(Bundle savedInstanceState) {
     initView();
-    lazyLoadAdapter = new LazyLoadAdapter(getChildFragmentManager());
+    if (savedInstanceState != null) {
+      mSelectedPosition = savedInstanceState.getInt(BUNDLE_KEY);
+    }
+    lazyLoadAdapter = new LazyLoadAdapter(mContext, getChildFragmentManager());
     viewPager.setAdapter(lazyLoadAdapter);
     tabLayout.setupWithViewPager(viewPager);
     viewPager.setOffscreenPageLimit(4);
+    for (int i = 0; i < tabLayout.getTabCount(); i++) {
+      TabLayout.Tab tab = tabLayout.getTabAt(i);
+      if (tab == null) continue;
+      tab.setCustomView(lazyLoadAdapter.getTabView(i));
+    }
+    lazyLoadAdapter.selectedTab(mSelectedPosition);
+    initListener();
   }
 
   private void initView() {
@@ -48,5 +59,29 @@ public class LazyLoadFragment extends BaseFragment {
     tabLayout.addTab(tabLayout.newTab());
     tabLayout.addTab(tabLayout.newTab());
     tabLayout.addTab(tabLayout.newTab());
+  }
+
+  private void initListener() {
+    tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+      @Override
+      public void onTabSelected(TabLayout.Tab tab) {
+        mSelectedPosition = tabLayout.getSelectedTabPosition();
+        lazyLoadAdapter.selectedTab(mSelectedPosition);
+      }
+
+      @Override
+      public void onTabUnselected(TabLayout.Tab tab) {
+      }
+
+      @Override
+      public void onTabReselected(TabLayout.Tab tab) {
+      }
+    });
+  }
+
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putInt(BUNDLE_KEY, mSelectedPosition);
   }
 }

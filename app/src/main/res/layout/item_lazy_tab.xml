@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/ilt_content"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:layout_weight="1"
+  android:gravity="center"
+  android:orientation="vertical">
+
+  <ImageView
+    android:id="@+id/ilt_iv"
+    android:layout_width="25dp"
+    android:layout_height="25dp"
+    android:background="@drawable/selector_ic_tab_chat"/>
+  <TextView
+    android:id="@+id/ilt_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="2dp"
+    android:text="@string/wechat"
+    android:textColor="@color/tab_normal"
+    android:textSize="15sp"/>
+</LinearLayout>

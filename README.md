@@ -23,6 +23,8 @@
 
 ### 特性
 - [x] **超强大Api支持**
+- [x] **足够多的英文注释**
+- [x] **严格的异常抛出**
 - [x] **解决Fragment中常见的异常及Bug**
 - [x] **事务提交永不丢失**
 - [x] **扩展原生方法，添加`onBackPressed`等常见的方法支持**
@@ -75,6 +77,9 @@ public class MainActivity extends AppCompatActivity{
 }
 ```
 
+### 运行效果
+>本项目支持常见场景下的`Fragment`操纵方式，如有不支持的场景，欢迎提交[Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues)或者[Email me ](mailto:yangjing9611@foxmail.com)
+
 ### 如何配置
 >本项目`AOP`的实现是通过`AsPectJ`来实现的，所以在配置本项目的同时需要加入`AsPectJ`的支持。
 
@@ -104,3 +109,8 @@ android{
 ```gradle
 compile 'com.justkiddingbaby:fragment-rigger:1.0.0'
 ```
+
+### License
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/128px-License_icon-mit-88x31-2.svg.png)
+
+本项目遵循MIT开源协议. 浏览[LICENSE](https://opensource.org/licenses/MIT)查看更多信息.

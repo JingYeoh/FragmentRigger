@@ -7,4 +7,9 @@
   <string name="startfragmentforresult">StartFragmentForResult</string>
   <string name="delay_startfragment">Delay StartFragment</string>
   <string name="startfragment">StartFragment</string>
+  <string name="wechat">WeChat</string>
+  <string name="contacts">Contacts</string>
+  <string name="discover">Discover</string>
+  <string name="me">Me</string>
+  <string name="loading">Loading...</string>
 </resources>
