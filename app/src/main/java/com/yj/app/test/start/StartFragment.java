@@ -7,7 +7,6 @@ import android.widget.TextView;
 import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
-import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
 
@@ -38,7 +37,7 @@ public class StartFragment extends BaseFragment implements OnClickListener {
 
   @Override
   protected int getContentView() {
-    return R.layout.frg_first;
+    return R.layout.frg_start;
   }
 
   @Override
@@ -50,7 +49,6 @@ public class StartFragment extends BaseFragment implements OnClickListener {
     findViewById(R.id.fs_startFragment).setOnClickListener(this);
     findViewById(R.id.fs_print).setOnClickListener(this);
     findViewById(R.id.fs_close).setOnClickListener(this);
-    Logger.d(this, "mHost=" + getHost());
   }
 
   @Override

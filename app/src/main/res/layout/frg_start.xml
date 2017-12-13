@@ -3,40 +3,43 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical">
-  <FrameLayout
-    android:id="@+id/fs_content"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"/>
-
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
-    <Button
-      android:id="@+id/fs_bt_1"
+    <TextView
+      android:id="@+id/ft_tv"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:text="ONE"/>
+      android:gravity="center"
+      android:text="1"/>
     <Button
-      android:id="@+id/fs_bt_2"
+      android:id="@+id/fs_startFragment"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:text="TWO"/>
+      android:text="start"
+      android:textAllCaps="false"/>
     <Button
-      android:id="@+id/fs_bt_3"
+      android:id="@+id/fs_print"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:text="THREE"/>
+      android:text="print"
+      android:textAllCaps="false"/>
     <Button
-      android:id="@+id/fs_bt_4"
+      android:id="@+id/fs_close"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:text="FOUR"/>
+      android:text="close"
+      android:textAllCaps="false"/>
   </LinearLayout>
 
+  <FrameLayout
+    android:id="@+id/firstContent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  </FrameLayout>
 </LinearLayout>

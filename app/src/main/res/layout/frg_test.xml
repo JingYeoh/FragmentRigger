@@ -47,6 +47,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/sharedElement"
-    android:textAllCaps="false"/>
+    android:textAllCaps="false"
+    android:visibility="gone"/>
 
 </LinearLayout>

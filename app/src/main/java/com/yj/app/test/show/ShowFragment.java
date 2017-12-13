@@ -31,7 +31,7 @@ public class ShowFragment extends BaseFragment implements OnClickListener {
 
   @Override
   protected int getContentView() {
-    return R.layout.frg_menu;
+    return R.layout.frg_show;
   }
 
   @Override

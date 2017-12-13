@@ -104,6 +104,7 @@ final class _FragmentRigger extends _Rigger {
       mPopExitAnim = animators[3];
     } catch (Exception ignore) {
     }
+    // TODO: 17-12-13 Add fragment transition animation support not anim id.
   }
 
   /**
