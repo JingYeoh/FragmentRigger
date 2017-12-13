@@ -1,11 +1,13 @@
 package com.yj.app.test;
 
 import android.os.Bundle;
+import android.view.animation.Animation;
 import android.widget.TextView;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
+import com.yj.app.utils.Rotate3d;
 
 /**
  * @author JingYeoh
@@ -51,10 +53,17 @@ public class ContainerFragment extends BaseFragment {
     ((TextView) findViewById(R.id.fc_tv)).setText(value);
   }
 
-  public int[] getPuppetAnimations() {
+  public int[] getPuppetAnimRes() {
     return new int[]{
         R.anim.push_left_in_no_alpha, R.anim.push_right_out_no_alpha,
         R.anim.push_right_in_no_alpha, R.anim.push_left_out_no_alpha
+    };
+  }
+
+  public Animation[] getPuppetAnimations() {
+    return new Animation[]{
+        new Rotate3d(getView()), new Rotate3d(getView()),
+        new Rotate3d(getView()), new Rotate3d(getView())
     };
   }
 }

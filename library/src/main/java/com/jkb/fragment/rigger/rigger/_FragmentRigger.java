@@ -1,6 +1,6 @@
 package com.jkb.fragment.rigger.rigger;
 
-import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIMATIONS;
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIM_RES;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_LAZYLOAD_VIEW_CREATED;
 
 import android.app.Activity;
@@ -87,16 +87,19 @@ final class _FragmentRigger extends _Rigger {
       mPopExitAnim = animator.popExit();
     }
     try {
-      Method method = clazz.getMethod(METHOD_GET_PUPPET_ANIMATIONS);
+      Method method = clazz.getMethod(METHOD_GET_PUPPET_ANIM_RES);
       Object values = method.invoke(mFragment);
+      if (values == null) {
+        throwException(new UnSupportException("Method " + METHOD_GET_PUPPET_ANIM_RES + " return value can't be null"));
+      }
       if (!(values instanceof int[])) {
         throwException(
-            new UnSupportException("Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's type must be int[]"));
+            new UnSupportException("Method " + METHOD_GET_PUPPET_ANIM_RES + " return value's type must be int[]"));
       }
       int[] animators = (int[]) values;
       if (animators == null || animators.length != 4) {
         throwException(
-            new UnSupportException("Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's length must be 4"));
+            new UnSupportException("Method " + METHOD_GET_PUPPET_ANIM_RES + " return value's length must be 4"));
       }
       mEnterAnim = animators[0];
       mExitAnim = animators[1];
@@ -104,7 +107,25 @@ final class _FragmentRigger extends _Rigger {
       mPopExitAnim = animators[3];
     } catch (Exception ignore) {
     }
-    // TODO: 17-12-13 Add fragment transition animation support not anim id.
+
+    try {
+      Method method = clazz.getMethod(METHOD_GET_PUPPET_ANIM_RES);
+      Object values = method.invoke(mFragment);
+      if (values == null) {
+        throwException(new UnSupportException("Method " + METHOD_GET_PUPPET_ANIM_RES + " return value can't be null"));
+      }
+      if (!(values instanceof Animation[])) {
+        throwException(
+            new UnSupportException(
+                "Method " + METHOD_GET_PUPPET_ANIM_RES + " return value's type must be Animation[]"));
+        Animation[] animators = (Animation[]) values;
+        if (animators == null || animators.length != 4) {
+          throwException(
+              new UnSupportException("Method " + METHOD_GET_PUPPET_ANIM_RES + " return value's length must be 4"));
+        }
+      }
+    } catch (Exception ignore) {
+    }
   }
 
   /**

@@ -38,14 +38,25 @@ public interface RiggerConsts {
   String METHOD_ON_LAZYLOAD_VIEW_CREATED = "onLazyLoadViewCreated";
 
   /**
-   * Method for .this method must be defined with the specified params.
-   * This method return value is a string array.the array's max size is four.
+   * Method for fragment animations.this method must be defined with the specified params.
+   * This method return value is a int array.the array's length must equal four.
    * Return[0]:enterAnim
    * Return[1]:exitAnim
    * Return[2]:popEnterAnim
    * Return[3]:popExitAnim
    * For example:
-   * public int[] getPuppetAnimations()
+   * public int[] getPuppetAnimRes()
+   */
+  String METHOD_GET_PUPPET_ANIM_RES = "getPuppetAnimRes";
+  /**
+   * Method for fragment animations.this method must be defined with the specified params.
+   * This method return value is a {@link android.view.animation.Animation} array.the array's length must equal four.
+   * Return[0]:enterAnim
+   * Return[1]:exitAnim
+   * Return[2]:popEnterAnim
+   * Return[3]:popExitAnim
+   * For example:
+   * public Animation[] getPuppetAnimations()
    */
   String METHOD_GET_PUPPET_ANIMATIONS = "getPuppetAnimations";
 }
