@@ -31,11 +31,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             //是否清理无用资源
-            shrinkResources true
+            shrinkResources false
             //是否启用zipAlign压缩
-            zipAlignEnabled true
+            zipAlignEnabled false
             signingConfig signingConfigs.myConfig
             versionNameSuffix rootProject.ext.app.versionNameSuffix
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
