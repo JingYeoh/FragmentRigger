@@ -2,6 +2,7 @@ package com.yj.app.utils;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -18,7 +19,7 @@ public class Rotate3d extends Animation {
 
   private View view;
 
-  public Rotate3d(View view) {
+  public Rotate3d(@NonNull View view) {
     this.view = view;
   }
 

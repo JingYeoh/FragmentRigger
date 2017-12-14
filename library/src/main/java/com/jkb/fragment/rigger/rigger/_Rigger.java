@@ -141,7 +141,7 @@ abstract class _Rigger implements IRigger {
   /**
    * Called after {@link Activity#onRestoreInstanceState}, {@link Activity#onRestart}, or
    * {@link #onPause}, for your activity to start interacting with the user.
-   * This is a good place to begin animations
+   * This is a good place to begin mAnimations
    */
   abstract void onResume();
 
@@ -174,6 +174,13 @@ abstract class _Rigger implements IRigger {
    *                        false if it is not.
    */
   void setUserVisibleHint(boolean isVisibleToUser) {
+  }
+
+  /**
+   * Called when a fragment loads an animation.
+   */
+  Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+    return null;
   }
 
   /**
@@ -405,7 +412,7 @@ abstract class _Rigger implements IRigger {
   }
 
   /**
-   * Add a fragment and set the fragment's animations
+   * Add a fragment and set the fragment's mAnimations
    */
   private void addFragmentWithAnim(Fragment fragment, int containerViewId) {
     _FragmentRigger rigger = (_FragmentRigger) Rigger.getRigger(fragment);
@@ -414,7 +421,7 @@ abstract class _Rigger implements IRigger {
   }
 
   /**
-   * Show a fragment and set the fragment's animations
+   * Show a fragment and set the fragment's mAnimations
    */
   private void showFragmentWithAnim(Fragment fragment) {
     _FragmentRigger rigger = (_FragmentRigger) Rigger.getRigger(fragment);

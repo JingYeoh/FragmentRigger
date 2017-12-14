@@ -68,6 +68,10 @@ public class AspectPuppetFragentLifecycle {
   public void setUserVisibleHintPointCut() {
   }
 
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onCreateAnimation(..))")
+  public void onCreateAnimationPointCut() {
+  }
+
   //****************Process***********************************
   @Around("constructPointCut()")
   public Object constructProcess(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -181,6 +185,20 @@ public class AspectPuppetFragentLifecycle {
     onDestroy.invoke(getRiggerInstance(), puppet, args[0]);
     return result;
   }
+
+  @Around("onCreateAnimationPointCut()")
+  public Object onCreateAnimationProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+    if (!isMarkedByPuppet(puppet)) return result;
+    Object[] args = joinPoint.getArgs();
+
+    Method onDestroy = getRiggerMethod("onCreateAnimation", Object.class, int.class, boolean.class, int.class);
+    Object invoke = onDestroy.invoke(getRiggerInstance(), puppet, args[0], args[1], args[2]);
+    return invoke == null ? result : invoke;
+  }
+
   //****************Helper************************************
 
   /**
