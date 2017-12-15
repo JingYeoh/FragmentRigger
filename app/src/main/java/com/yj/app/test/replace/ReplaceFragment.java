@@ -8,6 +8,7 @@ import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
 import com.yj.app.test.ContainerFragment;
 import com.yj.app.utils.Rotate3d;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -35,25 +36,22 @@ public class ReplaceFragment extends BaseFragment implements OnClickListener {
   @Override
   protected void init(Bundle savedInstanceState) {
     if (savedInstanceState == null) {
-      ContainerFragment fragment = ContainerFragment.newInstance(UUID.randomUUID().toString());
+      ContainerFragment fragment = ContainerFragment.newInstance(new Random().nextInt(5));
       Rigger.getRigger(this).replaceFragment(fragment, R.id.fr_content);
     }
     initListener();
   }
 
   private void initListener() {
-    findViewById(R.id.fr_bt).setOnClickListener(this);
+    findViewById(R.id.fr_content).setOnClickListener(this);
   }
 
   @Override
   public void onClick(View v) {
     switch (v.getId()) {
-      case R.id.fr_bt:
-//        Rigger.getRigger(this)
-//            .replaceFragment(ContainerFragment.newInstance(UUID.randomUUID().toString()), R.id.fr_content);
-        Rotate3d rotate3d = new Rotate3d(v);
-        rotate3d.setDuration(1000);
-        v.startAnimation(rotate3d);
+      case R.id.fr_content:
+        Rigger.getRigger(this)
+            .replaceFragment(ContainerFragment.newInstance(new Random().nextInt(5)), R.id.fr_content);
         break;
     }
   }

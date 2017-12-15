@@ -110,6 +110,10 @@ android{
 compile 'com.justkiddingbaby:fragment-rigger:1.0.0'
 ```
 
+### 发布日志
+**V1.0.0[2017/12/15]**
+1、完成基础功能
+
 ### License
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/128px-License_icon-mit-88x31-2.svg.png)
 

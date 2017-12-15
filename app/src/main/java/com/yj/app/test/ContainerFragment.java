@@ -1,8 +1,9 @@
 package com.yj.app.test;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.animation.Animation;
-import android.widget.TextView;
+import android.widget.ImageView;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.R;
@@ -19,15 +20,21 @@ import com.yj.app.utils.Rotate3d;
 @LazyLoad
 public class ContainerFragment extends BaseFragment {
 
-  public static ContainerFragment newInstance(String value) {
+  public static ContainerFragment newInstance(int value) {
     Bundle args = new Bundle();
-    args.putString(BUNDLE_KEY, value);
+    args.putInt(BUNDLE_KEY, value);
     ContainerFragment fragment = new ContainerFragment();
     fragment.setArguments(args);
     return fragment;
   }
 
-  private String value;
+  private int position;
+  private int[] icons = new int[]{
+      R.drawable.heart, R.drawable.block, R.drawable.motorcycle, R.drawable.bear, R.drawable.content_cloud
+  };
+  private int[] colors = new int[]{
+      R.color.bg_heart, R.color.bg_block, R.color.bg_motorcycle, R.color.bg_bear, R.color.bg_cloud
+  };
 
   @Override
   protected int getContentView() {
@@ -38,19 +45,21 @@ public class ContainerFragment extends BaseFragment {
   protected void init(Bundle savedInstanceState) {
     Logger.d(this, "init isUserHintVisible=" + getUserVisibleHint());
     Bundle args = savedInstanceState == null ? getArguments() : savedInstanceState;
-    value = args.getString(BUNDLE_KEY);
+    position = args.getInt(BUNDLE_KEY);
 
   }
 
   @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    outState.putString(BUNDLE_KEY, value);
+    outState.putInt(BUNDLE_KEY, position);
   }
 
   public void onLazyLoadViewCreated(Bundle savedInstanceState) {
     Logger.d(this, "onLazyLoadViewCreated()");
-    ((TextView) findViewById(R.id.fc_tv)).setText(value);
+    ((ImageView) findViewById(R.id.fc_iv)).setImageResource(icons[position % icons.length]);
+    findViewById(R.id.fc_content)
+        .setBackgroundColor(ContextCompat.getColor(mContext, colors[position % icons.length]));
   }
 
   public int[] getPuppetAnimRes() {
@@ -62,8 +71,7 @@ public class ContainerFragment extends BaseFragment {
 
   public Animation[] getPuppetAnimations() {
     return new Animation[]{
-        new Rotate3d(getView()), new Rotate3d(getView()),
-        new Rotate3d(getView()), new Rotate3d(getView())
+        new Rotate3d(getView()), null, null, null
     };
   }
 }

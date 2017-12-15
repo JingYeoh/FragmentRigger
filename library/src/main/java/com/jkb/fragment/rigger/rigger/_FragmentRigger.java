@@ -314,7 +314,11 @@ final class _FragmentRigger extends _Rigger {
     mStackManager.clear();
     mRiggerTransaction.removeAll();
     Rigger.getRigger(getContainerHost()).close(mFragment);
-    ((_Rigger) Rigger.getRigger(getContainerHost())).startPopFragment(mPopEnterAnim);
+    Animation animation = null;
+    if (mPopEnterAnim > 0) {
+      animation = AnimationUtils.loadAnimation(mContext, mPopEnterAnim);
+    }
+    ((_Rigger) Rigger.getRigger(getContainerHost())).startPopFragment(animation);
   }
 
   @Override

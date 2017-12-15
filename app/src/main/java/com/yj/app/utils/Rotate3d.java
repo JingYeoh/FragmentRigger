@@ -21,6 +21,7 @@ public class Rotate3d extends Animation {
 
   public Rotate3d(@NonNull View view) {
     this.view = view;
+    setDuration(1000);
   }
 
   @Override

@@ -27,7 +27,11 @@ public class ShowFragment extends BaseFragment implements OnClickListener {
     return fragment;
   }
 
+  private ArrayList<String> mContainerTags;
   private ArrayList<String> mFragmentTags;
+  private int[] mContainer = new int[]{
+      R.id.fs_content1, R.id.fs_content2, R.id.fs_content3, R.id.fs_content4
+  };
 
   @Override
   protected int getContentView() {
@@ -38,47 +42,64 @@ public class ShowFragment extends BaseFragment implements OnClickListener {
   protected void init(Bundle savedInstanceState) {
     if (savedInstanceState == null) {
       mFragmentTags = new ArrayList<>();
-      Fragment[] fragments = new Fragment[4];
+      mContainerTags = new ArrayList<>();
+      Fragment[][] fragments = new Fragment[4][2];
       for (int i = 0; i < 4; i++) {
-        fragments[i] = ContainerFragment.newInstance(i + "");
-        mFragmentTags.add(Rigger.getRigger(fragments[i]).getFragmentTAG());
+        fragments[i][0] = ContainerFragment.newInstance(i);
+        fragments[i][1] = ContainerFragment.newInstance(4);
+        mFragmentTags.add(Rigger.getRigger(fragments[i][0]).getFragmentTAG());
+        mContainerTags.add(Rigger.getRigger(fragments[i][1]).getFragmentTAG());
+        Rigger.getRigger(this).addFragment(mContainer[i], fragments[i][0]);
+        Rigger.getRigger(this).addFragment(mContainer[i], fragments[i][1]);
       }
-      Rigger.getRigger(this).addFragment(R.id.fs_content, fragments);
-      Rigger.getRigger(this).showFragment(mFragmentTags.get(0));
+      for (int i = 0; i < 4; i++) {
+        Rigger.getRigger(this).showFragment(mFragmentTags.get(i));
+      }
     } else {
       mFragmentTags = savedInstanceState.getStringArrayList(BUNDLE_KEY);
+      mContainerTags = savedInstanceState.getStringArrayList(BUNDLE_KEY + 1);
     }
     initListener();
   }
 
   private void initListener() {
-    findViewById(R.id.fs_bt_1).setOnClickListener(this);
-    findViewById(R.id.fs_bt_2).setOnClickListener(this);
-    findViewById(R.id.fs_bt_3).setOnClickListener(this);
-    findViewById(R.id.fs_bt_4).setOnClickListener(this);
+    findViewById(R.id.fs_content1).setOnClickListener(this);
+    findViewById(R.id.fs_content2).setOnClickListener(this);
+    findViewById(R.id.fs_content3).setOnClickListener(this);
+    findViewById(R.id.fs_content4).setOnClickListener(this);
   }
 
   @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putStringArrayList(BUNDLE_KEY, mFragmentTags);
+    outState.putStringArrayList(BUNDLE_KEY + 1, mContainerTags);
   }
 
   @Override
   public void onClick(View v) {
     switch (v.getId()) {
-      case R.id.fs_bt_1:
-        Rigger.getRigger(this).showFragment(mFragmentTags.get(0));
+      case R.id.fs_content1:
+        showFragment(0);
         break;
-      case R.id.fs_bt_2:
-        Rigger.getRigger(this).showFragment(mFragmentTags.get(1));
+      case R.id.fs_content2:
+        showFragment(1);
         break;
-      case R.id.fs_bt_3:
-        Rigger.getRigger(this).showFragment(mFragmentTags.get(2));
+      case R.id.fs_content3:
+        showFragment(2);
         break;
-      case R.id.fs_bt_4:
-        Rigger.getRigger(this).showFragment(mFragmentTags.get(3));
+      case R.id.fs_content4:
+        showFragment(3);
         break;
+    }
+  }
+
+  private void showFragment(int position) {
+    Fragment fragment = Rigger.getRigger(this).findFragmentByTag(mFragmentTags.get(position));
+    if (fragment.isHidden()) {
+      Rigger.getRigger(this).showFragment(mFragmentTags.get(position));
+    } else {
+      Rigger.getRigger(this).showFragment(mContainerTags.get(position));
     }
   }
 }

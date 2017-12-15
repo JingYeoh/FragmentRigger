@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
@@ -27,6 +26,8 @@ import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -55,7 +56,7 @@ abstract class _Rigger implements IRigger {
   }
 
   private Object mPuppetTarget;
-  protected Context mContext;
+  Context mContext;
   //data
   @IdRes
   private int mContainerViewId;
@@ -213,6 +214,12 @@ abstract class _Rigger implements IRigger {
   }
 
   @Override
+  public Fragment findFragmentByTag(String tag) {
+    if (!mStackManager.contain(tag)) return null;
+    return mRiggerTransaction.find(tag);
+  }
+
+  @Override
   public void addFragment(@IdRes int containerViewId, Fragment... fragments) {
     if (fragments == null) {
       Logger.w(this, "the fragments to be added is null.");
@@ -241,7 +248,7 @@ abstract class _Rigger implements IRigger {
       throwException(new UnSupportException("ContainerViewId must be effective in class " + mPuppetTarget.getClass()));
     }
     addFragmentWithAnim(fragment, mContainerViewId);
-    mRiggerTransaction.hide(mStackManager.getFragmentTags(getContainerViewId()));
+    mRiggerTransaction.hide(getVisibleFragmentTags(getContainerViewId()));
     mRiggerTransaction.show(fragmentTAG).commit();
   }
 
@@ -264,19 +271,15 @@ abstract class _Rigger implements IRigger {
 
   @Override
   public void startPopFragment() {
-    startPopFragment(0);
+    startPopFragment(null);
   }
 
   /**
    * show pop fragment and start animation.
    */
-  void startPopFragment(int anim) {
-    Animation animation = null;
-    if (anim > 0) {
-      animation = AnimationUtils.loadAnimation(mContext, anim);
-    }
+  void startPopFragment(Animation animation) {
     String topFragmentTag = mStackManager.peek();
-    mRiggerTransaction.hide(mStackManager.getFragmentTags(getContainerViewId()));
+    mRiggerTransaction.hide(getVisibleFragmentTags(getContainerViewId()));
     Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
     if (!TextUtils.isEmpty(topFragmentTag) && topFragment != null) {
       if (animation != null) {
@@ -302,7 +305,7 @@ abstract class _Rigger implements IRigger {
       hideFrag.setUserVisibleHint(false);
     }
     fragment.setUserVisibleHint(true);
-    mRiggerTransaction.hide(fragmentTags);
+    mRiggerTransaction.hide(getVisibleFragmentTags(containerViewId));
     showFragmentWithAnim(fragment);
     mRiggerTransaction.commit();
   }
@@ -318,7 +321,9 @@ abstract class _Rigger implements IRigger {
 
   @Override
   public void hideFragment(@NonNull Fragment fragment) {
-    String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
+    _FragmentRigger rigger = (_FragmentRigger) Rigger.getRigger(fragment);
+    String fragmentTAG = rigger.getFragmentTAG();
+    mRiggerTransaction.setCustomAnimations(rigger.mPopEnterAnim, rigger.mExitAnim);
     mRiggerTransaction.hide(fragmentTAG)
         .commit();
   }
@@ -434,5 +439,25 @@ abstract class _Rigger implements IRigger {
    */
   void throwException(RiggerException e) {
     throw e;
+  }
+
+  /**
+   * Return fragments tag which the fragment's view is visible and is add onto the container view.
+   *
+   * @param containerViewId The container view's id to be found.
+   *
+   * @return The fragment tags.
+   */
+  private String[] getVisibleFragmentTags(@IdRes int containerViewId) {
+    List<String> result = new ArrayList<>();
+    String[] fragmentTags = mStackManager.getFragmentTags(containerViewId);
+    if (fragmentTags == null) return result.toArray(new String[result.size()]);
+    for (String tag : fragmentTags) {
+      Fragment fragment = mRiggerTransaction.find(tag);
+      if (fragment != null && !fragment.isHidden()) {
+        result.add(tag);
+      }
+    }
+    return result.toArray(new String[result.size()]);
   }
 }

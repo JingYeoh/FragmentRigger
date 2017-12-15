@@ -27,6 +27,16 @@ public interface IRigger {
   void onBackPressed();
 
   /**
+   * Finds a fragment that was identified by the given tag either when inflated
+   * from XML or as supplied when added in a transaction.
+   *
+   * @param tag The fragment tag to be found.
+   *
+   * @return The fragment if found or null otherwise.
+   */
+  Fragment findFragmentByTag(String tag);
+
+  /**
    * Add fragments to parent's state.these fragments will not be added into the stack.
    * you can use these fragments with method {@link #showFragment(Fragment, int)}/{@link #showFragment(String)}
    * or {@link #replaceFragment(Fragment, int)}.
