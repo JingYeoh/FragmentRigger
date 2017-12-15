@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.utils.Logger;
@@ -233,13 +232,5 @@ public final class Rigger {
   private void setUserVisibleHint(Object object, boolean isVisibleToUser) {
     Logger.i(object, TAG_HEADER + "setUserVisibleHint");
     createRigger(object).setUserVisibleHint(isVisibleToUser);
-  }
-
-  /**
-   * Inject the method {@link Fragment#onCreateAnimation(int, boolean, int)} .
-   */
-  private Animation onCreateAnimation(Object object, int transit, boolean enter, int nextAnim) {
-    Logger.i(object, TAG_HEADER + "onCreateAnimation");
-    return createRigger(object).onCreateAnimation(transit, enter, nextAnim);
   }
 }

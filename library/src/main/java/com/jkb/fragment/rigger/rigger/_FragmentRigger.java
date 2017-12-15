@@ -1,7 +1,6 @@
 package com.jkb.fragment.rigger.rigger;
 
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIMATIONS;
-import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIM_RES;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_LAZYLOAD_VIEW_CREATED;
 
 import android.app.Activity;
@@ -55,7 +54,6 @@ final class _FragmentRigger extends _Rigger {
   int mExitAnim;
   int mPopEnterAnim;
   int mPopExitAnim;
-  Animation mAnimations[];
   //lazy load
   private boolean mAbleLazyLoad = false;
   private boolean mHasInitView = false;
@@ -90,56 +88,25 @@ final class _FragmentRigger extends _Rigger {
       mPopExitAnim = animator.popExit();
     }
     try {
-      Method method = clazz.getMethod(METHOD_GET_PUPPET_ANIM_RES);
-      Object values = method.invoke(mFragment);
-      if (values == null) {
-        throwException(new UnSupportException("Method " + METHOD_GET_PUPPET_ANIM_RES + " return value can't be null"));
-      }
-      if (!(values instanceof int[])) {
-        throwException(
-            new UnSupportException("Method " + METHOD_GET_PUPPET_ANIM_RES + " return value's type must be int[]"));
-      }
-      int[] animators = (int[]) values;
-      if (animators == null || animators.length != 4) {
-        throwException(
-            new UnSupportException("Method " + METHOD_GET_PUPPET_ANIM_RES + " return value's length must be 4"));
-      }
-      mEnterAnim = animators[0];
-      mExitAnim = animators[1];
-      mPopEnterAnim = animators[2];
-      mPopExitAnim = animators[3];
-    } catch (NoSuchMethodException ignore) {
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Init fragment animation.
-   */
-  private void initAnimations() {
-    mAnimations = new Animation[4];
-    try {
-      Class<? extends Fragment> clazz = mFragment.getClass();
       Method method = clazz.getMethod(METHOD_GET_PUPPET_ANIMATIONS);
       Object values = method.invoke(mFragment);
       if (values == null) {
         throwException(
             new UnSupportException("Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value can't be null"));
       }
-      if (!(values instanceof Animation[])) {
+      if (!(values instanceof int[])) {
         throwException(
-            new UnSupportException(
-                "Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's type must be Animation[]"));
+            new UnSupportException("Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's type must be int[]"));
       }
-      Animation[] animators = (Animation[]) values;
+      int[] animators = (int[]) values;
       if (animators == null || animators.length != 4) {
         throwException(
             new UnSupportException("Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's length must be 4"));
       }
-      mAnimations = animators;
+      mEnterAnim = animators[0];
+      mExitAnim = animators[1];
+      mPopEnterAnim = animators[2];
+      mPopExitAnim = animators[3];
     } catch (NoSuchMethodException ignore) {
     } catch (IllegalAccessException e) {
       e.printStackTrace();
@@ -268,20 +235,6 @@ final class _FragmentRigger extends _Rigger {
   }
 
   @Override
-  Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-    if (mAnimations == null) {
-      initAnimations();
-    }
-    if (enter && mAnimations[0] != null) {
-      return mAnimations[0];
-    }
-    if (!enter && mAnimations[1] != null) {
-      return mAnimations[1];
-    }
-    return super.onCreateAnimation(transit, enter, nextAnim);
-  }
-
-  @Override
   public void startFragment(@NonNull Fragment fragment) {
     //if the fragment has effective containerViewId,then the operation is operated by itself.
     if (getContainerViewId() > 0) {
@@ -367,7 +320,7 @@ final class _FragmentRigger extends _Rigger {
   }
 
   /**
-   * Invoke method onLazyLoadViewCreated.
+   * Invoke method onLazyLoadViewCreated.Rotate3d
    */
   private void invokeOnLazyLoadViewCreated() {
     //make sure the method onLazyViewCreated will be called after onViewCreated.

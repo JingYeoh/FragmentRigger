@@ -36,7 +36,7 @@ public class ReplaceFragment extends BaseFragment implements OnClickListener {
   @Override
   protected void init(Bundle savedInstanceState) {
     if (savedInstanceState == null) {
-      ContainerFragment fragment = ContainerFragment.newInstance(new Random().nextInt(5));
+      ContainerFragment fragment = ContainerFragment.newInstance(new Random().nextInt(5), false);
       Rigger.getRigger(this).replaceFragment(fragment, R.id.fr_content);
     }
     initListener();
@@ -51,7 +51,7 @@ public class ReplaceFragment extends BaseFragment implements OnClickListener {
     switch (v.getId()) {
       case R.id.fr_content:
         Rigger.getRigger(this)
-            .replaceFragment(ContainerFragment.newInstance(new Random().nextInt(5)), R.id.fr_content);
+            .replaceFragment(ContainerFragment.newInstance(new Random().nextInt(5), false), R.id.fr_content);
         break;
     }
   }

@@ -8,7 +8,7 @@ import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
-import com.yj.app.utils.Rotate3d;
+import com.yj.app.utils.AnimationHelper;
 
 /**
  * @author JingYeoh
@@ -20,15 +20,17 @@ import com.yj.app.utils.Rotate3d;
 @LazyLoad
 public class ContainerFragment extends BaseFragment {
 
-  public static ContainerFragment newInstance(int value) {
+  public static ContainerFragment newInstance(int value, boolean customAnim) {
     Bundle args = new Bundle();
     args.putInt(BUNDLE_KEY, value);
+    args.putBoolean(BUNDLE_KEY + 1, customAnim);
     ContainerFragment fragment = new ContainerFragment();
     fragment.setArguments(args);
     return fragment;
   }
 
   private int position;
+  private boolean customAnim;
   private int[] icons = new int[]{
       R.drawable.heart, R.drawable.block, R.drawable.motorcycle, R.drawable.bear, R.drawable.content_cloud
   };
@@ -46,13 +48,14 @@ public class ContainerFragment extends BaseFragment {
     Logger.d(this, "init isUserHintVisible=" + getUserVisibleHint());
     Bundle args = savedInstanceState == null ? getArguments() : savedInstanceState;
     position = args.getInt(BUNDLE_KEY);
-
+    customAnim = args.getBoolean(BUNDLE_KEY + 1);
   }
 
   @Override
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putInt(BUNDLE_KEY, position);
+    outState.putBoolean(BUNDLE_KEY + 1, customAnim);
   }
 
   public void onLazyLoadViewCreated(Bundle savedInstanceState) {
@@ -62,16 +65,22 @@ public class ContainerFragment extends BaseFragment {
         .setBackgroundColor(ContextCompat.getColor(mContext, colors[position % icons.length]));
   }
 
-  public int[] getPuppetAnimRes() {
+  public int[] getPuppetAnimations() {
     return new int[]{
-        R.anim.push_left_in_no_alpha, R.anim.push_right_out_no_alpha,
-        R.anim.push_right_in_no_alpha, R.anim.push_left_out_no_alpha
+        R.anim.push_left_in_no_alpha,
+        R.anim.push_right_out_no_alpha,
+        R.anim.push_right_in_no_alpha,
+        R.anim.push_left_out_no_alpha
     };
   }
 
-  public Animation[] getPuppetAnimations() {
-    return new Animation[]{
-        new Rotate3d(getView()), null, null, null
-    };
+  @Override
+  public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+    if (customAnim) return super.onCreateAnimation(transit, enter, nextAnim);
+    if (enter) {
+      return AnimationHelper.createRotate3dEnterAnimation();
+    } else {
+      return AnimationHelper.createRotate3dExitAnimation();
+    }
   }
 }

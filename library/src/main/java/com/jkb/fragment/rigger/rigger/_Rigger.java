@@ -178,13 +178,6 @@ abstract class _Rigger implements IRigger {
   }
 
   /**
-   * Called when a fragment loads an animation.
-   */
-  Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-    return null;
-  }
-
-  /**
    * If the puppet contain onRiggerBackPressed method, then intercept the {@link #onBackPressed()} method.
    */
   void onRiggerBackPressed() {
@@ -305,8 +298,8 @@ abstract class _Rigger implements IRigger {
       hideFrag.setUserVisibleHint(false);
     }
     fragment.setUserVisibleHint(true);
-    mRiggerTransaction.hide(getVisibleFragmentTags(containerViewId));
     showFragmentWithAnim(fragment);
+    mRiggerTransaction.hide(getVisibleFragmentTags(containerViewId));
     mRiggerTransaction.commit();
   }
 
@@ -454,7 +447,8 @@ abstract class _Rigger implements IRigger {
     if (fragmentTags == null) return result.toArray(new String[result.size()]);
     for (String tag : fragmentTags) {
       Fragment fragment = mRiggerTransaction.find(tag);
-      if (fragment != null && !fragment.isHidden()) {
+      if (fragment != null && !fragment.isHidden() &&
+          fragment.getView() != null && fragment.getView().getVisibility() == View.VISIBLE) {
         result.add(tag);
       }
     }

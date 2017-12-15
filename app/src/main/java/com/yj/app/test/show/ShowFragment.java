@@ -45,8 +45,8 @@ public class ShowFragment extends BaseFragment implements OnClickListener {
       mContainerTags = new ArrayList<>();
       Fragment[][] fragments = new Fragment[4][2];
       for (int i = 0; i < 4; i++) {
-        fragments[i][0] = ContainerFragment.newInstance(i);
-        fragments[i][1] = ContainerFragment.newInstance(4);
+        fragments[i][0] = ContainerFragment.newInstance(i, i % 2 == 0);
+        fragments[i][1] = ContainerFragment.newInstance(4, i % 2 == 0);
         mFragmentTags.add(Rigger.getRigger(fragments[i][0]).getFragmentTAG());
         mContainerTags.add(Rigger.getRigger(fragments[i][1]).getFragmentTAG());
         Rigger.getRigger(this).addFragment(mContainer[i], fragments[i][0]);
