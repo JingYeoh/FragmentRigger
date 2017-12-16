@@ -80,17 +80,22 @@ public class MainActivity extends AppCompatActivity{
 ### 运行效果
 >本项目支持常见场景下的`Fragment`操纵方式，如有不支持的场景，欢迎提交[Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues)或者[Email me ](mailto:yangjing9611@foxmail.com)
 
-|栈管理|同级替换|同级显示|
-|:---:|:-----:|:-----:|
-|<img src="/images/start.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>|<img src="/images/show.gif" width = "200px"/>|
-|支持Fragment同级\多层嵌套，并提供返回自动显示栈顶成员等一系列场景支持|在一个`container`中只显示一个Fragment，对比原生的使用，提供强大并简易的Api支持|通过`show`方法显示`Fragment`，支持预加载，懒加载等场景|
-|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|
+|栈管理|同级替换|
+|:---:|:-----:|
+|<img src="/images/start.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>
+|支持Fragment同级\多层嵌套，并提供返回自动显示栈顶成员等一系列场景支持|在一个`container`中只显示一个Fragment，对比原生的使用，提供强大并简易的Api支持|
+|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|
 
-|懒加载|栈内成员树状图|
-|:---:|:----------:|
-|<img src="/images/lazyload.gif" width = "200px"/>|<img src="/images/tree.png" width = "300px"/>|
-|支持`ViewPager`等场景下的懒加载机制，使用简单，一行注解就可以支持|可在Log中实时查看自己栈内的成员并以树状图打印出栈内`Fragment`的`tag`|
-|[LazyLoadFragment.java](/app/src/main/java/com/yj/app/test/lazyload/LazyLoadFragment.java)|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
+|同级显示|懒加载|
+|<img src="/images/show.gif" width = "200px"/>|<img src="/images/lazyload.gif" width = "200px"/>|
+通过`show`方法显示`Fragment`，支持预加载，懒加载等场景|支持`ViewPager`等场景下的懒加载机制，使用简单，一行注解就可以支持|
+|[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|[LazyLoadFragment.java](/app/src/main/java/com/yj/app/test/lazyload/LazyLoadFragment.java)
+
+|栈内成员树状图|
+|:----------:|
+|<img src="/images/tree.png" width = "300px"/>|
+|可在Log中实时查看自己栈内的成员并以树状图打印出栈内`Fragment tag`|
+|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
 
 >上面的demo只是展示了部分常用的场景，主要是为了突出本框架强大的Api支持，一些针对`Fragment`的其他功能在上面几个demo中也有体现，
 如：`转场动画`、`原生方法的扩展`等，详细使用请看Wiki。
