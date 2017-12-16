@@ -82,13 +82,13 @@ public class MainActivity extends AppCompatActivity{
 
 |栈管理|同级显示|同级替换|
 |:---:|:-----:|:-----:|
-|<img src="/images/start.gif" width = "200" height = "355" alt="start"/>|<img src="/images/show.gif" width = "200" height = "355" alt="start"/>|<img src="/images/replace.gif" width = "200" height = "355" alt="start"/>|
+|<img src="/images/start.gif" width = "200px"/>|<img src="/images/show.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>|
 |支持Fragment同级\多层嵌套，并提供返回自动显示栈顶成员等一系列场景支持|通过`show`方法，支持预加载，懒加载等场景|在一个`container`中只显示一个Fragment，对比原生的使用，提供强大并简易的Api支持|
 |[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|
 
 |懒加载|栈内成员树状图|
 |:---:|:----------:|
-|<img src="/images/lazyload.gif" width = "200" height = "355" alt="start"/>|<img src="/images/tree.png" width = "200" alt="start"/>|
+|<img src="/images/lazyload.gif" width = "200px"/>|<img src="/images/tree.png" width = "300px"/>|
 |支持`ViewPager`等场景下的懒加载机制，使用简单，一行注解就可以支持|可在Log中实时查看自己栈内的成员并以树状图打印出栈内`Fragment`的`tag`|
 |[LazyLoadFragment.java](/app/src/main/java/com/yj/app/test/lazyload/LazyLoadFragment.java)|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
 
@@ -126,7 +126,7 @@ compile 'com.justkiddingbaby:fragment-rigger:1.0.0'
 ```
 
 ### 发布日志
-**V1.0.0[2017/12/15]**
+##### V1.0.0[2017/12/15]  
 1、完成基础功能
 
 ### License
