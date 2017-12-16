@@ -80,6 +80,15 @@ public class MainActivity extends AppCompatActivity{
 ### 运行效果
 >本项目支持常见场景下的`Fragment`操纵方式，如有不支持的场景，欢迎提交[Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues)或者[Email me ](mailto:yangjing9611@foxmail.com)
 
+|场景|演示|代码|样例|
+|:---|:---:|:---|:---|
+|栈管理（同级、多层嵌套）`start`|![start](/images/start.gif)| Rigger.getRigger(this).startFragment(fragment); |[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)
+|同级展示`show`|![show](/images/show.gif)| Rigger.getRigger(this).showFragment(tag); |[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)
+|同级替换`replace`|![show](/replace/show.gif)| Rigger.getRigger(this).replaceFragment(fragment,containerId); |[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)
+|懒加载|![lazy](/lazyload/show.gif)| @LazyLoad |[LazyLoadFragment.java](/app/src/main/java/com/yj/app/test/lazyload/LazyLoadFragment.java)
+
+>上面的demo只是展示了部分常用的场景，主要是为了突出本框架强大的Api支持，一些针对`Fragment`的其他功能在上面几个demo中也有体现，如`转场动画`等，详细使用请看Wiki。
+
 ### 如何配置
 >本项目`AOP`的实现是通过`AsPectJ`来实现的，所以在配置本项目的同时需要加入`AsPectJ`的支持。
 
