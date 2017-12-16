@@ -18,9 +18,9 @@
 [![AsPectJ](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx)
 [![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)
 
->This might is the library to manage fragments at the least cost of use. Do not need to extend any class!!!Do not need to extend any class!!!the most thing must be said for three times!!!
+>This might is the library to manage fragments at the least cost of use. **Do not need extend any class!!!Do not need extend any class!!!Do not need extend any class!!!** the most thing must be said for three times!!!
 you just only cost one line annotation code when you are using `FragmentRigger`.
-Principle of library is define the pointcuts for Fragment/Activity lifecycle methods and bind to the proxy class to execute.
+*Principle of library is define the pointcuts for Fragment/Activity lifecycle methods and bind to the proxy class to execute.*
 
 ### Feature
 - [x] **Powerful api**
@@ -79,31 +79,32 @@ public class MainActivity extends AppCompatActivity{
 ```
 
 ### Demo
->本项目支持常见场景下的`Fragment`操纵方式，如有不支持的场景，欢迎提交[Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues)或者[Email me ](mailto:yangjing9611@foxmail.com)
+>This library support usual fragment using scenes，if you found the scene that this library does not supported，you can post [Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues) or [Email me ](mailto:yangjing9611@foxmail.com)
 
-|栈管理|同级替换|
+|Stack manager|Replace|
 |:---:|:-----:|
 |<img src="/images/start.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>
-|支持Fragment同级\多层嵌套，并提供返回自动显示栈顶成员等一系列场景支持|在一个`container`中只显示一个Fragment，对比原生的使用，提供强大并简易的Api支持|
+|Support fragment level \ multi-layer nesting，and show the top fragment when fragment in the stack is closed|One fragment will be showed in one `container`,this library provide powerful api to let you use fragment easier|
 |[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|
 
-|同级显示|懒加载|
+|Show|Lazy loading|
 |:---:|:-----:|
 |<img src="/images/show.gif" width = "200px"/>|<img src="/images/lazyload.gif" width = "200px"/>|
-通过`show`方法显示`Fragment`，支持预加载，懒加载等场景|支持`ViewPager`等场景下的懒加载机制，使用简单，一行注解就可以支持|
+|show fragment by `showFragment` method，support pre loading，lazy loading|Support the lazy loading scene such as using with `ViewPager`，it's easy to use,you just need add one line annotation code|
 |[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|[LazyLoadFragment.java](/app/src/main/java/com/yj/app/test/lazyload/LazyLoadFragment.java)
 
-|栈内成员树状图|
+|Print stack tree|
 |:----------:|
 |<img src="/images/tree.png" width = "300px"/>|
-|可在Log中实时查看自己栈内的成员并以树状图打印出栈内`Fragment tag`|
+|The fragment stack can be printed in logcat with `Fragment tag`|
 |[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
 
->上面的demo只是展示了部分常用的场景，主要是为了突出本框架强大的Api支持，一些针对`Fragment`的其他功能在上面几个demo中也有体现，
-如：`转场动画`、`原生方法的扩展`等，详细使用请看Wiki。
+>The demos are only showing some usual scenes，the main purpose is to protrude the strong api support of this library，
+other actions can be showed in the demos，such as：`Fragment transition animations`、`Extend the android native fragment methods`,
+**if you want to know more about this library,please see the Wiki.**
 
 ### How to config
->本项目`AOP`的实现是通过`AsPectJ`来实现的，所以在配置本项目的同时需要加入`AsPectJ`的支持。
+>This library is powered by `AspectJ`,you must config the `AspectJ` library if you wanna to use this library.
 
 **1、Add in the root project `build.gradle`**
 ```gradle
@@ -134,9 +135,9 @@ compile 'com.justkiddingbaby:fragment-rigger:1.0.0'
 
 ### Release log
 ##### V1.0.0[2017/12/15]  
-1、完成基础功能
+1、Finish base action.
 
 ### License
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/128px-License_icon-mit-88x31-2.svg.png)
 
-本项目遵循MIT开源协议. 浏览[LICENSE](https://opensource.org/licenses/MIT)查看更多信息.
+This library is available under the MIT license. See the [LICENSE](https://opensource.org/licenses/MIT) file for more info.

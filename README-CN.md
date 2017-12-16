@@ -17,9 +17,9 @@
 [![AsPectJ](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx)
 [![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)
 
->这可能是使用成本最低的Fragment框架了，无需继承！！！无需继承！！！无需继承！！！重要的话说三遍！！
+>这可能是使用成本最低的Fragment框架了，**无需继承！！！无需继承！！！无需继承！！！** 重要的话说三遍！！
 在使用`FragmentRigger`的时候，使用成本只有一行注解！！！
-原理是把`Fragment`/`Activity`生命周期相关方法定义为切点，通过ASpectJ绑定并使用代理类进行操作。
+*原理是把`Fragment`/`Activity`生命周期相关方法定义为切点，通过ASpectJ绑定并使用代理类进行操作。*
 
 ### 特性
 - [x] **超强大Api支持**
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity{
 |[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
 
 >上面的demo只是展示了部分常用的场景，主要是为了突出本框架强大的Api支持，一些针对`Fragment`的其他功能在上面几个demo中也有体现，
-如：`转场动画`、`原生方法的扩展`等，详细使用请看Wiki。
+如：`转场动画`、`原生方法的扩展`等，**详细使用请看Wiki。**
 
 ### 如何配置
 >本项目`AOP`的实现是通过`AsPectJ`来实现的，所以在配置本项目的同时需要加入`AsPectJ`的支持。
