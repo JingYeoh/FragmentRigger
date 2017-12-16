@@ -6,7 +6,7 @@
 ![e](/images/e.png)
 ![r](/images/r.png)
 
-:boom:A powerful library to manage Fragments.    
+:boom:A powerful library to manage Fragments.([Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki))    
 一个强大的Fragment管理框架。（[中文版README](README-CN.md)）
 
 ![Platform](https://img.shields.io/badge/platform-Androd-green.svg)
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity{
 ```
 
 ### Demo
->This library support usual fragment using scenes，if you found the scene that this library does not supported，you can post [Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues) or [Email me ](mailto:yangjing9611@foxmail.com)
+>This library support usual fragment using scenes，if you found the scene that this library does not supported，you can post [Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues) or [Email me](mailto:yangjing9611@foxmail.com)
 
 |Stack manager|Replace|
 |:---:|:-----:|
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity{
 
 >The demos are only showing some usual scenes，the main purpose is to protrude the strong api support of this library，
 other actions can be showed in the demos，such as：`Fragment transition animations`、`Extend the android native fragment methods`,
-**if you want to know more about this library,please see the Wiki.**
+**if you want to know more about this library,please see the [Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki).**
 
 ### How to config
 >This library is powered by `AspectJ`,you must config the `AspectJ` library if you wanna to use this library.

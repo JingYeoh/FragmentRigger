@@ -6,7 +6,7 @@
 ![e](/images/e.png)
 ![r](/images/r.png)
 
-:boom:一个强大的Fragment框架。
+:boom:一个强大的Fragment框架。([Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki/首页))
 
 ![Platform](https://img.shields.io/badge/platform-Androd-green.svg)
 ![Release](https://img.shields.io/badge/release-1.0.0-brightgreen.svg)
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity{
 ```
 
 ### 运行效果
->本项目支持常见场景下的`Fragment`操纵方式，如有不支持的场景，欢迎提交[Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues)或者[Email me ](mailto:yangjing9611@foxmail.com)
+>本项目支持常见场景下的`Fragment`操纵方式，如有不支持的场景，欢迎提交[Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues)或者[Email me](mailto:yangjing9611@foxmail.com)
 
 |栈管理|同级替换|
 |:---:|:-----:|
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity{
 |[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
 
 >上面的demo只是展示了部分常用的场景，主要是为了突出本框架强大的Api支持，一些针对`Fragment`的其他功能在上面几个demo中也有体现，
-如：`转场动画`、`原生方法的扩展`等，**详细使用请看Wiki。**
+如：`转场动画`、`原生方法的扩展`等，**详细使用请看[Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki/首页)。**
 
 ### 如何配置
 >本项目`AOP`的实现是通过`AsPectJ`来实现的，所以在配置本项目的同时需要加入`AsPectJ`的支持。
