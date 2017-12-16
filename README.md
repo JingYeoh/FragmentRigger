@@ -80,11 +80,11 @@ public class MainActivity extends AppCompatActivity{
 ### 运行效果
 >本项目支持常见场景下的`Fragment`操纵方式，如有不支持的场景，欢迎提交[Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues)或者[Email me ](mailto:yangjing9611@foxmail.com)
 
-|栈管理|同级显示|同级替换|
+|栈管理|同级替换|同级显示|
 |:---:|:-----:|:-----:|
-|<img src="/images/start.gif" width = "200px"/>|<img src="/images/show.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>|
-|支持Fragment同级\多层嵌套，并提供返回自动显示栈顶成员等一系列场景支持|通过`show`方法，支持预加载，懒加载等场景|在一个`container`中只显示一个Fragment，对比原生的使用，提供强大并简易的Api支持|
-|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|
+|<img src="/images/start.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>|<img src="/images/show.gif" width = "200px"/>|
+|支持Fragment同级\多层嵌套，并提供返回自动显示栈顶成员等一系列场景支持|在一个`container`中只显示一个Fragment，对比原生的使用，提供强大并简易的Api支持|通过`show`方法显示`Fragment`，支持预加载，懒加载等场景|
+|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|
 
 |懒加载|栈内成员树状图|
 |:---:|:----------:|
