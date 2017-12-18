@@ -17,8 +17,9 @@
 [![AsPectJ](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx)
 [![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)
 
->这可能是使用成本最低的Fragment框架了，**无需继承！！！无需继承！！！无需继承！！！** 重要的话说三遍！！
-在使用`FragmentRigger`的时候，使用成本只有一行注解！！！
+>这可能是使用成本最低的Fragment框架了。  
+**无需继承！！！无需继承！！！无需继承！！！** 重要的话说三遍！！
+在使用`FragmentRigger`的时候，使用成本只有一行注解！！！  
 *原理是把`Fragment`/`Activity`生命周期相关方法定义为切点，通过ASpectJ绑定并使用代理类进行操作。*
 
 ### 特性
@@ -47,8 +48,8 @@
 * ~~不同场景下转场动画不执行问题~~
 
 ### 使用样例
->本框架以**使用成本最低的Fragment框架**为目标，提供了强大的Api支持。
-和已有的大部分`Fragment`框架不同，不需要继承任何父类，只需要添加一行注解即可。
+>本框架以**使用成本最低的Fragment框架**为目标，提供了强大的Api支持。  
+和已有的大部分`Fragment`框架不同，不需要继承任何父类，只需要添加一行注解即可。  
 在操纵`Fragment`的时候只需要通过代理类来操作，本框架完全采用一种插入式的方式来降低使用成本。
 
 **1、声明为框架的支持类**
@@ -80,26 +81,21 @@ public class MainActivity extends AppCompatActivity{
 ### 运行效果
 >本项目支持常见场景下的`Fragment`操纵方式，如有不支持的场景，欢迎提交[Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues)或者[Email me](mailto:yangjing9611@foxmail.com)
 
-|栈管理|同级替换|
-|:---:|:-----:|
-|<img src="/images/start.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>
-|支持Fragment同级\多层嵌套，并提供返回自动显示栈顶成员等一系列场景支持|在一个`container`中只显示一个Fragment，对比原生的使用，提供强大并简易的Api支持|
-|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|
+|栈管理|同级替换|懒加载|
+|:---:|:-----:|:---:|
+|<img src="/images/start.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>|<img src="/images/lazyload.gif" width = "200px"/>|
+|支持Fragment同级\多层嵌套，并提供返回自动显示栈顶成员等一系列场景支持|在一个`container`中只显示一个Fragment，对比原生的使用，提供强大并简易的Api支持|支持`ViewPager`等场景下的懒加载机制，使用简单，一行注解就可以支持|
+|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|[LazyLoadFragment.java](/app/src/main/java/com/yj/app/test/lazyload/LazyLoadFragment.java)|
 
-|同级显示|懒加载|
-|:---:|:-----:|
-|<img src="/images/show.gif" width = "200px"/>|<img src="/images/lazyload.gif" width = "200px"/>|
-通过`show`方法显示`Fragment`，支持预加载，懒加载等场景|支持`ViewPager`等场景下的懒加载机制，使用简单，一行注解就可以支持|
-|[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|[LazyLoadFragment.java](/app/src/main/java/com/yj/app/test/lazyload/LazyLoadFragment.java)
+|同级显示|栈内成员树状图|
+|:-----:|:----------:|
+|<img src="/images/show.gif" width = "200px"/>|<img src="/images/tree.png" width = "300px"/>|
+通过`show`方法显示`Fragment`，支持预加载，懒加载等场景|可在Log中实时查看自己栈内的成员并以树状图打印出栈内`Fragment tag`|
+|[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
 
-|栈内成员树状图|
-|:----------:|
-|<img src="/images/tree.png" width = "300px"/>|
-|可在Log中实时查看自己栈内的成员并以树状图打印出栈内`Fragment tag`|
-|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
-
->上面的demo只是展示了部分常用的场景，主要是为了突出本框架强大的Api支持，一些针对`Fragment`的其他功能在上面几个demo中也有体现，
-如：`转场动画`、`原生方法的扩展`等，**详细使用请看[Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki/首页)。**
+>上面的demo只是展示了部分常用的场景，主要是为了突出本框架强大的Api支持，一些关于`Fragment`的其他功能在上面几个demo中也有体现，
+如：`转场动画`、`原生方法的扩展`等。  
+**详细使用请看[Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki/首页)。**
 
 ### 如何配置
 >本项目`AOP`的实现是通过`AsPectJ`来实现的，所以在配置本项目的同时需要加入`AsPectJ`的支持。

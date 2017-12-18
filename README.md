@@ -18,8 +18,9 @@
 [![AsPectJ](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx)
 [![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)
 
->This might is the library to manage fragments at the least cost of use. **Do not need extend any class!!!Do not need extend any class!!!Do not need extend any class!!!** the most thing must be said for three times!!!
-you just only cost one line annotation code when you are using `FragmentRigger`.
+>This might is the library to manage fragments at the least cost of use.  
+**Do not need extend any class!!!Do not need extend any class!!!Do not need extend any class!!!** the most thing must be said for three times!!!
+you just only need cost one line annotation code when you are using `FragmentRigger`.   
 *Principle of library is define the pointcuts for Fragment/Activity lifecycle methods and bind to the proxy class to execute.*
 
 ### Feature
@@ -48,9 +49,9 @@ you just only cost one line annotation code when you are using `FragmentRigger`.
 * ~~The animation does not perform in different scenarios~~
 
 ### Using example
->**The library at the least cost of use** is this library's target，Provides powerful api.
-this library is differ from the existed fragment library.do not need to extend any class，you just only need add one line annotation code.
-you can manage fragments by proxy class，This library uses a plug-in approach to reduce the cost of use.
+>**The library at the least cost of use** is this library's target,Provides powerful api.   
+this library is differ from the existed fragment library.do not need to extend any class,you just only need add one line annotation code.   
+you can manage fragments by proxy class,This library uses a plug-in approach to reduce the cost of use.
 
 **1、Make your class support the library**
 >Add `@Puppet` annotation for your `Activity/Fragment` that need to use this library.
@@ -67,40 +68,34 @@ public class TestFragment extends Fragment
 ```
 
 **2、Using this library to manage `Fragment`**
->Do not need extend any class，add `@Puppet` annotation，use the proxy class `Rigger` to manage fragments.
+>Do not need extend any class,add `@Puppet` annotation,use the proxy class `Rigger` to manage fragments.
 
 ```java
 @Puppet(containerViewId = R.id.atyContent)
 public class MainActivity extends AppCompatActivity{
   ...
-  //add and show a fragment and add it to the stack，this fragment is placed in the container view.
+  //add and show a fragment and add it to the stack,this fragment is placed in the container view.
    Rigger.getRigger(this).startFragment(TestFragment.newInstance());
 }
 ```
 
 ### Demo
->This library support usual fragment using scenes，if you found the scene that this library does not supported，you can post [Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues) or [Email me](mailto:yangjing9611@foxmail.com)
+>This library support usual fragment using scenes,if you found the scene that this library does not supported,you can post [Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues) or [Email me](mailto:yangjing9611@foxmail.com)
 
-|Stack manager|Replace|
-|:---:|:-----:|
-|<img src="/images/start.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>
-|Support fragment level \ multi-layer nesting，and show the top fragment when fragment in the stack is closed|One fragment will be showed in one `container`,this library provide powerful api to let you use fragment easier|
-|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|
+|Stack manager|Replace|Lazy loading|
+|:-----------:|:-----:||:---------:|
+|<img src="/images/start.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>|<img src="/images/lazyload.gif" width = "200px"/>|
+|Support fragment level/multi-layer nesting,and show the top fragment when fragment in the stack is closed|One fragment will be showed in one `container`,this library provide powerful api to let you use fragment easier|Support the lazy loading scene such as using with `ViewPager`,it's easy to use,you just need add one line annotation code|
+|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|[ReplaceFragment.java](/app/src/main/java/com/yj/app/test/replace/ReplaceFragment.java)|[LazyLoadFragment.java](/app/src/main/java/com/yj/app/test/lazyload/LazyLoadFragment.java)
 
-|Show|Lazy loading|
-|:---:|:-----:|
-|<img src="/images/show.gif" width = "200px"/>|<img src="/images/lazyload.gif" width = "200px"/>|
-|show fragment by `showFragment` method，support pre loading，lazy loading|Support the lazy loading scene such as using with `ViewPager`，it's easy to use,you just need add one line annotation code|
-|[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|[LazyLoadFragment.java](/app/src/main/java/com/yj/app/test/lazyload/LazyLoadFragment.java)
+|Show|Print stack tree|
+|:--:|:--------------:|
+|<img src="/images/show.gif" width = "200px"/>|<img src="/images/tree.png" width = "300px"/>|
+|show fragment by `showFragment` method,support pre loading,lazy loading|The fragment stack can be printed in logcat with `Fragment tag`|
+|[ShowFragment.java](/app/src/main/java/com/yj/app/test/show/ShowFragment.java)|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
 
-|Print stack tree|
-|:----------:|
-|<img src="/images/tree.png" width = "300px"/>|
-|The fragment stack can be printed in logcat with `Fragment tag`|
-|[StartFragment.java](/app/src/main/java/com/yj/app/test/start/StartFragment.java)|
-
->The demos are only showing some usual scenes，the main purpose is to protrude the strong api support of this library，
-other actions can be showed in the demos，such as：`Fragment transition animations`、`Extend the android native fragment methods`,
+>The demos are only showing some usual scenes,the main purpose is to protrude the strong api support of this library,
+some functions about `Fragment` can be showed in the demos,such as：`Fragment transition animations`、`Extend the android native fragment methods`.   
 **if you want to know more about this library,please see the [Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki).**
 
 ### How to config
