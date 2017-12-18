@@ -18,7 +18,7 @@
 [![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)
 
 >这可能是使用成本最低的Fragment框架了。  
-**无需继承！！！无需继承！！！无需继承！！！** 重要的话说三遍！！
+**无需继承！！！无需继承！！！无需继承！！！** 重要的话说三遍！！   
 在使用`FragmentRigger`的时候，使用成本只有一行注解！！！  
 *原理是把`Fragment`/`Activity`生命周期相关方法定义为切点，通过ASpectJ绑定并使用代理类进行操作。*
 
