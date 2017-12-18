@@ -53,7 +53,7 @@ you just only need cost one line annotation code when you are using `FragmentRig
 this library is differ from the existed fragment library.do not need to extend any class,you just only need add one line annotation code.   
 you can manage fragments by proxy class,This library uses a plug-in approach to reduce the cost of use.
 
-**1、Make your class support the library**
+**1、Add your library support**
 >Add `@Puppet` annotation for your `Activity/Fragment` that need to use this library.
 
 ```java
@@ -96,41 +96,19 @@ public class MainActivity extends AppCompatActivity{
 
 >The demos are only showing some usual scenes,the main purpose is to protrude the strong api support of this library,
 some functions about `Fragment` can be showed in the demos,such as：`Fragment transition animations`、`Extend the android native fragment methods`.   
-**if you want to know more about this library,please see the [Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki).**
 
-### How to config
->This library is powered by `AspectJ`,you must config the `AspectJ` library if you wanna to use this library.
-
-**1、Add in the root project `build.gradle`**
-```gradle
-buildscript {
-    dependencies {
-        ...
-        classpath 'com.hujiang.aspectjx:gradle-android-plugin-aspectjx:1.0.10'
-    }
-}
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
-}
-```
-**2、Add in the `application` `build.gradle`**
-```gralde
-apply plugin: 'android-aspectjx'
-android{
-  ...
-}
-```
-**3、Add in the `library` `build.gradle`**
-```gradle
-compile 'com.justkiddingbaby:fragment-rigger:1.0.0'
-```
-
-### Release log
-##### V1.0.0[2017/12/15]  
-1、Finish base action.
+### [Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki)
+#### Getting Started
+* [Installation](https://github.com/JustKiddingBaby/FragmentRigger/wiki)
+* [Using start](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Using-start)
+* [Fragments usage](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Fragment-usage)
+* [Lazy loading](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Lazy-loading)
+* [Transition animations](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Transition-animations)
+* [Intercept onBackPressed](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Intercept-onBackPressed)
+* [startFragmentForResult](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult)
+* [How to use in library module](https://github.com/JustKiddingBaby/FragmentRigger/wiki/How-to-use-in-library-module)
+#### Information
+* [Change Log](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Release-log)
 
 ### License
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/128px-License_icon-mit-88x31-2.svg.png)

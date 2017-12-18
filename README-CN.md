@@ -95,41 +95,19 @@ public class MainActivity extends AppCompatActivity{
 
 >上面的demo只是展示了部分常用的场景，主要是为了突出本框架强大的Api支持，一些关于`Fragment`的其他功能在上面几个demo中也有体现，
 如：`转场动画`、`原生方法的扩展`等。  
-**详细使用请看[Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki/首页)。**
 
-### 如何配置
->本项目`AOP`的实现是通过`AsPectJ`来实现的，所以在配置本项目的同时需要加入`AsPectJ`的支持。
-
-**1、在项目根`build.gradle`中添加**
-```gradle
-buildscript {
-    dependencies {
-        ...
-        classpath 'com.hujiang.aspectjx:gradle-android-plugin-aspectjx:1.0.10'
-    }
-}
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
-}
-```
-**2、在`application`的`build.gradle`中添加**
-```gralde
-apply plugin: 'android-aspectjx'
-android{
-  ...
-}
-```
-**3、在需要支持本库的`library`的`build.gradle`中添加**
-```gradle
-compile 'com.justkiddingbaby:fragment-rigger:1.0.0'
-```
-
-### 发布日志
-##### V1.0.0[2017/12/15]  
-1、完成基础功能
+## Wiki(https://github.com/JustKiddingBaby/FragmentRigger/wiki/首页)
+### 开始
+* [安装](https://github.com/JustKiddingBaby/FragmentRigger/wiki/首页)
+* [开始使用](https://github.com/JustKiddingBaby/FragmentRigger/wiki/开始使用)
+* [Fragment的操纵](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Fragment的操纵)
+* [懒加载](https://github.com/JustKiddingBaby/FragmentRigger/wiki/懒加载)
+* [转场动画](https://github.com/JustKiddingBaby/FragmentRigger/wiki/转场动画)
+* [onBackPressed拦截](https://github.com/JustKiddingBaby/FragmentRigger/wiki/onBackPressed拦截)
+* [startFragmentForResult方法](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult方法)
+* [如何在library module中使用](https://github.com/JustKiddingBaby/FragmentRigger/wiki/如何在library-module中使用)
+### 信息
+* [版本日志](https://github.com/JustKiddingBaby/FragmentRigger/wiki/版本日志)
 
 ### License
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/128px-License_icon-mit-88x31-2.svg.png)
