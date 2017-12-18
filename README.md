@@ -84,7 +84,7 @@ some functions about `Fragment` can be showed in the demos,such as：`Fragment t
 this library is differ from the existed fragment library.do not need to extend any class,you just only need add one line annotation code.   
 you can manage fragments by proxy class,This library uses a plug-in approach to reduce the cost of use.
 
-**1、Add your library support**
+**1、Add your class support**
 >Add `@Puppet` annotation for your `Activity/Fragment` that need to use this library.
 
 ```java
