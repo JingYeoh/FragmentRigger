@@ -48,36 +48,18 @@ you just only need cost one line annotation code when you are using `FragmentRig
 * ~~Lazy loading in ViewPager and other scenarios~~
 * ~~The animation does not perform in different scenarios~~
 
-### Using example
->**At the least cost of use** is this library's target,and this library provides powerful api.   
-this library is differ from the existed fragment library.do not need to extend any class,you just only need add one line annotation code.   
-you can manage fragments by proxy class,This library uses a plug-in approach to reduce the cost of use.
-
-**1、Add your library support**
->Add `@Puppet` annotation for your `Activity/Fragment` that need to use this library.
-
-```java
-//MainActivity.java
-@Puppet(containerViewId = R.id.atyContent)//containerViewId is the fragment to be placed in.
-public class MainActivity extends AppCompatActivity
-```
-```java
-//TestFragment.java
-@Puppet
-public class TestFragment extends Fragment
-```
-
-**2、Using this library to manage `Fragment`**
->Do not need extend any class,add `@Puppet` annotation,use the proxy class `Rigger` to manage fragments.
-
-```java
-@Puppet(containerViewId = R.id.atyContent)
-public class MainActivity extends AppCompatActivity{
-  ...
-  //add and show a fragment and add it to the stack,this fragment is placed in the container view.
-   Rigger.getRigger(this).startFragment(TestFragment.newInstance());
-}
-```
+### [Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki)
+#### Getting Started
+* [Installation](https://github.com/JustKiddingBaby/FragmentRigger/wiki)
+* [Using start](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Using-start)
+* [Fragments usage](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Fragment-usage)
+* [Lazy loading](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Lazy-loading)
+* [Transition animations](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Transition-animations)
+* [Intercept onBackPressed](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Intercept-onBackPressed)
+* [startFragmentForResult](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult)
+* [How to use in library module](https://github.com/JustKiddingBaby/FragmentRigger/wiki/How-to-use-in-library-module)
+#### Information
+* [Change Log](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Release-log)
 
 ### Demo
 >This library support usual fragment using scenes,if you found the scene that this library does not supported,you can post [Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues) or [Email me](mailto:yangjing9611@foxmail.com)
@@ -97,18 +79,36 @@ public class MainActivity extends AppCompatActivity{
 >The demos are only showing some usual scenes,the main purpose is to protrude the strong api support of this library,
 some functions about `Fragment` can be showed in the demos,such as：`Fragment transition animations`、`Extend the android native fragment methods`.   
 
-### [Wiki](https://github.com/JustKiddingBaby/FragmentRigger/wiki)
-#### Getting Started
-* [Installation](https://github.com/JustKiddingBaby/FragmentRigger/wiki)
-* [Using start](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Using-start)
-* [Fragments usage](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Fragment-usage)
-* [Lazy loading](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Lazy-loading)
-* [Transition animations](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Transition-animations)
-* [Intercept onBackPressed](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Intercept-onBackPressed)
-* [startFragmentForResult](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult)
-* [How to use in library module](https://github.com/JustKiddingBaby/FragmentRigger/wiki/How-to-use-in-library-module)
-#### Information
-* [Change Log](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Release-log)
+### Usage example
+>**At the least cost of use** is this library's target,and this library provides powerful api.   
+this library is differ from the existed fragment library.do not need to extend any class,you just only need add one line annotation code.   
+you can manage fragments by proxy class,This library uses a plug-in approach to reduce the cost of use.
+
+**1、Add your library support**
+>Add `@Puppet` annotation for your `Activity/Fragment` that need to use this library.
+
+```java
+//MainActivity.java
+@Puppet(containerViewId = R.id.atyContent)//containerViewId is the fragment to be placed in.
+public class MainActivity extends AppCompatActivity
+```
+```java
+//TestFragment.java
+@Puppet
+public class TestFragment extends Fragment
+```
+
+**2、Fragment usage**
+>Do not need extend any class,add `@Puppet` annotation,use the proxy class `Rigger` to manage fragments.
+
+```java
+@Puppet(containerViewId = R.id.atyContent)
+public class MainActivity extends AppCompatActivity{
+  ...
+  //add and show a fragment and add it to the stack,this fragment is placed in the container view.
+   Rigger.getRigger(this).startFragment(TestFragment.newInstance());
+}
+```
 
 ### License
 ![](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/License_icon-mit-88x31-2.svg/128px-License_icon-mit-88x31-2.svg.png)
