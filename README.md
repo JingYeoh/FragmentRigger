@@ -19,7 +19,7 @@
 [![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)
 
 >This might is the library to manage fragments at the least cost of use.  
-**Do not need extend any class!!!Do not need extend any class!!!Do not need extend any class!!!** the most thing must be said for three times!!!  
+**No need to extend any class!!!No need to extend any class!!!No need to extend any class!!!** the most important thing must be said for three times!!!  
 you just only need cost one line annotation code when you are using `FragmentRigger`.   
 *Principle of library is define the pointcuts for Fragment/Activity lifecycle methods and bind to the proxy class to execute.*
 
@@ -99,7 +99,7 @@ public class TestFragment extends Fragment
 ```
 
 **2、Fragment usage**
->Do not need extend any class,add `@Puppet` annotation,use the proxy class `Rigger` to manage fragments.
+>No need to extend any class, add `@Puppet` annotation, use the proxy class `Rigger` to manage fragments.
 
 ```java
 @Puppet(containerViewId = R.id.atyContent)
