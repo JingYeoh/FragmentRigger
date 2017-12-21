@@ -1,0 +1,38 @@
+[
+    {
+        "merged": "/home/yangjing/Android/App/JustKiddingBaby/FragmentRigger/fragmentrigger/build/intermediates/res/merged/debug/color/abc_primary_text_material_dark.xml",
+        "source": "/home/yangjing/.android/build-cache/3ff82e6ebfb4b083a7cc09d5fda18b1323a69116/output/res/color/abc_primary_text_material_dark.xml"
+    },
+    {
+        "merged": "/home/yangjing/Android/App/JustKiddingBaby/FragmentRigger/fragmentrigger/build/intermediates/res/merged/debug/color/abc_primary_text_disable_only_material_dark.xml",
+        "source": "/home/yangjing/.android/build-cache/3ff82e6ebfb4b083a7cc09d5fda18b1323a69116/output/res/color/abc_primary_text_disable_only_material_dark.xml"
+    },
+    {
+        "merged": "/home/yangjing/Android/App/JustKiddingBaby/FragmentRigger/fragmentrigger/build/intermediates/res/merged/debug/color/abc_secondary_text_material_dark.xml",
+        "source": "/home/yangjing/.android/build-cache/3ff82e6ebfb4b083a7cc09d5fda18b1323a69116/output/res/color/abc_secondary_text_material_dark.xml"
+    },
+    {
+        "merged": "/home/yangjing/Android/App/JustKiddingBaby/FragmentRigger/fragmentrigger/build/intermediates/res/merged/debug/color/abc_primary_text_disable_only_material_light.xml",
+        "source": "/home/yangjing/.android/build-cache/3ff82e6ebfb4b083a7cc09d5fda18b1323a69116/output/res/color/abc_primary_text_disable_only_material_light.xml"
+    },
+    {
+        "merged": "/home/yangjing/Android/App/JustKiddingBaby/FragmentRigger/fragmentrigger/build/intermediates/res/merged/debug/color/abc_primary_text_material_light.xml",
+        "source": "/home/yangjing/.android/build-cache/3ff82e6ebfb4b083a7cc09d5fda18b1323a69116/output/res/color/abc_primary_text_material_light.xml"
+    },
+    {
+        "merged": "/home/yangjing/Android/App/JustKiddingBaby/FragmentRigger/fragmentrigger/build/intermediates/res/merged/debug/color/switch_thumb_material_light.xml",
+        "source": "/home/yangjing/.android/build-cache/3ff82e6ebfb4b083a7cc09d5fda18b1323a69116/output/res/color/switch_thumb_material_light.xml"
+    },
+    {
+        "merged": "/home/yangjing/Android/App/JustKiddingBaby/FragmentRigger/fragmentrigger/build/intermediates/res/merged/debug/color/abc_search_url_text.xml",
+        "source": "/home/yangjing/.android/build-cache/3ff82e6ebfb4b083a7cc09d5fda18b1323a69116/output/res/color/abc_search_url_text.xml"
+    },
+    {
+        "merged": "/home/yangjing/Android/App/JustKiddingBaby/FragmentRigger/fragmentrigger/build/intermediates/res/merged/debug/color/abc_secondary_text_material_light.xml",
+        "source": "/home/yangjing/.android/build-cache/3ff82e6ebfb4b083a7cc09d5fda18b1323a69116/output/res/color/abc_secondary_text_material_light.xml"
+    },
+    {
+        "merged": "/home/yangjing/Android/App/JustKiddingBaby/FragmentRigger/fragmentrigger/build/intermediates/res/merged/debug/color/switch_thumb_material_dark.xml",
+        "source": "/home/yangjing/.android/build-cache/3ff82e6ebfb4b083a7cc09d5fda18b1323a69116/output/res/color/switch_thumb_material_dark.xml"
+    }
+]

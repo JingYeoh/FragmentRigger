@@ -53,6 +53,6 @@ android {
 
 dependencies {
     compile rootProject.ext.dependencies.design
-    compile project(":library")
+    compile project(':fragment-rigger')
     compile 'com.squareup.picasso:picasso:2.5.2'
 }
