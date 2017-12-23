@@ -7,15 +7,18 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
-import java.lang.reflect.Method;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+
+import java.lang.reflect.Method;
 
 /**
  * Using AspectJ tools reach AOP. this class is used to inject
@@ -28,7 +31,7 @@ import org.aspectj.lang.annotation.Pointcut;
  * @since Nov 19,2017
  */
 @Aspect
-public class AspectPuppetFragentLifecycle {
+public class AspectPuppetFragmentLifecycle {
 
   //****************PointCut***********************************
 
