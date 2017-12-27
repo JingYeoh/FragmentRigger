@@ -23,3 +23,25 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-ignorewarnings
+
+-keep class com.jkb.fragment.rigger.rigger.** {*;}
+-keep interface com.jkb.fragment.rigger.rigger.** {*;}
+
+-keep public class * extends android.app.Activity
+-keep public class * extends android.support.v4.app.Fragment
+-keepclassmembers class * extends android.app.Activity {
+   public int getContainerViewId();
+   public void onRiggerBackPressed();
+   public void onFragmentResult(int,int,android.os.Bundle);
+   public void onLazyLoadViewCreated(android.os.Bundle);
+   public int[] getPuppetAnimations();
+}
+-keepclassmembers class * extends android.support.v4.app.Fragment {
+   public int getContainerViewId();
+   public void onRiggerBackPressed();
+   public void onFragmentResult(int,int,android.os.Bundle);
+   public void onLazyLoadViewCreated(android.os.Bundle);
+   public int[] getPuppetAnimations();
+}

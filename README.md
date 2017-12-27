@@ -59,6 +59,7 @@ you just only need cost one line annotation code when you are using `FragmentRig
 * [startFragmentForResult](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult)
 * [How to use in library module](https://github.com/JustKiddingBaby/FragmentRigger/wiki/How-to-use-in-library-module)
 #### Information
+* [ProGuard](https://github.com/JustKiddingBaby/FragmentRigger/wiki/ProGuard)
 * [Change Log](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Release-log)
 
 ### Demo

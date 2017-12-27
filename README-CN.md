@@ -58,6 +58,7 @@
 * [startFragmentForResult方法](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult方法)
 * [如何在library module中使用](https://github.com/JustKiddingBaby/FragmentRigger/wiki/如何在library-module中使用)
 #### 信息
+* [代码混淆](https://github.com/JustKiddingBaby/FragmentRigger/wiki/代码混淆)
 * [版本日志](https://github.com/JustKiddingBaby/FragmentRigger/wiki/版本日志)
 
 ### 运行效果
