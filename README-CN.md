@@ -92,7 +92,7 @@ public class TestFragment extends Fragment
 ```
 
 **2、使用框架操纵`Fragment`**
->我们没有继承类，只需要声明一个注解就可以使用本框架，在使用框架提供的`Fragment`操纵的方法的时候通过代理类来使用。
+>添加`@Puppet`注解之后，在使用框架提供的`Fragment`操纵的方法的时候通过代理类`Rigger`来操纵。
 
 ```java
 @Puppet(containerViewId = R.id.atyContent)

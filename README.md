@@ -91,7 +91,7 @@ public class TestFragment extends Fragment
 ```
 
 **2、Fragment usage**
->No need to extend any class, add `@Puppet` annotation, use the proxy class `Rigger` to manage fragments.
+>After add `@Puppet` annotation, use the proxy class `Rigger` to manage fragments.
 
 ```java
 @Puppet(containerViewId = R.id.atyContent)
