@@ -18,22 +18,35 @@
 [![AsPectJ](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx)
 [![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)
 
-**This might is the library that at the least cost of use to manage fragments.**
-**No need to extend any class!!!No need to extend any class!!!No need to extend any class!!!** the most important thing must be said for three times!!!
-you just only cost one line annotation code when you are using `FragmentRigger`.
+**This might is the library that at the least cost of use to manage fragments.**    
+**No need to extend any class!!! No need to extend any class!!! No need to extend any class!!!** the most important thing must be said for three times!!!   
+You can use this `FragmentRigger` with one line annotation.  
 **Principle:** define the pointcuts for Fragment/Activity lifecycle methods and bind to the proxy class to execute.
-
-### Target
-* **Make Fragment use easier.**
-* **The library at the least cost of use to manage fragments.**
 
 ### Demo
 >This library support usual fragment using scenes,if you found the scene that this library does not supported,you can post [Issues](https://github.com/JustKiddingBaby/FragmentRigger/issues) or [Email me](mailto:yangjing9611@foxmail.com)
 
-|Stack manager|Show|Lazy loading|
-|:-----------:|:-----:|:---------:|
-|<img src="/images/start.gif" width = "200px"/>|<img src="/images/show.gif" width = "200px"/>|<img src="/images/lazyload.gif" width = "200px"/>|
+|Stack manager|Show|Lazy loading|Replace|
+|:-----------:|:-----:|:---------:|:------:|
+|<img src="/images/start.gif" width = "200px"/>|<img src="/images/show.gif" width = "200px"/>|<img src="/images/lazyload.gif" width = "200px"/>|<img src="/images/replace.gif" width = "200px"/>|
 
+### Goal
+* Make Fragment use easier.
+* At the least cost of use to manage fragments.
+
+### Wiki
+#### Getting Started
+* [Installation](https://github.com/JustKiddingBaby/FragmentRigger/wiki)
+* [Using start](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Using-start)
+* [Fragments usage](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Fragment-usage)
+* [Lazy loading](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Lazy-loading)
+* [Transition animations](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Transition-animations)
+* [Intercept onBackPressed](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Intercept-onBackPressed)
+* [startFragmentForResult](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult)
+* [How to use in library module](https://github.com/JustKiddingBaby/FragmentRigger/wiki/How-to-use-in-library-module)
+#### Information
+* [ProGuard](https://github.com/JustKiddingBaby/FragmentRigger/wiki/ProGuard)
+* [Change Log](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Release-log)
 
 ### Feature
 - [x] **Powerful api**
@@ -59,20 +72,6 @@ you just only cost one line annotation code when you are using `FragmentRigger`.
 * ~~Can not perform this action after onSaveInstanceState~~
 * ~~Lazy loading in ViewPager and other scenarios~~
 * ~~The animation does not perform in different scenarios~~
-
-### Wiki
-#### Getting Started
-* [Installation](https://github.com/JustKiddingBaby/FragmentRigger/wiki)
-* [Using start](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Using-start)
-* [Fragments usage](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Fragment-usage)
-* [Lazy loading](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Lazy-loading)
-* [Transition animations](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Transition-animations)
-* [Intercept onBackPressed](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Intercept-onBackPressed)
-* [startFragmentForResult](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult)
-* [How to use in library module](https://github.com/JustKiddingBaby/FragmentRigger/wiki/How-to-use-in-library-module)
-#### Information
-* [ProGuard](https://github.com/JustKiddingBaby/FragmentRigger/wiki/ProGuard)
-* [Change Log](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Release-log)
 
 ### Usage example
 >This library provides powerful api.
