@@ -25,8 +25,8 @@ ext {
             targetSdkVersion          : 23,
             compileSdkVersion         : 23,
             buildToolsVersion         : "25.0.0",
-            sourceCompatibilityVersion: JavaVersion.VERSION_1_7,
-            targetCompatibilityVersion: JavaVersion.VERSION_1_7
+            sourceCompatibilityVersion: JavaVersion.VERSION_1_8,
+            targetCompatibilityVersion: JavaVersion.VERSION_1_8
     ]
 
     dependencies = [

@@ -44,6 +44,7 @@
 * [startFragmentForResult方法](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult方法)
 * [如何在library module中使用](https://github.com/JustKiddingBaby/FragmentRigger/wiki/如何在library-module中使用)
 #### 信息
+* [gradle错误](https://github.com/JustKiddingBaby/FragmentRigger/wiki/gradle%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98)
 * [代码混淆](https://github.com/JustKiddingBaby/FragmentRigger/wiki/代码混淆)
 * [版本日志](https://github.com/JustKiddingBaby/FragmentRigger/wiki/版本日志)
 
