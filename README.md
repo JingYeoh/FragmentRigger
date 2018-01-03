@@ -45,6 +45,7 @@ You can use this `FragmentRigger` with one line annotation.
 * [startFragmentForResult](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult)
 * [How to use in library module](https://github.com/JustKiddingBaby/FragmentRigger/wiki/How-to-use-in-library-module)
 #### Information
+* [Errors in gradle](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Errors-in-gradle)
 * [ProGuard](https://github.com/JustKiddingBaby/FragmentRigger/wiki/ProGuard)
 * [Change Log](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Release-log)
 
