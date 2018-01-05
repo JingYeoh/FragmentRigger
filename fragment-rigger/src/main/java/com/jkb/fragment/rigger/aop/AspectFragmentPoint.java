@@ -28,7 +28,7 @@ import org.aspectj.lang.annotation.Pointcut;
  * @since Nov 19,2017
  */
 @Aspect
-public class AspectFragentPoint {
+public class AspectFragmentPoint {
 
   //****************PointCut***********************************
 
@@ -68,13 +68,17 @@ public class AspectFragentPoint {
   public void setUserVisibleHintPointCut() {
   }
 
+  @Pointcut("within(@com.jkb.fragment.rigger.annotation.Puppet *)")
+  public void annotatedWithPuppetPointCut() {
+  }
+
   //****************Process***********************************
-  @Around("constructPointCut()")
+  @Around("constructPointCut() && annotatedWithPuppetPointCut()") //这里增加了annotation
   public Object constructProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+//    if (!isMarkedByPuppet(puppet)) return result; //这里的判断不需要了
 
     Method onAttach = getRiggerMethod("onPuppetConstructor", Object.class);
     onAttach.invoke(getRiggerInstance(), puppet);
