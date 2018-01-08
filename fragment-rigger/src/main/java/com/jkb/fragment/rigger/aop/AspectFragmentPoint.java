@@ -32,65 +32,65 @@ public class AspectFragmentPoint {
 
   //****************PointCut***********************************
 
-  @Pointcut("execution(android.support.v4.app.Fragment+.new())")
-  public void constructPointCut() {
-  }
-
-  @Pointcut("execution(* android.support.v4.app.Fragment+.onAttach(..))")
-  public void onAttachPointCut() {
-  }
-
-  @Pointcut("execution(* android.support.v4.app.Fragment+.onCreate(..))")
-  public void onCreatePointCut() {
-  }
-
-  @Pointcut("call(* android.support.v4.app.Fragment+.onViewCreated(..))")
-  public void onViewCreatedPointCut() {
-  }
-
-  @Pointcut("execution(* android.support.v4.app.Fragment+.onCreateView(..))")
-  public void onCreateViewPointCut() {
-  }
-
-  @Pointcut("execution(* android.support.v4.app.Fragment+.onResume(..))")
-  public void onResumePointCut() {
-  }
-
-  @Pointcut("execution(* android.support.v4.app.Fragment+.onSaveInstanceState(..))")
-  public void onSaveInstanceStatePointCut() {
-  }
-
-  @Pointcut("execution(* android.support.v4.app.Fragment+.onDestroy(..))")
-  public void onDestroyPointCut() {
-  }
-
-  @Pointcut("execution(* android.support.v4.app.Fragment+.setUserVisibleHint(..))")
-  public void setUserVisibleHintPointCut() {
-  }
-
   @Pointcut("within(@com.jkb.fragment.rigger.annotation.Puppet *)")
-  public void annotatedWithPuppetPointCut() {
+  public void annotatedWithPuppet() {
+  }
+
+  @Pointcut("execution(android.support.v4.app.Fragment+.new()) && annotatedWithPuppet()")
+  public void constructor() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onAttach(..)) && annotatedWithPuppet()")
+  public void onAttach() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onCreate(..)) && annotatedWithPuppet()")
+  public void onCreate() {
+  }
+
+  @Pointcut("call(* android.support.v4.app.Fragment+.onViewCreated(..)) && annotatedWithPuppet()")
+  public void onViewCreated() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onCreateView(..)) && annotatedWithPuppet()")
+  public void onCreateView() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onResume(..)) && annotatedWithPuppet()")
+  public void onResume() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onSaveInstanceState(..)) && annotatedWithPuppet()")
+  public void onSaveInstanceState() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onDestroy(..)) && annotatedWithPuppet()")
+  public void onDestroy() {
+  }
+
+  @Pointcut("execution(* android.support.v4.app.Fragment+.setUserVisibleHint(..)) && annotatedWithPuppet()")
+  public void setUserVisibleHint() {
   }
 
   //****************Process***********************************
-  @Around("constructPointCut() && annotatedWithPuppetPointCut()") //这里增加了annotation
+  @Around("constructor()")
   public Object constructProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-//    if (!isMarkedByPuppet(puppet)) return result; //这里的判断不需要了
+//    if (!isMarkedByPuppet(puppet)) return result;
 
     Method onAttach = getRiggerMethod("onPuppetConstructor", Object.class);
     onAttach.invoke(getRiggerInstance(), puppet);
     return result;
   }
 
-  @Around("onAttachPointCut()")
+  @Around("onAttach()")
   public Object onAttachProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+//    if (!isMarkedByPuppet(puppet)) return result;
     Object[] args = joinPoint.getArgs();
 
     Method onAttach = getRiggerMethod("onAttach", Object.class, Context.class);
@@ -98,12 +98,12 @@ public class AspectFragmentPoint {
     return result;
   }
 
-  @Around("onCreatePointCut()")
+  @Around("onCreate()")
   public Object onCreateProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+//    if (!isMarkedByPuppet(puppet)) return result;
     Object[] args = joinPoint.getArgs();
 
     Method onCreate = getRiggerMethod("onCreate", Object.class, Bundle.class);
@@ -111,12 +111,12 @@ public class AspectFragmentPoint {
     return result;
   }
 
-  @Around("onCreateViewPointCut()")
+  @Around("onCreateView()")
   public Object onCreateViewProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+//    if (!isMarkedByPuppet(puppet)) return result;
     Object[] args = joinPoint.getArgs();
 
     Method onCreate = getRiggerMethod("onCreateView", Object.class, LayoutInflater.class, ViewGroup.class,
@@ -125,35 +125,35 @@ public class AspectFragmentPoint {
     return riggerResult == null ? result : riggerResult;
   }
 
-  @After("onViewCreatedPointCut()")
+  @After("onViewCreated()")
   public void onViewCreatedProcess(JoinPoint joinPoint) throws Throwable {
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return;
+//    if (!isMarkedByPuppet(puppet)) return;
     Object[] args = joinPoint.getArgs();
 
     Method onCreate = getRiggerMethod("onViewCreated", Object.class, View.class, Bundle.class);
     onCreate.invoke(getRiggerInstance(), puppet, args[0], args[1]);
   }
 
-  @Around("onResumePointCut()")
+  @Around("onResume()")
   public Object onResumeProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+//    if (!isMarkedByPuppet(puppet)) return result;
 
     Method onPause = getRiggerMethod("onResume", Object.class);
     onPause.invoke(getRiggerInstance(), puppet);
     return result;
   }
 
-  @Around("onSaveInstanceStatePointCut()")
+  @Around("onSaveInstanceState()")
   public Object onSaveInstanceStateProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+//    if (!isMarkedByPuppet(puppet)) return result;
     Object[] args = joinPoint.getArgs();
 
     Method onSaveInstanceState = getRiggerMethod("onSaveInstanceState", Object.class, Bundle.class);
@@ -161,24 +161,24 @@ public class AspectFragmentPoint {
     return result;
   }
 
-  @Around("onDestroyPointCut()")
+  @Around("onDestroy()")
   public Object onDestroyProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+//    if (!isMarkedByPuppet(puppet)) return result;
 
     Method onDestroy = getRiggerMethod("onDestroy", Object.class);
     onDestroy.invoke(getRiggerInstance(), puppet);
     return result;
   }
 
-  @Around("setUserVisibleHintPointCut()")
+  @Around("setUserVisibleHint()")
   public Object setUserVisibleHintProcess(ProceedingJoinPoint joinPoint) throws Throwable {
     Object result = joinPoint.proceed();
     Object puppet = joinPoint.getTarget();
     //Only inject the class that marked by Puppet annotation.
-    if (!isMarkedByPuppet(puppet)) return result;
+//    if (!isMarkedByPuppet(puppet)) return result;
     Object[] args = joinPoint.getArgs();
 
     Method onDestroy = getRiggerMethod("setUserVisibleHint", Object.class, boolean.class);

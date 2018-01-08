@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import com.jkb.fragment.rigger.utils.Logger;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -46,7 +47,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
   private int mEnterAnim;
   private int mExitAnim;
   private LinkedList<Op> mTransactions;
-  private Map<String, Fragment> mAdded;
+  private Map<String, WeakReference<Fragment>> mAdded;
 
   RiggerTransactionImpl(_Rigger rigger, FragmentManager mFragmentManager) {
     this.mFragmentManager = mFragmentManager;
@@ -71,8 +72,11 @@ final class RiggerTransactionImpl extends RiggerTransaction {
   Fragment find(String tag) {
     if (TextUtils.isEmpty(tag)) return null;
     Fragment fragment = mFragmentManager.findFragmentByTag(tag);
-    if (fragment == null) {
-      fragment = mAdded.get(tag);
+    if (fragment == null && mAdded.containsKey(tag)) {
+      fragment = mAdded.get(tag).get();
+      if (fragment == null) {
+        mAdded.remove(tag);
+      }
     }
     return fragment;
   }
@@ -87,7 +91,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
     addOp(op);
     //add to list.
     if (!mAdded.containsKey(tag)) {
-      mAdded.put(tag, fragment);
+      mAdded.put(tag, new WeakReference<>(fragment));
     }
     return this;
   }
