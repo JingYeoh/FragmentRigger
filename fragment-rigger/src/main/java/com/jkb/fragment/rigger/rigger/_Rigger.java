@@ -7,17 +7,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationSet;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
@@ -453,5 +458,85 @@ abstract class _Rigger implements IRigger {
       }
     }
     return result.toArray(new String[result.size()]);
+  }
+  
+  /**
+   * Sets the to be animated view on hardware layer during the animation.Note
+   * that calling this will replace any existing animation listener on the animation
+   * with a new one, as animations do not support more than one listeners. Therefore,
+   * animations that already have listeners should do the layer change operations
+   * in their existing listeners, rather than calling this function.
+   */
+  void setHWLayerAnimListenerIfAlpha(View v, Animation anim) {
+    if (v == null || anim == null) {
+      return;
+    }
+    if (shouldRunOnHWLayer(v, anim)) {
+      anim.setAnimationListener(new AnimateOnHWLayerIfNeededListener(v, anim));
+    }
+  }
+
+  static boolean shouldRunOnHWLayer(View v, Animation anim) {
+    return ViewCompat.getLayerType(v) == ViewCompat.LAYER_TYPE_NONE
+        && ViewCompat.hasOverlappingRendering(v)
+        && modifiesAlpha(anim);
+  }
+
+  static boolean modifiesAlpha(Animation anim) {
+    if (anim instanceof AlphaAnimation) {
+      return true;
+    } else if (anim instanceof AnimationSet) {
+      List<Animation> anims = ((AnimationSet) anim).getAnimations();
+      for (int i = 0; i < anims.size(); i++) {
+        if (anims.get(i) instanceof AlphaAnimation) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  static class AnimateOnHWLayerIfNeededListener implements AnimationListener {
+
+    private boolean mShouldRunOnHWLayer = false;
+    private View mView;
+
+    AnimateOnHWLayerIfNeededListener(final View v, Animation anim) {
+      if (v == null || anim == null) {
+        return;
+      }
+      mView = v;
+    }
+
+    @Override
+    @CallSuper
+    public void onAnimationStart(Animation animation) {
+      mShouldRunOnHWLayer = shouldRunOnHWLayer(mView, animation);
+      if (mShouldRunOnHWLayer) {
+        mView.post(new Runnable() {
+          @Override
+          public void run() {
+            ViewCompat.setLayerType(mView, ViewCompat.LAYER_TYPE_HARDWARE, null);
+          }
+        });
+      }
+    }
+
+    @Override
+    @CallSuper
+    public void onAnimationEnd(Animation animation) {
+      if (mShouldRunOnHWLayer) {
+        mView.post(new Runnable() {
+          @Override
+          public void run() {
+            ViewCompat.setLayerType(mView, ViewCompat.LAYER_TYPE_NONE, null);
+          }
+        });
+      }
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+    }
   }
 }

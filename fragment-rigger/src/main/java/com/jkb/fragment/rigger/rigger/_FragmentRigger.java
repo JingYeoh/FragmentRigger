@@ -260,6 +260,7 @@ final class _FragmentRigger extends _Rigger {
       if (!isParentBond || parentStackSize > 0) {
         Animation animation = AnimationUtils.loadAnimation(mActivity, mExitAnim);
         if (animation != null) {
+          setHWLayerAnimListenerIfAlpha(mFragment.getView(), animation);
           mFragment.getView().startAnimation(animation);
         }
       }
