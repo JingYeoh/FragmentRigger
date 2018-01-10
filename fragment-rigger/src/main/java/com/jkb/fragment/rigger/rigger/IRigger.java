@@ -164,6 +164,11 @@ public interface IRigger {
   boolean isBondContainerView();
 
   /**
+   * Returns the value of lazyloading in {@link com.jkb.fragment.rigger.annotation.LazyLoad}
+   */
+  boolean isLazyLoading();
+
+  /**
    * Call this to set the result that your fragment will return to its
    * caller.
    *

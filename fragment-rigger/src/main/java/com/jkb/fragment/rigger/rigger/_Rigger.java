@@ -372,6 +372,11 @@ abstract class _Rigger implements IRigger {
   }
 
   @Override
+  public boolean isLazyLoading() {
+    return false;
+  }
+
+  @Override
   final public Stack<String> getFragmentStack() {
     if (mStackManager == null || mStackManager.getFragmentStack() == null) return new Stack<>();
     return (Stack<String>) mStackManager.getFragmentStack().clone();

@@ -11,12 +11,12 @@ ext {
     ]
 
     rigger = [
-            publishCode   : 1,
-            publishVersion: "1.0.0",
+            publishCode   : 2,
+            publishVersion: "1.0.1",
             userOrg       : 'jkb',
             groupId       : 'com.justkiddingbaby',
             artifactId    : 'fragment-rigger',
-            desc          : 'A powerfual library to manage Fragments.',
+            desc          : 'A powerfual library powered by aop to manage Fragments.',
             website       : 'https://github.com/JustKiddingBaby/FragmentRigger'
     ]
 

@@ -10,10 +10,8 @@
 一个强大的Fragment管理框架。（[中文版入口](README-CN.md)）
 
 ![Platform](https://img.shields.io/badge/platform-Androd-green.svg)
-![Release](https://img.shields.io/badge/release-1.0.0-brightgreen.svg)
 ![Download](https://api.bintray.com/packages/jkb/maven/fragment-rigger/images/download.svg)
 ![SDK](https://img.shields.io/badge/SDK-12%2B-green.svg)
-![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)
 ![Build](https://img.shields.io/badge/Powered%20by-AsPectJ-blue.svg)
 [![AsPectJ](https://img.shields.io/badge/license-MIT-yellowgreen.svg)](https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx)
 [![JingYeoh](https://img.shields.io/badge/author-JustKiddingBaby-red.svg)](http://blog.justkiddingbaby.com/)

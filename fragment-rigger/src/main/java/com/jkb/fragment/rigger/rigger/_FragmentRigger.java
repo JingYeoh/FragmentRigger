@@ -281,6 +281,11 @@ final class _FragmentRigger extends _Rigger {
   }
 
   @Override
+  public boolean isLazyLoading() {
+    return mAbleLazyLoad;
+  }
+
+  @Override
   public void setResult(int resultCode, Bundle bundle) {
     if (mForResultTarget == null) {
       throwException(new UnSupportException("class " + this + " is not started by startFragmentForResult() method"));
