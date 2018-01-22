@@ -57,6 +57,8 @@
 - [x] **Fragment懒加载**
 - [x] **Fragment转场动画**
 - [ ] **Fragment间共享元素转场动画**
+- [ ] **为非栈内的Fragment添加onBackPressed支持**
+- [ ] **左滑退出**
 
 ### 解决的问题
 * ~~Fragment界面重叠~~

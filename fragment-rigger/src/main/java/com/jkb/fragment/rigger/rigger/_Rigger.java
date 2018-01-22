@@ -197,6 +197,16 @@ abstract class _Rigger implements IRigger {
 
   @Override
   public void onBackPressed() {
+    //call the show or replace fragment;s onBackPressed method.
+    String[] fragmentsWithoutStack = mStackManager.getFragmentsWithoutStack();
+    for (String tag : fragmentsWithoutStack) {
+      Fragment fragmentWithoutStack = mRiggerTransaction.find(tag);
+      if (fragmentWithoutStack == null) {
+        throwException(new NotExistException(tag));
+      }
+      ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).onRiggerBackPressed();
+    }
+
     String topFragmentTag = mStackManager.peek();
     //the stack is empty,close the Activity.
     if (TextUtils.isEmpty(topFragmentTag)) {
@@ -464,7 +474,7 @@ abstract class _Rigger implements IRigger {
     }
     return result.toArray(new String[result.size()]);
   }
-  
+
   /**
    * Sets the to be animated view on hardware layer during the animation.Note
    * that calling this will replace any existing animation listener on the animation

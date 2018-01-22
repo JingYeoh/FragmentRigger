@@ -71,27 +71,27 @@ public final class Rigger {
   /**
    * Returns the Rigger that can rig the puppet object.
    *
-   * @param object puppet class.must be a child class of {@link Fragment} or {@link AppCompatActivity}
+   * @param puppet puppet class.must be a child class of {@link Fragment} or {@link AppCompatActivity}
    */
   @NonNull
-  public static IRigger getRigger(Object object) {
+  public static IRigger getRigger(Object puppet) {
     //filter the unsupported class
-    if (!(object instanceof AppCompatActivity) && !(object instanceof Fragment)) {
+    if (!(puppet instanceof AppCompatActivity) && !(puppet instanceof Fragment)) {
       throw new RiggerException(
           "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
     }
     //filter the unsupported class
-    Class<?> clazz = object.getClass();
-    Puppet puppet = clazz.getAnnotation(Puppet.class);
-    if (puppet == null) {
+    Class<?> clazz = puppet.getClass();
+    Puppet puppetAnnotation = clazz.getAnnotation(Puppet.class);
+    if (puppetAnnotation == null) {
       throw new RiggerException("Can not find Puppet annotation.please add Puppet annotation for the class" +
-          object.getClass().getSimpleName());
+          puppetAnnotation.getClass().getSimpleName());
     }
     //get the object's address code.
-    int code = System.identityHashCode(object);
+    int code = System.identityHashCode(puppetAnnotation);
     IRigger rigger = getInstance().mPuppetMap.get(code);
     if (rigger == null) {
-      throw new RiggerException("UnKnown error " + object + "is not a puppet object");
+      throw new RiggerException("UnKnown error " + puppetAnnotation + "is not a puppet object");
     }
     return rigger;
   }

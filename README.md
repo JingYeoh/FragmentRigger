@@ -58,6 +58,8 @@ You can use this `FragmentRigger` with one line annotation.
 - [x] **Fragment lazy load**
 - [x] **Fragment transition animations**
 - [ ] **Fragment shared elements transition animations**
+- [ ] **Add `onBackPressed` method support for fragment that is not contained in stack**
+- [ ] **Slide left side to exit fragment**
 
 ### Problem solved
 * ~~Fragment view overlapping~~

@@ -83,4 +83,8 @@ public class ContainerFragment extends BaseFragment {
       return AnimationHelper.createRotate3dExitAnimation();
     }
   }
+
+  public void onRiggerBackPressed() {
+    Logger.i(this, position + "::onRiggerBackPressed");
+  }
 }

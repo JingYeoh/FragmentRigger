@@ -157,6 +157,21 @@ public final class FragmentStackManager implements Cloneable, Serializable {
   }
 
   /**
+   * Return all fragments which is not contained in the stack.
+   */
+  public String[] getFragmentsWithoutStack() {
+    List<String> fragmentTags = new ArrayList<>();
+    Iterator<Entry<String, Integer>> iterator = mFragmentContainerMap.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Entry<String, Integer> entry = iterator.next();
+      if (!mFragmentStack.contains(entry.getKey())) {
+        fragmentTags.add(entry.getKey());
+      }
+    }
+    return fragmentTags.toArray(new String[fragmentTags.size()]);
+  }
+
+  /**
    * Return all fragments which is contained in the containerView.
    *
    * @param containerViewId the container view's id
