@@ -148,6 +148,13 @@ public interface IRigger {
   void close(@NonNull Fragment fragment);
 
   /**
+   * Sets the tag of fragment.this method can only be effective before add fragment.
+   *
+   * @param tag the tag of fragment.
+   */
+  void setFragmentTag(@NonNull String tag);
+
+  /**
    * Returns the tag of fragment.if the method is called by Activity,then return null.
    */
   String getFragmentTAG();

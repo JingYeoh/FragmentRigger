@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import com.jkb.fragment.rigger.exception.UnSupportException;
+import com.jkb.fragment.rigger.utils.Logger;
 
 /**
  * Activity Rigger.rig the Activity puppet.
@@ -75,8 +76,13 @@ final class _ActivityRigger extends _Rigger {
   }
 
   @Override
+  public void setFragmentTag(@NonNull String tag) {
+    Logger.w(mActivity.getClass(), "setFragmentTag(String tag) method can only be called by Fragment");
+  }
+
+  @Override
   public String getFragmentTAG() {
-    throwException(new UnSupportException("getFragmentTAG() method can only be called by Fragment"));
+    Logger.w(mActivity.getClass(), "getFragmentTAG() method can only be called by Fragment");
     return null;
   }
 

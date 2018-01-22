@@ -276,6 +276,11 @@ final class _FragmentRigger extends _Rigger {
   }
 
   @Override
+  public void setFragmentTag(@NonNull String tag) {
+    mFragmentTag = tag;
+  }
+
+  @Override
   public String getFragmentTAG() {
     return mFragmentTag;
   }

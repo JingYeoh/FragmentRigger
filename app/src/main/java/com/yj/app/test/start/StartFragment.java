@@ -9,6 +9,7 @@ import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
+import java.util.UUID;
 
 /**
  * Demo of startFragment method.
@@ -61,7 +62,9 @@ public class StartFragment extends BaseFragment implements OnClickListener {
   public void onClick(View v) {
     switch (v.getId()) {
       case R.id.fs_startFragment:
-        Rigger.getRigger(this).startFragment(StartFragment.newInstance(mCount + 1));
+        StartFragment startFragment = StartFragment.newInstance(mCount + 1);
+        Rigger.getRigger(startFragment).setFragmentTag(UUID.randomUUID().toString());
+        Rigger.getRigger(this).startFragment(startFragment);
         break;
       case R.id.fs_print:
         Rigger.getRigger(this).printStack();
