@@ -57,8 +57,8 @@ You can use this `FragmentRigger` with one line annotation.
 - [x] **Print tree for the fragment stack**
 - [x] **Fragment lazy load**
 - [x] **Fragment transition animations**
+- [x] **Add `onBackPressed` method support for fragment which is not contained in stack**
 - [ ] **Fragment shared elements transition animations**
-- [ ] **Add `onBackPressed` method support for fragment that is not contained in stack**
 - [ ] **Slide left side to exit fragment**
 
 ### Problem solved

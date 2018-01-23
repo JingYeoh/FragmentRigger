@@ -84,14 +84,14 @@ public final class Rigger {
     Class<?> clazz = puppet.getClass();
     Puppet puppetAnnotation = clazz.getAnnotation(Puppet.class);
     if (puppetAnnotation == null) {
-      throw new RiggerException("Can not find Puppet annotation.please add Puppet annotation for the class" +
-          puppetAnnotation.getClass().getSimpleName());
+      throw new RiggerException("Can not find Puppet annotation.please add Puppet annotation for the class " +
+          puppet.getClass().getName());
     }
     //get the object's address code.
-    int code = System.identityHashCode(puppetAnnotation);
+    int code = System.identityHashCode(puppet);
     IRigger rigger = getInstance().mPuppetMap.get(code);
     if (rigger == null) {
-      throw new RiggerException("UnKnown error " + puppetAnnotation + "is not a puppet object");
+      throw new RiggerException("UnKnown error " + puppet + " is not a puppet object");
     }
     return rigger;
   }
