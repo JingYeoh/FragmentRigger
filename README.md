@@ -37,6 +37,7 @@ You can use this `FragmentRigger` with one line annotation.
 * [Installation](https://github.com/JustKiddingBaby/FragmentRigger/wiki)
 * [Using start](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Using-start)
 * [Fragments usage](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Fragment-usage)
+* [Custom fragment tag](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Custom-fragment-tag)
 * [Lazy loading](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Lazy-loading)
 * [Transition animations](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Transition-animations)
 * [Intercept onBackPressed](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Intercept-onBackPressed)

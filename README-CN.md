@@ -36,6 +36,7 @@
 * [安装](https://github.com/JustKiddingBaby/FragmentRigger/wiki/首页)
 * [开始使用](https://github.com/JustKiddingBaby/FragmentRigger/wiki/开始使用)
 * [Fragment的操纵](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Fragment的操纵)
+* [自定义Fragment tag](https://github.com/JustKiddingBaby/FragmentRigger/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89Fragment-tag)
 * [懒加载](https://github.com/JustKiddingBaby/FragmentRigger/wiki/懒加载)
 * [转场动画](https://github.com/JustKiddingBaby/FragmentRigger/wiki/转场动画)
 * [onBackPressed拦截](https://github.com/JustKiddingBaby/FragmentRigger/wiki/onBackPressed拦截)

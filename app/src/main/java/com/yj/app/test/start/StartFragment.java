@@ -63,7 +63,7 @@ public class StartFragment extends BaseFragment implements OnClickListener {
     switch (v.getId()) {
       case R.id.fs_startFragment:
         StartFragment startFragment = StartFragment.newInstance(mCount + 1);
-        Rigger.getRigger(startFragment).setFragmentTag(UUID.randomUUID().toString());
+//        Rigger.getRigger(startFragment).setFragmentTag(UUID.randomUUID().toString());
         Rigger.getRigger(this).startFragment(startFragment);
         break;
       case R.id.fs_print:
@@ -73,5 +73,9 @@ public class StartFragment extends BaseFragment implements OnClickListener {
         Rigger.getRigger(this).close();
         break;
     }
+  }
+
+  public String getFragmentTag() {
+    return UUID.randomUUID().toString();
   }
 }

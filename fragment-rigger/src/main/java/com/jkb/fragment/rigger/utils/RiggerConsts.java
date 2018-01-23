@@ -31,14 +31,14 @@ public interface RiggerConsts {
    */
   String METHOD_ON_FRAGMENT_RESULT = "onFragmentResult";
   /**
-   * Method for lazy load.this method must be defined with the specified params.
+   * Method name for lazy load.this method must be defined with the specified params.
    * For example:
    * public void onLazyLoadViewCreated(Bundle savedInstanceState)
    */
   String METHOD_ON_LAZYLOAD_VIEW_CREATED = "onLazyLoadViewCreated";
 
   /**
-   * Method for fragment animations.this method must be defined with the specified params.
+   * Method name for fragment animations.this method must be defined with the specified params.
    * This method return value is a {@link android.view.animation.Animation} array.the array's length must equal four.
    * Return[0]:enterAnim
    * Return[1]:exitAnim
@@ -48,4 +48,11 @@ public interface RiggerConsts {
    * public int[] getPuppetAnimations()
    */
   String METHOD_GET_PUPPET_ANIMATIONS = "getPuppetAnimations";
+
+  /**
+   * Method name for set custom fragment tag.this method must be defined with empty params.
+   * For example:
+   * public String getFragmentTag()
+   */
+  String METHOD_GET_FRAGMENT_TAG = "getFragmentTag";
 }

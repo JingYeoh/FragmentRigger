@@ -1,5 +1,6 @@
 package com.jkb.fragment.rigger.rigger;
 
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_FRAGMENT_TAG;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIMATIONS;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_LAZYLOAD_VIEW_CREATED;
 
@@ -71,15 +72,39 @@ final class _FragmentRigger extends _Rigger {
       mAbleLazyLoad = lazyLoad.value();
     }
     //init fragment animator
-    initFragmentAnimators(clazz);
+    invokeFragmentAnimators(clazz);
     //init fragment tag
-    mFragmentTag = fragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
+    invokeCustomFragmentTag(clazz);
+  }
+
+  /**
+   * invoke class to get custom fragment tag.
+   */
+  @SuppressWarnings("All")
+  private void invokeCustomFragmentTag(Class<? extends Fragment> clazz) {
+    try {
+      Logger.d(this, "获取getFragmentTag方法");
+      Method method = clazz.getMethod(METHOD_GET_FRAGMENT_TAG);
+      Object value = method.invoke(mFragment);
+      if (!(value instanceof String)) {
+        throwException(new UnSupportException("Method " + METHOD_GET_FRAGMENT_TAG + " return value must be String"));
+      }
+      mFragmentTag = (String) value;
+    } catch (NoSuchMethodException ignore) {
+      mFragmentTag = mFragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
+      Logger.w(this, "没有getFragmentTag方法");
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
    * Init fragment animators.
    */
-  private void initFragmentAnimators(Class<? extends Fragment> clazz) {
+  @SuppressWarnings("All")
+  private void invokeFragmentAnimators(Class<? extends Fragment> clazz) {
     Animator animator = clazz.getAnnotation(Animator.class);
     if (animator != null) {
       mEnterAnim = animator.enter();
