@@ -46,7 +46,7 @@ public final class Rigger {
   /**
    * Returns the instance of Rigger.
    */
-  private static Rigger getInstance() {
+  static Rigger getInstance() {
     if (sInstance == null) {
       synchronized (Rigger.class) {
         if (sInstance == null) {
@@ -91,7 +91,8 @@ public final class Rigger {
     int code = System.identityHashCode(puppet);
     IRigger rigger = getInstance().mPuppetMap.get(code);
     if (rigger == null) {
-      throw new RiggerException("UnKnown error " + puppet + " is not a puppet object");
+      throw new RiggerException(
+          "UnKnown error " + puppet + " is not added into rigger. please check your config or contact author.");
     }
     return rigger;
   }
@@ -102,13 +103,29 @@ public final class Rigger {
   private _Rigger createRigger(Object object) {
     //get the object's address code.
     int code = System.identityHashCode(object);
-    _Rigger rigger = (_Rigger) mPuppetMap.get(code);
+    IRigger rigger = mPuppetMap.get(code);
     if (rigger == null) {
       rigger = _Rigger.create(object);
       mPuppetMap.put(code, rigger);
       Logger.i(this, "add puppet " + object + " to rigger list");
     }
-    return rigger;
+    return (_Rigger) rigger;
+  }
+
+  /**
+   * Remove a puppet object from caches.
+   *
+   * @param puppet Puppet object,Activity/Fragment
+   *
+   * @return the result of this process.
+   */
+  boolean removeRigger(Object puppet) {
+    int code = System.identityHashCode(puppet);
+    if (!mPuppetMap.containsKey(code)) {
+      return false;
+    }
+    mPuppetMap.remove(code);
+    return true;
   }
 
   /**

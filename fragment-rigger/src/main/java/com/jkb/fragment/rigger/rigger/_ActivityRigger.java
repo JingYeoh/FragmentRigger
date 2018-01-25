@@ -73,6 +73,7 @@ final class _ActivityRigger extends _Rigger {
   @Override
   public void close() {
     mActivity.finish();
+    Rigger.getInstance().removeRigger(this);
   }
 
   @Override

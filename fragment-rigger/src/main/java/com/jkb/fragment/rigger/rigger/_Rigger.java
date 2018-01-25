@@ -368,6 +368,7 @@ abstract class _Rigger implements IRigger {
       //if the puppet is not bond container,then remove the fragment onto the container.
       //and show the Fragment's content view.
       mRiggerTransaction.remove(fragmentTAG).commit();
+      Rigger.getInstance().removeRigger(fragment);
     }
   }
 

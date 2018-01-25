@@ -46,7 +46,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled true
+            minifyEnabled false
             //是否清理无用资源
             shrinkResources false
             //是否启用zipAlign压缩
