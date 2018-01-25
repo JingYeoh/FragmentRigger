@@ -57,7 +57,8 @@
 - [x] **当前栈成员树状图打印**
 - [x] **Fragment懒加载**
 - [x] **Fragment转场动画**
-- [x] **为非栈内的Fragment添加onBackPressed支持**
+- [x] **自定义Fragment tag**
+- [ ] **为非栈内的Fragment添加onBackPressed支持**
 - [ ] **Fragment间共享元素转场动画**
 - [ ] **左滑退出**
 
