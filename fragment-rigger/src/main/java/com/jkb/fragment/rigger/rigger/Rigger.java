@@ -98,16 +98,16 @@ public final class Rigger {
   }
 
   /**
-   * Returns or puts the object to rigger list.
+   * Returns the Rigger object or puts the puppet to puppet list.
    */
-  private _Rigger createRigger(Object object) {
+  private _Rigger createRigger(Object puppet) {
     //get the object's address code.
-    int code = System.identityHashCode(object);
+    int code = System.identityHashCode(puppet);
     IRigger rigger = mPuppetMap.get(code);
     if (rigger == null) {
-      rigger = _Rigger.create(object);
+      rigger = _Rigger.create(puppet);
       mPuppetMap.put(code, rigger);
-      Logger.i(this, "add puppet " + object + " to rigger list");
+      Logger.i(this, "add puppet " + puppet + " to rigger list");
     }
     return (_Rigger) rigger;
   }

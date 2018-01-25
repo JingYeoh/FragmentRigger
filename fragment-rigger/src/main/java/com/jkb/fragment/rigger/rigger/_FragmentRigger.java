@@ -83,7 +83,6 @@ final class _FragmentRigger extends _Rigger {
   @SuppressWarnings("All")
   private void invokeCustomFragmentTag(Class<? extends Fragment> clazz) {
     try {
-      Logger.d(this, "获取getFragmentTag方法");
       Method method = clazz.getMethod(METHOD_GET_FRAGMENT_TAG);
       Object value = method.invoke(mFragment);
       if (!(value instanceof String)) {
@@ -92,7 +91,6 @@ final class _FragmentRigger extends _Rigger {
       mFragmentTag = (String) value;
     } catch (NoSuchMethodException ignore) {
       mFragmentTag = mFragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
-      Logger.w(this, "没有getFragmentTag方法");
     } catch (IllegalAccessException e) {
       e.printStackTrace();
     } catch (InvocationTargetException e) {
