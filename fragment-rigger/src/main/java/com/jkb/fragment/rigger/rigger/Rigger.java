@@ -232,6 +232,17 @@ public final class Rigger {
   private void onDestroy(Object object) {
     Logger.i(object, TAG_HEADER + "onDestroy");
     createRigger(object).onDestroy();
+    removeRigger(object);
+  }
+
+  /**
+   * Inject the Fragment's lifecycle method
+   * {@link Fragment#onDetach()} ()} to rigger class.
+   */
+  private void onDetach(Object object) {
+    Logger.i(object, TAG_HEADER + "onDetach");
+    createRigger(object).onDetach();
+    removeRigger(object);
   }
 
   /**

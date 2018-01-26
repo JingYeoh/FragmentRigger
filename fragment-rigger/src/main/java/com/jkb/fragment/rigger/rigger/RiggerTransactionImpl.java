@@ -18,7 +18,7 @@ import java.util.Map;
 final class RiggerTransactionImpl extends RiggerTransaction {
 
   private FragmentManager mFragmentManager;
-  private _Rigger mRigger;
+  private IRigger mRigger;
 
   private static final int OP_NULL = 0;
   private static final int OP_ADD = 1;
@@ -49,7 +49,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
   private LinkedList<Op> mTransactions;
   private Map<String, WeakReference<Fragment>> mAdded;
 
-  RiggerTransactionImpl(_Rigger rigger, FragmentManager mFragmentManager) {
+  RiggerTransactionImpl(IRigger rigger, FragmentManager mFragmentManager) {
     this.mFragmentManager = mFragmentManager;
     this.mRigger = rigger;
     mAdded = new HashMap<>();

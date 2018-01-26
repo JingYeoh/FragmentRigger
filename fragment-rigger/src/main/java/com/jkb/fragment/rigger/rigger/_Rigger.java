@@ -172,6 +172,13 @@ abstract class _Rigger implements IRigger {
   abstract void onDestroy();
 
   /**
+   * Called when the fragment is no longer attached to its activity.  This
+   * is called after {@link #onDestroy()}.
+   */
+  void onDetach() {
+  }
+
+  /**
    * Set a hint to the system about whether this fragment's UI is currently visible
    * to the user. This hint defaults to true and is persistent across fragment instance
    * state save and restore.
@@ -198,14 +205,14 @@ abstract class _Rigger implements IRigger {
   @Override
   public void onBackPressed() {
     //call the show or replace fragment;s onBackPressed method.
-    String[] fragmentsWithoutStack = mStackManager.getFragmentsWithoutStack();
+   /* String[] fragmentsWithoutStack = mStackManager.getFragmentsWithoutStack();
     for (String tag : fragmentsWithoutStack) {
       Fragment fragmentWithoutStack = mRiggerTransaction.find(tag);
       if (fragmentWithoutStack == null) {
         throwException(new NotExistException(tag));
       }
       ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).onRiggerBackPressed();
-    }
+    }*/
 
     String topFragmentTag = mStackManager.peek();
     //the stack is empty,close the Activity.

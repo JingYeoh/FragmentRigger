@@ -60,6 +60,10 @@ public class FragmentInjection extends RiggerInjection {
   public void onDestroy() {
   }
 
+  @Pointcut("execution(* android.support.v4.app.Fragment+.onDetach(..)) && annotatedWithPuppet()")
+  public void onDetach() {
+  }
+
   @Pointcut("execution(* android.support.v4.app.Fragment+.setUserVisibleHint(..)) && annotatedWithPuppet()")
   public void setUserVisibleHint() {
   }
@@ -153,6 +157,17 @@ public class FragmentInjection extends RiggerInjection {
     //Only inject the class that marked by Puppet annotation.
 
     Method onDestroy = getRiggerMethod("onDestroy", Object.class);
+    onDestroy.invoke(getRiggerInstance(), puppet);
+    return result;
+  }
+
+  @Around("onDetach()")
+  public Object onDetachProcess(ProceedingJoinPoint joinPoint) throws Throwable {
+    Object result = joinPoint.proceed();
+    Object puppet = joinPoint.getTarget();
+    //Only inject the class that marked by Puppet annotation.
+
+    Method onDestroy = getRiggerMethod("onDetach", Object.class);
     onDestroy.invoke(getRiggerInstance(), puppet);
     return result;
   }
