@@ -13,6 +13,5 @@ public class MainActivity extends BaseActivity {
     if (savedInstanceState == null) {
       Rigger.getRigger(this).startFragment(TestFragment.newInstance());
     }
-    Logger.d(this, "Activity=" + hashCode());
   }
 }

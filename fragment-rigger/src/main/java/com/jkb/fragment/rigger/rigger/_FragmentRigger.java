@@ -253,6 +253,11 @@ final class _FragmentRigger extends _Rigger {
   }
 
   @Override
+  public void onDetach() {
+
+  }
+
+  @Override
   public void setUserVisibleHint(boolean isVisibleToUser) {
     invokeOnLazyLoadViewCreated();
   }

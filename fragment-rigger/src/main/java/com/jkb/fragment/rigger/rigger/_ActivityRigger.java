@@ -61,7 +61,9 @@ final class _ActivityRigger extends _Rigger {
   public void onDestroy() {
     if (mActivity.isFinishing()) {
       mStackManager.clear();
-      mRiggerTransaction.removeAll();
+      if (mRiggerTransaction != null) {
+        mRiggerTransaction.removeAll();
+      }
     }
   }
 
@@ -73,7 +75,6 @@ final class _ActivityRigger extends _Rigger {
   @Override
   public void close() {
     mActivity.finish();
-    Rigger.getInstance().removeRigger(mActivity);
   }
 
   @Override

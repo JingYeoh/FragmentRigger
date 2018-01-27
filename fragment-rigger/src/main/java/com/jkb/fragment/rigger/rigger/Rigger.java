@@ -32,7 +32,7 @@ public final class Rigger {
   /** Standard fragment result: operation succeeded. */
   public static final int RESULT_OK = -1;
 
-  private static final String TAG_HEADER = "<<Rigger>>";
+  private static final String TAG_HEADER = "----------Rigger------------->";
   private static volatile Rigger sInstance = null;
   private Map<Integer, IRigger> mPuppetMap;
 
@@ -119,12 +119,13 @@ public final class Rigger {
    *
    * @return the result of this process.
    */
-  boolean removeRigger(Object puppet) {
+  private boolean removeRigger(Object puppet) {
     int code = System.identityHashCode(puppet);
     if (!mPuppetMap.containsKey(code)) {
       return false;
     }
     mPuppetMap.remove(code);
+    Logger.i(this, "remove puppet " + puppet + " from rigger list");
     return true;
   }
 
