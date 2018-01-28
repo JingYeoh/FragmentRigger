@@ -46,7 +46,7 @@ public final class Rigger {
   /**
    * Returns the instance of Rigger.
    */
-  static Rigger getInstance() {
+  private static Rigger getInstance() {
     if (sInstance == null) {
       synchronized (Rigger.class) {
         if (sInstance == null) {
