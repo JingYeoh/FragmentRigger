@@ -94,11 +94,35 @@ public interface IRigger {
   void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId);
 
   /**
+   * Shows a fragment and hide the others which is contained in the containerView.if the fragment is not added in the
+   * stack,then add first.
+   *
+   * The fragment added by this method is not pushed in the stack.if the method {@link #onBackPressed()} is
+   * called, this fragment has none operation.
+   *
+   * @param fragment        the fragment to be showed.
+   * @param containerViewId the fragment's container view's id.
+   * @param showRepeatAnim  trigger to show fragment transaction animation,if the fragment is already
+   *                        showed.method {@link #showFragment(Fragment, int)} default value is false.
+   */
+  void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId, boolean showRepeatAnim);
+
+  /**
    * Shows an existing fragment and hide the others which is contained in the containerView.
+   * If this fragment is already showed,then do nothing.
    *
    * @param tag the tag name of fragment to be showed.
    */
   void showFragment(@NonNull String tag);
+
+  /**
+   * Shows an existing fragment and hide the others which is contained in the containerView.
+   *
+   * @param tag            the tag name of fragment to be showed.
+   * @param showRepeatAnim trigger to show fragment transaction animation,if the fragment is already
+   *                       showed.method {@link #showFragment(String)} default value is false.
+   */
+  void showFragment(@NonNull String tag, boolean showRepeatAnim);
 
   /**
    * Hides an existing fragment.

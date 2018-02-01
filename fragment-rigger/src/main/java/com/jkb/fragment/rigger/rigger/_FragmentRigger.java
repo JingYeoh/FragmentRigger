@@ -191,7 +191,6 @@ final class _FragmentRigger extends _Rigger {
   @Override
   View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     super.onCreateView(inflater, container, savedInstanceState);
-    mSavedFragmentState = savedInstanceState;
     mHasInitView = true;
     initLazyLoadStatus();
     return null;

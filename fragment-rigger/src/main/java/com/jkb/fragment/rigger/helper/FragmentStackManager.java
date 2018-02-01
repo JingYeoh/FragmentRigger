@@ -79,7 +79,7 @@ public final class FragmentStackManager implements Cloneable, Serializable {
    * Adds a fragment onto the list.
    */
   public boolean add(String fragmentTag, @IdRes int containerViewId) {
-    if (mFragmentContainerMap.containsKey(fragmentTag)) return false;
+    if (contain(fragmentTag)) return false;
     mFragmentContainerMap.put(fragmentTag, containerViewId);
     return true;
   }

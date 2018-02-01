@@ -96,6 +96,8 @@ public class ShowFragment extends BaseFragment implements OnClickListener {
 
   private void showFragment(int position) {
     Fragment fragment = Rigger.getRigger(this).findFragmentByTag(mFragmentTags.get(position));
+    Rigger.getRigger(this).showFragment(mFragmentTags.get(position), false);
+    if (position == 2) return;
     if (fragment.isHidden()) {
       Rigger.getRigger(this).showFragment(mFragmentTags.get(position));
     } else {

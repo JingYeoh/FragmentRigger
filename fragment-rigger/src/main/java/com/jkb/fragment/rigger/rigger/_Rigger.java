@@ -309,6 +309,11 @@ abstract class _Rigger implements IRigger {
 
   @Override
   public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
+    showFragment(fragment, containerViewId, false);
+  }
+
+  @Override
+  public void showFragment(@NonNull Fragment fragment, @IdRes int containerViewId, boolean showRepeatAnim) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
     if (mStackManager.add(fragmentTAG, containerViewId)) {
       addFragmentWithAnim(fragment, containerViewId);
@@ -320,18 +325,27 @@ abstract class _Rigger implements IRigger {
       hideFrag.setUserVisibleHint(false);
     }
     fragment.setUserVisibleHint(true);
-    showFragmentWithAnim(fragment);
-    mRiggerTransaction.hide(getVisibleFragmentTags(containerViewId));
+    boolean hidden = fragment.isHidden();
+    boolean added = fragment.isAdded();
+    if (!added || hidden || showRepeatAnim) {
+      mRiggerTransaction.hide(getVisibleFragmentTags(containerViewId));
+      showFragmentWithAnim(fragment);
+    }
     mRiggerTransaction.commit();
   }
 
   @Override
   public void showFragment(@NonNull String tag) {
+    showFragment(tag, false);
+  }
+
+  @Override
+  public void showFragment(@NonNull String tag, boolean showRepeatAnim) {
     int containerViewId = mStackManager.getContainer(tag);
     if (containerViewId == 0) {
       throwException(new NotExistException(tag));
     }
-    showFragment(mRiggerTransaction.find(tag), containerViewId);
+    showFragment(mRiggerTransaction.find(tag), containerViewId, showRepeatAnim);
   }
 
   @Override
