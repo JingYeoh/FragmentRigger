@@ -11,6 +11,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,17 +86,22 @@ final class _FragmentRigger extends _Rigger {
     try {
       Method method = clazz.getMethod(METHOD_GET_FRAGMENT_TAG);
       Object value = method.invoke(mFragment);
-      if (!(value instanceof String)) {
-        throwException(new UnSupportException("Method " + METHOD_GET_FRAGMENT_TAG + " return value must be String"));
+      if (value != null) {
+        if (!(value instanceof String)) {
+          throwException(new UnSupportException("Method " + METHOD_GET_FRAGMENT_TAG + " return value must be String"));
+        }
+        mFragmentTag = (String) value;
       }
-      mFragmentTag = (String) value;
     } catch (NoSuchMethodException ignore) {
-      mFragmentTag = mFragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
     } catch (IllegalAccessException e) {
       e.printStackTrace();
     } catch (InvocationTargetException e) {
       e.printStackTrace();
     }
+    if (TextUtils.isEmpty(mFragmentTag)) {
+      mFragmentTag = mFragment.getClass().getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
+    }
+    mFragmentTag = mFragmentTag.intern();
   }
 
   /**
@@ -304,7 +310,11 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void setFragmentTag(@NonNull String tag) {
-    mFragmentTag = tag;
+    if (mFragmentTag != null) {
+      mFragmentTag = tag.intern();
+    } else {
+      throwException(new UnSupportException("The tag name of fragment can not be null"));
+    }
   }
 
   @Override
