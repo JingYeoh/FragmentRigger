@@ -62,6 +62,7 @@
 - [ ] **为非栈内的Fragment添加onBackPressed支持**
 - [ ] **Fragment间共享元素转场动画**
 - [ ] **左滑退出**
+- [ ] **支持DialogFragment**
 
 ### 解决的问题
 * ~~Fragment界面重叠~~
