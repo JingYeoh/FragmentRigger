@@ -60,9 +60,9 @@ You can use this `FragmentRigger` with one line annotation.
 - [x] **Fragment transition animations**
 - [x] **Option to configure fragment tag**
 - [ ] **Option to configure fragment launch mode**
-- [ ] **Add `onBackPressed` method support for fragment which is not contained in stack**
+- [ ] **Add `onBackPressed` method support for the fragment that is not added into stack**
 - [ ] **Fragment shared elements transition animations**
-- [ ] **Slide left side to exit fragment**
+- [ ] **Swipe edge to exit Fragment/Activity**
 - [ ] **Support DialogFragment**
 
 ### Problem solved
