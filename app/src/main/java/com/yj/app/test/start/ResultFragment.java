@@ -37,7 +37,7 @@ public class ResultFragment extends BaseFragment implements OnClickListener {
   @Override
   public void onClick(View v) {
     Bundle args = new Bundle();
-    args.putString(BUNDLE_KEY, "result");
+    args.putString(BUNDLE_KEY, "This is the result from ResultFragment");
     Rigger.getRigger(this).setResult(Rigger.RESULT_OK, args);
     Rigger.getRigger(this).close();
   }

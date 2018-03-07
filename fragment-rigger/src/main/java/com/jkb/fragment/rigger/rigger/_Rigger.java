@@ -48,6 +48,8 @@ import java.util.Stack;
 abstract class _Rigger implements IRigger {
 
   static final String BUNDLE_KEY_FOR_RESULT = "/bundle/key/for/result";
+  static final String BUNDLE_KEY_FOR_RESULT_RECEIVE = BUNDLE_KEY_FOR_RESULT + 1;
+  static final String BUNDLE_KEY_FOR_RESULT_REQUEST_CODE = BUNDLE_KEY_FOR_RESULT + 2;
 
   static _Rigger create(@NonNull Object object) {
     if (object instanceof AppCompatActivity) {
@@ -271,10 +273,12 @@ abstract class _Rigger implements IRigger {
   public void startFragmentForResult(Object receive, @NonNull Fragment fragment, int requestCode) {
     Bundle arguments = fragment.getArguments();
     if (arguments == null) arguments = new Bundle();
-    Message message = Message.obtain();
-    message.obj = receive;
-    message.arg1 = requestCode;
-    arguments.putParcelable(BUNDLE_KEY_FOR_RESULT, message);
+    Bundle receiveArgs = new Bundle();
+    if (receive != null) {
+      receiveArgs.putString(BUNDLE_KEY_FOR_RESULT_RECEIVE, Rigger.getRigger(receive).getFragmentTAG());
+    }
+    receiveArgs.putInt(BUNDLE_KEY_FOR_RESULT_REQUEST_CODE, requestCode);
+    arguments.putParcelable(BUNDLE_KEY_FOR_RESULT, receiveArgs);
     fragment.setArguments(arguments);
     startFragment(fragment);
   }

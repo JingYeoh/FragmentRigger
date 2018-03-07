@@ -7,7 +7,6 @@ import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_LAZYLOAD_VIEW
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -61,7 +60,7 @@ final class _FragmentRigger extends _Rigger {
   private boolean mHasInitView = false;
   private boolean mHasInvokeLazyLoad = false;
 
-  private Message mForResultTarget;
+  private Bundle mForResultTarget;
 
   _FragmentRigger(@NonNull Fragment fragment) {
     super(fragment);
@@ -332,8 +331,10 @@ final class _FragmentRigger extends _Rigger {
     if (mForResultTarget == null) {
       throwException(new UnSupportException("class " + this + " is not started by startFragmentForResult() method"));
     }
+    int requestCode = mForResultTarget.getInt(BUNDLE_KEY_FOR_RESULT_REQUEST_CODE);
     //get the host object.
-    Object host = mForResultTarget.obj;
+    String receiveTargetTag = mForResultTarget.getString(BUNDLE_KEY_FOR_RESULT_RECEIVE);
+    Object host = Rigger.getRigger(getContainerHost()).findFragmentByTag(receiveTargetTag);
     if (host == null) {
       Fragment startPuppet = mFragment.getParentFragment();
       while (true) {
@@ -348,7 +349,7 @@ final class _FragmentRigger extends _Rigger {
     Class<?> clazz = host.getClass();
     try {
       Method method = clazz.getMethod(RiggerConsts.METHOD_ON_FRAGMENT_RESULT, int.class, int.class, Bundle.class);
-      method.invoke(host, mForResultTarget.arg1, resultCode, bundle);
+      method.invoke(host, requestCode, resultCode, bundle);
     } catch (NoSuchMethodException ignored) {
       Logger
           .w(this, "Not found method " + RiggerConsts.METHOD_ON_FRAGMENT_RESULT + " in class " + clazz.getSimpleName());

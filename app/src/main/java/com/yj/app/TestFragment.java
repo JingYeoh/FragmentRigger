@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.base.BaseFragment;
@@ -93,10 +94,10 @@ public class TestFragment extends BaseFragment implements OnClickListener {
   }
 
   public void onFragmentResult(int requestCode, int resultCode, Bundle args) {
-    Logger.i(this, "requestCode=" + requestCode);
-    Logger.i(this, "resultCode=" + resultCode);
     if (resultCode != Rigger.RESULT_OK) return;
     String string = args.getString(BUNDLE_KEY);
     Logger.i(this, string);
+    Toast.makeText(mContext, "requestCode=" + requestCode + ":::" + "resultCode=" + resultCode + "\n"
+        + "result=" + string, Toast.LENGTH_SHORT).show();
   }
 }
