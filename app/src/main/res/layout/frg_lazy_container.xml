@@ -9,8 +9,21 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
+    android:visibility="gone"/>
+  <Button
+    android:id="@+id/flc_start"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:text="@string/startfragment"
     android:visibility="gone">
-  </TextView>
+  </Button>
+  <FrameLayout
+    android:id="@+id/lazyContent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"/>
   <LinearLayout
     android:id="@+id/flc_load"
     android:layout_width="wrap_content"

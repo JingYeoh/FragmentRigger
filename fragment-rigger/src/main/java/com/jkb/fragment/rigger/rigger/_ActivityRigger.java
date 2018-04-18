@@ -4,15 +4,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import com.jkb.fragment.rigger.exception.UnSupportException;
+import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 
 /**
  * Activity Rigger.rig the Activity puppet.
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 20,2017
  */
 
@@ -34,6 +35,7 @@ final class _ActivityRigger extends _Rigger {
     if (mRiggerTransaction == null) {
       mRiggerTransaction = new RiggerTransactionImpl(this, mActivity.getSupportFragmentManager());
     }
+    mStackManager.bindFragmentManager(mActivity.getSupportFragmentManager());
   }
 
   @Override
@@ -59,6 +61,7 @@ final class _ActivityRigger extends _Rigger {
 
   @Override
   public void onDestroy() {
+    mStackManager.onDestroy();
     if (mActivity.isFinishing()) {
       mStackManager.clear();
       if (mRiggerTransaction != null) {

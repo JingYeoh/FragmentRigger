@@ -4,21 +4,26 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
+import com.jkb.fragment.rigger.annotation.Puppet;
+import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
+import com.yj.app.test.start.StartFragment;
 
 /**
  * Demo of lazy load container.
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Dec 13,2017
  */
+@Puppet(containerViewId = R.id.lazyContent)
 @LazyLoad
 public class LoadContainerFragment extends BaseFragment {
 
@@ -36,7 +41,14 @@ public class LoadContainerFragment extends BaseFragment {
     public void handleMessage(Message msg) {
       super.handleMessage(msg);
       findViewById(R.id.flc_load).setVisibility(View.GONE);
-      findViewById(R.id.flc_tv).setVisibility(View.VISIBLE);
+      if (mValue.equals("Me")) {
+        findViewById(R.id.flc_tv).setVisibility(View.GONE);
+        findViewById(R.id.flc_start).setVisibility(View.VISIBLE);
+        findViewById(R.id.lazyContent).setVisibility(View.VISIBLE);
+      } else {
+        findViewById(R.id.flc_tv).setVisibility(View.VISIBLE);
+        findViewById(R.id.lazyContent).setVisibility(View.GONE);
+      }
     }
   };
 
@@ -49,6 +61,9 @@ public class LoadContainerFragment extends BaseFragment {
   protected void init(Bundle savedInstanceState) {
     Bundle args = savedInstanceState == null ? getArguments() : savedInstanceState;
     mValue = args.getString(BUNDLE_KEY);
+    findViewById(R.id.flc_start).setOnClickListener(v -> {
+      Rigger.getRigger(LoadContainerFragment.this).startFragment(StartFragment.newInstance(0));
+    });
   }
 
   public void onLazyLoadViewCreated(Bundle savedInstanceState) {
@@ -60,5 +75,15 @@ public class LoadContainerFragment extends BaseFragment {
   public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putString(BUNDLE_KEY, mValue);
+  }
+
+  public void onRiggerBackPressed() {
+    Logger.i(this, "OnRiggerBackPressed");
+    Rigger.getRigger(this).onBackPressed();
+  }
+
+  public boolean onInterruptBackPressed() {
+    Logger.i(this, "onInterruptBackPressed");
+    return true;
   }
 }

@@ -2,8 +2,11 @@ package com.jkb.fragment.rigger.helper;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,15 +18,17 @@ import java.util.Stack;
  * Fragment Stack Manager.Used to save/get/remove/restore and more operations for Fragment Stack.
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 20,2017
  */
 
 public final class FragmentStackManager implements Cloneable, Serializable {
 
   private static final String BUNDLE_KEY_FRAGMENT_STACK = "/bundle/key/fragment/stack";
+
+  private FragmentManager mFm;
 
   /**
    * Fragment stack.save the fragment tags that is added in FragmentManager for Activity/Fragment.
@@ -38,6 +43,13 @@ public final class FragmentStackManager implements Cloneable, Serializable {
   public FragmentStackManager() {
     mFragmentStack = new Stack<>();
     mFragmentContainerMap = new HashMap<>();
+  }
+
+  /**
+   * bind FragmentManager object for host.
+   */
+  public void bindFragmentManager(FragmentManager fm) {
+    mFm = fm;
   }
 
   /**
@@ -161,11 +173,22 @@ public final class FragmentStackManager implements Cloneable, Serializable {
    */
   public String[] getFragmentsWithoutStack() {
     List<String> fragmentTags = new ArrayList<>();
-    Iterator<Entry<String, Integer>> iterator = mFragmentContainerMap.entrySet().iterator();
-    while (iterator.hasNext()) {
-      Entry<String, Integer> entry = iterator.next();
+    for (Entry<String, Integer> entry : mFragmentContainerMap.entrySet()) {
       if (!mFragmentStack.contains(entry.getKey())) {
         fragmentTags.add(entry.getKey());
+      }
+    }
+    if (mFm != null) {
+      List<Fragment> fragments = mFm.getFragments();
+      if (fragments != null) {
+        for (Fragment fragment : fragments) {
+          if (fragment == null) continue;
+          String tag = fragment.getTag();
+          if (!mFragmentStack.contains(tag) &&
+              !fragmentTags.contains(tag)) {
+            fragmentTags.add(tag);
+          }
+        }
       }
     }
     return fragmentTags.toArray(new String[fragmentTags.size()]);
@@ -182,6 +205,13 @@ public final class FragmentStackManager implements Cloneable, Serializable {
       if (item.getValue() == containerViewId) fragmentTags.add(item.getKey());
     }
     return fragmentTags.toArray(new String[fragmentTags.size()]);
+  }
+
+  /**
+   * Perform any final cleanup before an activity/fragment is destroyed.
+   */
+  public void onDestroy() {
+    mFm = null;
   }
 
   /**

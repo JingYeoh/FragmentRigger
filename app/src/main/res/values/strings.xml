@@ -3,7 +3,8 @@
   <string name="sharedElement">SharedElement</string>
   <string name="lazyload">LazyLoad</string>
   <string name="replacefragment">ReplaceFragment</string>
-  <string name="showfragment">showFragment</string>
+  <string name="onBackPressed_show">onBackPressed_Show</string>
+  <string name="showfragment">ShowFragment</string>
   <string name="startfragmentforresult">StartFragmentForResult</string>
   <string name="delay_startfragment">Delay StartFragment</string>
   <string name="startfragment">StartFragment</string>

@@ -1,5 +1,5 @@
 # FragmentRigger
-![R](/images/R.png)
+![R](/images/rr.png)
 ![i](/images/i.png)
 ![g](/images/g.png)
 ![g](/images/g.png)

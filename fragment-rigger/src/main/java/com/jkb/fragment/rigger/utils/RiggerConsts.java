@@ -4,9 +4,9 @@ package com.jkb.fragment.rigger.utils;
  * Used to save the static constant.
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 23,2017
  */
 
@@ -55,4 +55,11 @@ public interface RiggerConsts {
    * public String getFragmentTag()
    */
   String METHOD_GET_FRAGMENT_TAG = "getFragmentTag";
+
+  /**
+   * onBackPressed method's name.this method must be defined with boolean returns.
+   * For example:
+   * public boolean onInterruptBackPressed()
+   */
+  String METHOD_ON_INTERRUPT_BACKPRESSED = "onInterruptBackPressed";
 }

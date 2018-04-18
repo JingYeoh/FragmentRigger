@@ -30,6 +30,8 @@ import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
+import com.jkb.fragment.rigger.utils.RiggerConsts;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +41,9 @@ import java.util.Stack;
  * Rigger.Used to repeat different Rigger(Strategy pattern)
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 20,2017
  */
 
@@ -207,14 +209,31 @@ abstract class _Rigger implements IRigger {
   @Override
   public void onBackPressed() {
     //call the show or replace fragment;s onBackPressed method.
-   /* String[] fragmentsWithoutStack = mStackManager.getFragmentsWithoutStack();
+    String[] fragmentsWithoutStack = mStackManager.getFragmentsWithoutStack();
+    boolean isInterrupt = false;
     for (String tag : fragmentsWithoutStack) {
       Fragment fragmentWithoutStack = mRiggerTransaction.find(tag);
       if (fragmentWithoutStack == null) {
         throwException(new NotExistException(tag));
       }
+
+      if (!isInterrupt) {
+        try {
+          Method method = fragmentsWithoutStack.getClass().getMethod(RiggerConsts.METHOD_ON_INTERRUPT_BACKPRESSED);
+          isInterrupt = (boolean) method.invoke(fragmentWithoutStack);
+        } catch (NoSuchMethodException e) {
+          e.printStackTrace();
+        } catch (IllegalAccessException e) {
+          e.printStackTrace();
+        } catch (InvocationTargetException e) {
+          e.printStackTrace();
+        }
+      }
+
       ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).onRiggerBackPressed();
-    }*/
+    }
+
+    if (isInterrupt) return;
 
     String topFragmentTag = mStackManager.peek();
     //the stack is empty,close the Activity.

@@ -19,6 +19,7 @@ import android.view.animation.AnimationUtils;
 import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.exception.UnSupportException;
+import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.rigger.utils.RiggerConsts;
 import java.lang.reflect.InvocationTargetException;
@@ -29,9 +30,9 @@ import java.util.UUID;
  * Fragment Rigger.rig the Fragment puppet.
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 20,2017
  */
 
@@ -169,6 +170,7 @@ final class _FragmentRigger extends _Rigger {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    mStackManager.bindFragmentManager(mFragment.getChildFragmentManager());
     mSavedFragmentState = savedInstanceState;
     //init rigger transaction
     if (mRiggerTransaction == null) {
