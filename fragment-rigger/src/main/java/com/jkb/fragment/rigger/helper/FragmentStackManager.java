@@ -2,6 +2,7 @@ package com.jkb.fragment.rigger.helper;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
@@ -205,6 +206,17 @@ public final class FragmentStackManager implements Cloneable, Serializable {
       if (item.getValue() == containerViewId) fragmentTags.add(item.getKey());
     }
     return fragmentTags.toArray(new String[fragmentTags.size()]);
+  }
+
+  /**
+   * Returns true if the tag is contained into the stack.
+   *
+   * @param tag the fragment tag to be examined
+   *
+   * @return true if the tag is contained into the stack.
+   */
+  public boolean isFragmentIntoStack(String tag) {
+    return !TextUtils.isEmpty(tag) && mFragmentStack.contains(tag);
   }
 
   /**

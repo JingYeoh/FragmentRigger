@@ -43,7 +43,6 @@ public class LoadContainerFragment extends BaseFragment {
       findViewById(R.id.flc_load).setVisibility(View.GONE);
       if (mValue.equals("Me")) {
         findViewById(R.id.flc_tv).setVisibility(View.GONE);
-        findViewById(R.id.flc_start).setVisibility(View.VISIBLE);
         findViewById(R.id.lazyContent).setVisibility(View.VISIBLE);
       } else {
         findViewById(R.id.flc_tv).setVisibility(View.VISIBLE);
@@ -61,14 +60,12 @@ public class LoadContainerFragment extends BaseFragment {
   protected void init(Bundle savedInstanceState) {
     Bundle args = savedInstanceState == null ? getArguments() : savedInstanceState;
     mValue = args.getString(BUNDLE_KEY);
-    findViewById(R.id.flc_start).setOnClickListener(v -> {
-      Rigger.getRigger(LoadContainerFragment.this).startFragment(StartFragment.newInstance(0));
-    });
   }
 
   public void onLazyLoadViewCreated(Bundle savedInstanceState) {
     ((TextView) findViewById(R.id.flc_tv)).setText(mValue);
     mHandler.sendEmptyMessageDelayed(1001, 1000);
+    Rigger.getRigger(LoadContainerFragment.this).startFragment(StartFragment.newInstance(0));
   }
 
   @Override
@@ -84,6 +81,8 @@ public class LoadContainerFragment extends BaseFragment {
 
   public boolean onInterruptBackPressed() {
     Logger.i(this, "onInterruptBackPressed");
+    if (!mValue.equals("Me")) return false;
+    if (Rigger.getRigger(this).getFragmentStack().empty()) return false;
     return true;
   }
 }

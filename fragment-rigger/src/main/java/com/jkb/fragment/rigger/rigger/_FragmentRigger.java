@@ -286,6 +286,10 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void close() {
+    // if this fragment is not contained into the stack ,then interrupt this method.
+    if (!Rigger.getRigger(getContainerHost()).getFragmentStack().contains(getFragmentTAG())) {
+      return;
+    }
     //start the exiting animation.
     if (mExitAnim != 0 && !mFragment.isHidden()) {
       boolean isParentBond = Rigger.getRigger(getContainerHost()).isBondContainerView();

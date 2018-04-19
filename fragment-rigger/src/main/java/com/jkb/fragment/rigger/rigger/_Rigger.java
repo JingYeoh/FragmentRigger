@@ -1,6 +1,7 @@
 package com.jkb.fragment.rigger.rigger;
 
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_CONTAINERVIEWID;
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_INTERRUPT_BACKPRESSED;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPRESSED;
 
 import android.app.Activity;
@@ -194,7 +195,7 @@ abstract class _Rigger implements IRigger {
   }
 
   /**
-   * If the puppet contain onRiggerBackPressed method, then intercept the {@link #onBackPressed()} method.
+   * If the puppet contains onRiggerBackPressed method, then intercept the {@link #onBackPressed()} method.
    */
   void onRiggerBackPressed() {
     Class<?> clazz = mPuppetTarget.getClass();
@@ -203,6 +204,19 @@ abstract class _Rigger implements IRigger {
       onBackPressed.invoke(mPuppetTarget);
     } catch (Exception e) {
       onBackPressed();
+    }
+  }
+
+  /**
+   * If the puppet contain onInterruptBackPressed method , then interrupt the {@link #onRiggerBackPressed()} method.
+   */
+  boolean onInterruptBackPressed() {
+    Class<?> clazz = mPuppetTarget.getClass();
+    try {
+      Method onBackPressed = clazz.getMethod(METHOD_ON_INTERRUPT_BACKPRESSED);
+      return (boolean) onBackPressed.invoke(mPuppetTarget);
+    } catch (Exception e) {
+      return false;
     }
   }
 
@@ -217,18 +231,7 @@ abstract class _Rigger implements IRigger {
         throwException(new NotExistException(tag));
       }
 
-      if (!isInterrupt) {
-        try {
-          Method method = fragmentsWithoutStack.getClass().getMethod(RiggerConsts.METHOD_ON_INTERRUPT_BACKPRESSED);
-          isInterrupt = (boolean) method.invoke(fragmentWithoutStack);
-        } catch (NoSuchMethodException e) {
-          e.printStackTrace();
-        } catch (IllegalAccessException e) {
-          e.printStackTrace();
-        } catch (InvocationTargetException e) {
-          e.printStackTrace();
-        }
-      }
+      isInterrupt = ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).onInterruptBackPressed();
 
       ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).onRiggerBackPressed();
     }
