@@ -7,7 +7,6 @@ import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPR
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -31,8 +30,6 @@ import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
-import com.jkb.fragment.rigger.utils.RiggerConsts;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +39,9 @@ import java.util.Stack;
  * Rigger.Used to repeat different Rigger(Strategy pattern)
  *
  * @author JingYeoh
- * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- * <a href="https://github.com/justkiddingbaby">Github</a>
- * <a href="http://blog.justkiddingbaby.com">Blog</a>
+ *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ *         <a href="https://github.com/justkiddingbaby">Github</a>
+ *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 20,2017
  */
 
@@ -195,9 +192,39 @@ abstract class _Rigger implements IRigger {
   }
 
   /**
+   * Pass the touch back key event down.
+   */
+  void dispatchBackPressed() {
+    //call the show or replace fragment;s onBackPressed method.
+    String[] fragmentsWithoutStack = mStackManager.getFragmentsWithoutStack();
+    for (String tag : fragmentsWithoutStack) {
+      Fragment fragmentWithoutStack = mRiggerTransaction.find(tag);
+      if (fragmentWithoutStack == null) {
+        throwException(new NotExistException(tag));
+      }
+      ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).dispatchBackPressed();
+    }
+
+    String topFragmentTag = mStackManager.peek();
+    if (!TextUtils.isEmpty(topFragmentTag)) {
+      Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
+      if (topFragment == null) {
+        throwException(new NotExistException(topFragmentTag));
+      }
+      //call the top fragment's onBackPressed method.
+      ((_Rigger) Rigger.getRigger(topFragment)).dispatchBackPressed();
+    }
+
+    boolean isInterrupt = onInterruptBackPressed();
+    if (!isInterrupt) {
+      onRiggerBackPressed();
+    }
+  }
+
+  /**
    * If the puppet contains onRiggerBackPressed method, then intercept the {@link #onBackPressed()} method.
    */
-  void onRiggerBackPressed() {
+  private void onRiggerBackPressed() {
     Class<?> clazz = mPuppetTarget.getClass();
     try {
       Method onBackPressed = clazz.getMethod(METHOD_ON_RIGGER_BACKPRESSED);
@@ -210,36 +237,20 @@ abstract class _Rigger implements IRigger {
   /**
    * If the puppet contain onInterruptBackPressed method , then interrupt the {@link #onRiggerBackPressed()} method.
    */
-  boolean onInterruptBackPressed() {
+  private boolean onInterruptBackPressed() {
     Class<?> clazz = mPuppetTarget.getClass();
     try {
       Method onBackPressed = clazz.getMethod(METHOD_ON_INTERRUPT_BACKPRESSED);
       return (boolean) onBackPressed.invoke(mPuppetTarget);
     } catch (Exception e) {
-      return false;
+      e.printStackTrace();
     }
+    return false;
   }
 
   @Override
   public void onBackPressed() {
-    //call the show or replace fragment;s onBackPressed method.
-    String[] fragmentsWithoutStack = mStackManager.getFragmentsWithoutStack();
-    boolean isInterrupt = false;
-    for (String tag : fragmentsWithoutStack) {
-      Fragment fragmentWithoutStack = mRiggerTransaction.find(tag);
-      if (fragmentWithoutStack == null) {
-        throwException(new NotExistException(tag));
-      }
-
-      isInterrupt = ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).onInterruptBackPressed();
-
-      ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).onRiggerBackPressed();
-    }
-
-    if (isInterrupt) return;
-
     String topFragmentTag = mStackManager.peek();
-    //the stack is empty,close the Activity.
     if (TextUtils.isEmpty(topFragmentTag)) {
       close();
       return;
@@ -249,7 +260,7 @@ abstract class _Rigger implements IRigger {
     if (topFragment == null) {
       throwException(new NotExistException(topFragmentTag));
     }
-    ((_Rigger) Rigger.getRigger(topFragment)).onRiggerBackPressed();
+    ((_Rigger) Rigger.getRigger(topFragment)).dispatchBackPressed();
   }
 
   @Override

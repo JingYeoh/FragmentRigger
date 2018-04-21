@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.annotation.Puppet;
@@ -18,9 +17,9 @@ import com.yj.app.test.start.StartFragment;
  * Demo of lazy load container.
  *
  * @author JingYeoh
- * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- * <a href="https://github.com/justkiddingbaby">Github</a>
- * <a href="http://blog.justkiddingbaby.com">Blog</a>
+ *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ *         <a href="https://github.com/justkiddingbaby">Github</a>
+ *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Dec 13,2017
  */
 @Puppet(containerViewId = R.id.lazyContent)

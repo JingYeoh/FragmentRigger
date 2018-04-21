@@ -252,7 +252,7 @@ public final class Rigger {
    */
   private void onBackPressed(Object object) {
     Logger.i(object, TAG_HEADER + "onBackPressed");
-    createRigger(object).onRiggerBackPressed();
+    createRigger(object).dispatchBackPressed();
   }
 
   /**

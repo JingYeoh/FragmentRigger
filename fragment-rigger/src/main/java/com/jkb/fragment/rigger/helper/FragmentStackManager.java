@@ -19,9 +19,9 @@ import java.util.Stack;
  * Fragment Stack Manager.Used to save/get/remove/restore and more operations for Fragment Stack.
  *
  * @author JingYeoh
- * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- * <a href="https://github.com/justkiddingbaby">Github</a>
- * <a href="http://blog.justkiddingbaby.com">Blog</a>
+ *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ *         <a href="https://github.com/justkiddingbaby">Github</a>
+ *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 20,2017
  */
 
@@ -29,7 +29,10 @@ public final class FragmentStackManager implements Cloneable, Serializable {
 
   private static final String BUNDLE_KEY_FRAGMENT_STACK = "/bundle/key/fragment/stack";
 
-  private FragmentManager mFm;
+  /**
+   * Fragment manager of the host.
+   */
+  private transient FragmentManager mFm;
 
   /**
    * Fragment stack.save the fragment tags that is added in FragmentManager for Activity/Fragment.
