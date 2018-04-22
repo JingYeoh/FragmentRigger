@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
-import com.jkb.fragment.rigger.rigger.Rigger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
 import java.util.Timer;
@@ -90,7 +89,11 @@ public class LazyLoadFragment extends BaseFragment {
     outState.putInt(BUNDLE_KEY, mSelectedPosition);
   }
 
-  public void onRiggerBackPressed() {
+  public boolean onRiggerBackPressed() {
+    if (viewPager.getCurrentItem() != 0) {
+      viewPager.setCurrentItem(0);
+      return true;
+    }
     if (!isExit) {
       isExit = true;
       Toast.makeText(mContext, "press again to close lazy load page.", Toast.LENGTH_SHORT).show();
@@ -101,12 +104,9 @@ public class LazyLoadFragment extends BaseFragment {
           isExit = false;
         }
       }, 2000);
+      return true;
     } else {
-      Rigger.getRigger(this).onBackPressed();
+      return false;
     }
-  }
-
-  public boolean onInterruptBackPressed() {
-    return viewPager.getCurrentItem() != 0;
   }
 }

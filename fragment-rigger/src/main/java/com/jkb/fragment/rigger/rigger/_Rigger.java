@@ -2,7 +2,6 @@ package com.jkb.fragment.rigger.rigger;
 
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_CONTAINERVIEWID;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_INTERRUPT_BACKPRESSED;
-import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPRESSED;
 
 import android.app.Activity;
 import android.content.Context;
@@ -195,72 +194,66 @@ abstract class _Rigger implements IRigger {
    * Pass the touch back key event down.
    */
   void dispatchBackPressed() {
-    //call the show or replace fragment;s onBackPressed method.
-    String[] fragmentsWithoutStack = mStackManager.getFragmentsWithoutStack();
-    for (String tag : fragmentsWithoutStack) {
-      Fragment fragmentWithoutStack = mRiggerTransaction.find(tag);
-      if (fragmentWithoutStack == null) {
-        throwException(new NotExistException(tag));
-      }
-      ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).dispatchBackPressed();
-    }
-
-    String topFragmentTag = mStackManager.peek();
-    if (!TextUtils.isEmpty(topFragmentTag)) {
-      Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
-      if (topFragment == null) {
-        throwException(new NotExistException(topFragmentTag));
-      }
-      //call the top fragment's onBackPressed method.
-      ((_Rigger) Rigger.getRigger(topFragment)).dispatchBackPressed();
-    }
-
+    Logger.d(mPuppetTarget, "dispatchBackPressed() method is called");
     boolean isInterrupt = onInterruptBackPressed();
-    if (!isInterrupt) {
-      onRiggerBackPressed();
-    }
-  }
-
-  /**
-   * If the puppet contains onRiggerBackPressed method, then intercept the {@link #onBackPressed()} method.
-   */
-  private void onRiggerBackPressed() {
-    Class<?> clazz = mPuppetTarget.getClass();
-    try {
-      Method onBackPressed = clazz.getMethod(METHOD_ON_RIGGER_BACKPRESSED);
-      onBackPressed.invoke(mPuppetTarget);
-    } catch (Exception e) {
+    if (isInterrupt) {
       onBackPressed();
+    } else {
+      //call the fragment's dispatchBackPressed method that is not contained into the stack.
+      String[] fragmentsWithoutStack = mStackManager.getFragmentsWithoutStack();
+      for (String tag : fragmentsWithoutStack) {
+        Fragment fragmentWithoutStack = mRiggerTransaction.find(tag);
+        if (fragmentWithoutStack == null) {
+          throwException(new NotExistException(tag));
+        }
+        ((_Rigger) Rigger.getRigger(fragmentWithoutStack)).dispatchBackPressed();
+      }
+
+      String topFragmentTag = mStackManager.peek();
+      if (!TextUtils.isEmpty(topFragmentTag)) {
+        Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
+        if (topFragment == null) {
+          throwException(new NotExistException(topFragmentTag));
+        }
+        //call the top fragment's onBackPressed method.
+        ((_Rigger) Rigger.getRigger(topFragment)).dispatchBackPressed();
+      }
+
+      // if this host contain non fragments , call onRiggerBackPressed method.
+      if (fragmentsWithoutStack.length == 0 && TextUtils.isEmpty(topFragmentTag)) {
+        onBackPressed();
+      }
     }
   }
 
   /**
-   * If the puppet contain onInterruptBackPressed method , then interrupt the {@link #onRiggerBackPressed()} method.
+   * If the puppet contain onInterruptBackPressed method , then interrupt the {@link #onBackPressed()} method.
    */
   private boolean onInterruptBackPressed() {
+    Logger.d(mPuppetTarget, "onInterruptBackPressed() method is called");
     Class<?> clazz = mPuppetTarget.getClass();
     try {
       Method onBackPressed = clazz.getMethod(METHOD_ON_INTERRUPT_BACKPRESSED);
       return (boolean) onBackPressed.invoke(mPuppetTarget);
     } catch (Exception e) {
-      e.printStackTrace();
+      return false;
     }
-    return false;
   }
 
   @Override
   public void onBackPressed() {
+    Logger.d(mPuppetTarget, "onRiggerBackPressed() method is called");
     String topFragmentTag = mStackManager.peek();
     if (TextUtils.isEmpty(topFragmentTag)) {
       close();
-      return;
+    } else {
+      //call the top fragment's onBackPressed method.
+      Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
+      if (topFragment == null) {
+        throwException(new NotExistException(topFragmentTag));
+      }
+      ((_Rigger) Rigger.getRigger(topFragment)).dispatchBackPressed();
     }
-    //call the top fragment's onBackPressed method.
-    Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
-    if (topFragment == null) {
-      throwException(new NotExistException(topFragmentTag));
-    }
-    ((_Rigger) Rigger.getRigger(topFragment)).dispatchBackPressed();
   }
 
   @Override
@@ -272,7 +265,7 @@ abstract class _Rigger implements IRigger {
   @Override
   public void addFragment(@IdRes int containerViewId, Fragment... fragments) {
     if (fragments == null) {
-      Logger.w(this, "the fragments to be added is null.");
+      Logger.w(mPuppetTarget, "the fragments to be added is null.");
       return;
     }
     for (Fragment fragment : fragments) {

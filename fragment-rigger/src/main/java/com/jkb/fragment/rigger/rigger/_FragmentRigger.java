@@ -3,6 +3,7 @@ package com.jkb.fragment.rigger.rigger;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_FRAGMENT_TAG;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIMATIONS;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_LAZYLOAD_VIEW_CREATED;
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPRESSED;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,7 +20,6 @@ import android.view.animation.AnimationUtils;
 import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.exception.UnSupportException;
-import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.rigger.utils.RiggerConsts;
 import java.lang.reflect.InvocationTargetException;
@@ -30,9 +30,9 @@ import java.util.UUID;
  * Fragment Rigger.rig the Fragment puppet.
  *
  * @author JingYeoh
- * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- * <a href="https://github.com/justkiddingbaby">Github</a>
- * <a href="http://blog.justkiddingbaby.com">Blog</a>
+ *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ *         <a href="https://github.com/justkiddingbaby">Github</a>
+ *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 20,2017
  */
 
@@ -45,8 +45,8 @@ final class _FragmentRigger extends _Rigger {
   private static final String BUNDLE_KEY_FRAGMENT_VIEW_INIT = "/bundle/key/fragment/view/init";
   private static final String BUNDLE_KEY_FRAGMENT_ANIMATION = "/bundle/key/fragment/animation";
 
-  private Fragment mFragment;
   private Activity mActivity;
+  private Fragment mFragment;
   //data
   private RiggerTransaction mParentRiggerTransaction;
   private String mFragmentTag;
@@ -151,7 +151,14 @@ final class _FragmentRigger extends _Rigger {
     Fragment parent = mFragment.getParentFragment();
     while (true) {
       if (parent == null) break;
-      int containerViewId = Rigger.getRigger(parent).getContainerViewId();
+      IRigger rigger = Rigger.getRigger(parent);
+      String[] stack = ((_Rigger) rigger).mStackManager.getFragmentsWithoutStack();
+      for (String tag : stack) {
+        if (tag.equals(getFragmentTAG())) {
+          return parent;
+        }
+      }
+      int containerViewId = rigger.getContainerViewId();
       if (containerViewId > 0) break;
       parent = parent.getParentFragment();
     }
@@ -268,6 +275,35 @@ final class _FragmentRigger extends _Rigger {
     invokeOnLazyLoadViewCreated();
   }
 
+  @SuppressWarnings("TryWithIdenticalCatches")
+  @Override
+  public void onBackPressed() {
+    boolean isInterrupt = false;
+    Class<?> clazz = mFragment.getClass();
+    Method onBackPressed = null;
+    try {
+      onBackPressed = clazz.getMethod(METHOD_ON_RIGGER_BACKPRESSED);
+      isInterrupt = (boolean) onBackPressed.invoke(mFragment);
+    } catch (NoSuchMethodException e) {
+      isInterrupt = false;
+    } catch (InvocationTargetException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    }
+    if (isInterrupt) {
+      Logger.d(mFragment, "onRiggerBackPressed() method is called");
+      return;
+    }
+    // if this fragment is not contained into the stack ,then interrupt this method.
+    if (!Rigger.getRigger(getContainerHost()).getFragmentStack().contains(getFragmentTAG())) {
+      Logger.d(mFragment, "onRiggerBackPressed() method is called");
+      Rigger.getRigger(getContainerHost()).onBackPressed();
+    } else {
+      super.onBackPressed();
+    }
+  }
+
   @Override
   public void startFragment(@NonNull Fragment fragment) {
     //if the fragment has effective containerViewId,then the operation is operated by itself.
@@ -286,10 +322,6 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public void close() {
-    // if this fragment is not contained into the stack ,then interrupt this method.
-    if (!Rigger.getRigger(getContainerHost()).getFragmentStack().contains(getFragmentTAG())) {
-      return;
-    }
     //start the exiting animation.
     if (mExitAnim != 0 && !mFragment.isHidden()) {
       boolean isParentBond = Rigger.getRigger(getContainerHost()).isBondContainerView();
@@ -324,6 +356,7 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   public String getFragmentTAG() {
+    if (mFragment != null && !TextUtils.isEmpty(mFragment.getTag())) return mFragment.getTag();
     return mFragmentTag;
   }
 

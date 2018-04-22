@@ -175,6 +175,7 @@ public final class FragmentStackManager implements Cloneable, Serializable {
   /**
    * Return all fragments which is not contained in the stack.
    */
+  @NonNull
   public String[] getFragmentsWithoutStack() {
     List<String> fragmentTags = new ArrayList<>();
     for (Entry<String, Integer> entry : mFragmentContainerMap.entrySet()) {
@@ -203,6 +204,7 @@ public final class FragmentStackManager implements Cloneable, Serializable {
    *
    * @param containerViewId the container view's id
    */
+  @NonNull
   public String[] getFragmentTags(@IdRes int containerViewId) {
     List<String> fragmentTags = new ArrayList<>();
     for (Entry<String, Integer> item : mFragmentContainerMap.entrySet()) {

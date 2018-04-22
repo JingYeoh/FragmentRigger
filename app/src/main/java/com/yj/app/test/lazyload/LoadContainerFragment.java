@@ -8,7 +8,6 @@ import android.widget.TextView;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
-import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
 import com.yj.app.test.start.StartFragment;
@@ -73,15 +72,17 @@ public class LoadContainerFragment extends BaseFragment {
     outState.putString(BUNDLE_KEY, mValue);
   }
 
-  public void onRiggerBackPressed() {
-    Logger.i(this, "OnRiggerBackPressed");
-    Rigger.getRigger(this).onBackPressed();
+  public boolean onRiggerBackPressed() {
+    if (!mValue.equals("Me")) return true;
+    if (Rigger.getRigger(this).getFragmentStack().size() == 0) return false;
+    return true;
   }
 
   public boolean onInterruptBackPressed() {
-    Logger.i(this, "onInterruptBackPressed");
-    if (!mValue.equals("Me")) return false;
-    if (Rigger.getRigger(this).getFragmentStack().empty()) return false;
+    if (mValue.equals("Me")) {
+      if (Rigger.getRigger(this).getFragmentStack().size() == 0) return true;
+      return false;
+    }
     return true;
   }
 }

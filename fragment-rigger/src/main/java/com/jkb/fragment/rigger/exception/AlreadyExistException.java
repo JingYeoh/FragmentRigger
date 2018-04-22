@@ -13,6 +13,6 @@ package com.jkb.fragment.rigger.exception;
 public class AlreadyExistException extends RiggerException {
 
   public AlreadyExistException(String fragmentTag) {
-    super(fragmentTag + "is Already exist in stack");
+    super(fragmentTag + " is added into the stack");
   }
 }

@@ -107,7 +107,7 @@ public final class Rigger {
     if (rigger == null) {
       rigger = _Rigger.create(puppet);
       mPuppetMap.put(code, rigger);
-      Logger.i(this, "add puppet " + puppet + " to rigger list");
+      Logger.i(puppet, "add puppet " + puppet + " to rigger list");
     }
     return (_Rigger) rigger;
   }
@@ -125,7 +125,7 @@ public final class Rigger {
       return false;
     }
     mPuppetMap.remove(code);
-    Logger.i(this, "remove puppet " + puppet + " from rigger list");
+    Logger.i(puppet, "remove puppet " + puppet + " from rigger list");
     return true;
   }
 
