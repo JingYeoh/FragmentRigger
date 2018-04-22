@@ -84,7 +84,8 @@ public class ContainerFragment extends BaseFragment {
     }
   }
 
-  public void onRiggerBackPressed() {
+  public boolean onRiggerBackPressed() {
     Logger.i(this, position + "::onRiggerBackPressed");
+    return false;
   }
 }
