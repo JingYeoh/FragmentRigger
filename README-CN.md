@@ -58,8 +58,8 @@
 - [x] **Fragment懒加载**
 - [x] **Fragment转场动画**
 - [x] **自定义Fragment tag**
+- [x] **为非栈内的Fragment添加onBackPressed支持**
 - [ ] **配置Fragment启动模式的选项**
-- [ ] **为非栈内的Fragment添加onBackPressed支持**
 - [ ] **Fragment间共享元素转场动画**
 - [ ] **左滑退出**
 - [ ] **支持DialogFragment**

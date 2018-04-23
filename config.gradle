@@ -4,15 +4,15 @@ import java.util.regex.Pattern
 ext {
     app = [
             appVerCode       : 1,
-            appVerName       : "0.0.1" + "-${releaseTime()}",
+            appVerName       : "1.1.0" + "-${releaseTime()}",
             applicationId    : "com.yj.app",
             versionNameSuffix: getCurrentVersionSuffix(),
             minSdkVersion    : 14
     ]
 
     rigger = [
-            publishCode   : 7,
-            publishVersion: "1.2.1",
+            publishCode   : 8,
+            publishVersion: "1.3.0",
             userOrg       : 'jkb',
             groupId       : 'com.justkiddingbaby',
             artifactId    : 'fragment-rigger',

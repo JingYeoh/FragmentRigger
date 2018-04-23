@@ -59,8 +59,8 @@ You can use this `FragmentRigger` with one line annotation.
 - [x] **Fragment lazy load**
 - [x] **Fragment transition animations**
 - [x] **Option to configure fragment tag**
+- [x] **Add `onBackPressed` method support for the fragment that is not added into stack**
 - [ ] **Option to configure fragment launch mode**
-- [ ] **Add `onBackPressed` method support for the fragment that is not added into stack**
 - [ ] **Fragment shared elements transition animations**
 - [ ] **Swipe edge to exit Fragment/Activity**
 - [ ] **Support DialogFragment**
