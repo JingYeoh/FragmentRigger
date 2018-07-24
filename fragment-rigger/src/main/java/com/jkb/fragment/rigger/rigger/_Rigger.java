@@ -267,8 +267,9 @@ abstract class _Rigger implements IRigger {
     if (!mStackManager.contain(tag)) return null;
     return mRiggerTransaction.find(tag);
   }
-  
-  void addSharedElements(int... ids) {
+
+  @Override
+  public void addSharedElements(int... ids) {
     mSharedElements = null;
     mSharedElements = ids;
   }
