@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.text.TextUtils;
 import android.view.View;
 import com.jkb.fragment.rigger.utils.Logger;
@@ -202,7 +203,9 @@ final class RiggerTransactionImpl extends RiggerTransaction {
       
       switch (op.cmd) {
         case OP_ADD: {
-          ft.setCustomAnimations(op.enterAnim, op.exitAnim);
+          if(op.sharedElements == null) {
+            ft.setCustomAnimations(op.enterAnim, op.exitAnim);
+          }
           ft.add(op.containerViewId, op.fragment, op.fragmentTag);
         }
         break;
@@ -216,7 +219,9 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         }
         break;
         case OP_SHOW: {
-          ft.setCustomAnimations(op.enterAnim, op.exitAnim);
+          if(op.sharedElements == null) {
+            ft.setCustomAnimations(op.enterAnim, op.exitAnim);
+          }
           if (f == null) {
             Logger.w(this, "Op:Show.can not find fragment " + op.fragmentTag);
           } else {
@@ -225,7 +230,9 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         }
         break;
         case OP_HIDE: {
-          ft.setCustomAnimations(op.enterAnim, op.exitAnim);
+          if(op.sharedElements == null) {
+            ft.setCustomAnimations(op.enterAnim, op.exitAnim);
+          }
           if (f == null) {
             Logger.w(this, "Op:Hide.can not find fragment " + op.fragmentTag);
           } else {
@@ -239,7 +246,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         for(int viewId : op.sharedElements) {
           View v = f.getView().findViewById(viewId);
           if(v != null) {
-            ft.addSharedElement(v, v.getTransitionName());
+            ft.addSharedElement(v, ViewCompat.getTransitionName(v));
           }
         }
       }
