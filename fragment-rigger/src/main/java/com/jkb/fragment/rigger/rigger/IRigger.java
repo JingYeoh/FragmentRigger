@@ -35,6 +35,13 @@ public interface IRigger {
    * @return The fragment if found or null otherwise.
    */
   Fragment findFragmentByTag(String tag);
+  
+  /**
+   * Add shared elements on next fragment transaction right before commit().
+   *
+   * @param ids shared view id;
+   */
+  void addSharedElements(int... ids);
 
   /**
    * Add fragments to parent's state.these fragments will not be added into the stack.
