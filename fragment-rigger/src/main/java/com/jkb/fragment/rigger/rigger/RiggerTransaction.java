@@ -71,6 +71,15 @@ abstract class RiggerTransaction {
    * @return Returns the same RiggerTransaction instance.
    */
   abstract RiggerTransaction hide(String... tags);
+  
+  /**
+   * Add shared element to the last Op.
+   *
+   * @param ids View Id that is shared.
+   *
+   * @return Returns the same RiggerTransaction instance.
+   */
+  abstract RiggerTransaction addSharedElements(int... ids);
 
   /**
    * Schedules a commit of this transaction.  The commit does
