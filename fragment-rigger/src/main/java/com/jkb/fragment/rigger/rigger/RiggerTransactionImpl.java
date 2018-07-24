@@ -100,6 +100,17 @@ final class RiggerTransactionImpl extends RiggerTransaction {
   }
 
   @Override
+  RiggerTransaction replace(@IdRes int containerViewId, Fragment fragment, @NonNull String tag) {
+    Op op = new Op();
+    op.cmd = OP_REPLACE;
+    op.fragment = fragment;
+    op.fragmentTag = tag;
+    op.containerViewId = containerViewId;
+    addOp(op);
+    return this;
+  }
+
+  @Override
   RiggerTransaction remove(String... tags) {
     if (tags == null || tags.length == 0) return this;
     for (String tag : tags) {
@@ -207,6 +218,14 @@ final class RiggerTransactionImpl extends RiggerTransaction {
             ft.setCustomAnimations(op.enterAnim, op.exitAnim);
           }
           ft.add(op.containerViewId, op.fragment, op.fragmentTag);
+        }
+        break;
+        case OP_REPLACE: {
+          if (f == null) {
+            Logger.w(this, "Op:Remove.can not find fragment " + op.fragmentTag);
+          } else {
+            ft.replace(op.containerViewId, op.fragment, op.fragmentTag);
+          }
         }
         break;
         case OP_REMOVE: {

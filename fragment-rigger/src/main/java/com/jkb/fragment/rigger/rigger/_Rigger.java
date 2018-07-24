@@ -430,8 +430,7 @@ abstract class _Rigger implements IRigger {
   @Override
   public void replaceFragment(@NonNull Fragment fragment, @IdRes int containerViewId) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
-    addFragmentWithAnim(fragment, containerViewId);
-    mRiggerTransaction.remove(mStackManager.getFragmentTags(containerViewId)).show(fragmentTAG);
+    mRiggerTransaction.replace(containerViewId, fragment, fragmentTAG);
     if(mSharedElements != null) {
       mRiggerTransaction.addSharedElements(mSharedElements);
       mSharedElements = null;

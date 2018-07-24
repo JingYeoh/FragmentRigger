@@ -38,6 +38,8 @@ abstract class RiggerTransaction {
    */
   abstract RiggerTransaction add(@IdRes int containerViewId, Fragment fragment, @NonNull String tag);
 
+  abstract RiggerTransaction replace(@IdRes int containerViewId, Fragment fragment, @NonNull String tag);
+
   /**
    * Remove existing fragment.
    *
