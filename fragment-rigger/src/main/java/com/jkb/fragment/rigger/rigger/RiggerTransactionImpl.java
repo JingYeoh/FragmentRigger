@@ -149,7 +149,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
       if(mTail.sharedElements == null) {
         mTail.sharedElements = new HashSet();
       }
-      mTail.sharedElements.add(id)
+      mTail.sharedElements.add(id);
     }
     return this;
   }
