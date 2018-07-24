@@ -28,9 +28,8 @@ final class RiggerTransactionImpl extends RiggerTransaction {
   private static final int OP_SHOW = 5;
   private static final int OP_DETACH = 6;
   private static final int OP_ATTACH = 7;
-
+  
   private static final class Op {
-
     Op next;
     Op prev;
     int cmd;
@@ -39,6 +38,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
     int containerViewId;
     int enterAnim;
     int exitAnim;
+    HashSet<Integer> sharedElements;
   }
 
   private Op mHead;
@@ -140,6 +140,19 @@ final class RiggerTransactionImpl extends RiggerTransaction {
     }
     return this;
   }
+  
+  @Override
+  RiggerTransaction addSharedElements(int... ids) {
+    if (ids == null || ids.length == 0) return this;
+    if (mTail == null) return this;
+    for (int id : ids) {
+      if(mTail.sharedElements == null) {
+        mTail.sharedElements = new HashSet();
+      }
+      mTail.sharedElements.add(id)
+    }
+    return this;
+  }
 
   @Override
   void commit() {
@@ -183,6 +196,8 @@ final class RiggerTransactionImpl extends RiggerTransaction {
     if (op == null) return;
     FragmentTransaction ft = mFragmentManager.beginTransaction();
     while (op != null) {
+      Fragment f = find(op.fragmentTag);
+      
       switch (op.cmd) {
         case OP_ADD: {
           ft.setCustomAnimations(op.enterAnim, op.exitAnim);
@@ -190,7 +205,6 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         }
         break;
         case OP_REMOVE: {
-          Fragment f = find(op.fragmentTag);
           if (f == null) {
             Logger.w(this, "Op:Remove.can not find fragment " + op.fragmentTag);
           } else {
@@ -201,7 +215,6 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         break;
         case OP_SHOW: {
           ft.setCustomAnimations(op.enterAnim, op.exitAnim);
-          Fragment f = find(op.fragmentTag);
           if (f == null) {
             Logger.w(this, "Op:Show.can not find fragment " + op.fragmentTag);
           } else {
@@ -211,7 +224,6 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         break;
         case OP_HIDE: {
           ft.setCustomAnimations(op.enterAnim, op.exitAnim);
-          Fragment f = find(op.fragmentTag);
           if (f == null) {
             Logger.w(this, "Op:Hide.can not find fragment " + op.fragmentTag);
           } else {
@@ -220,6 +232,16 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         }
         break;
       }
+      
+      if(op.sharedElements != null && f != null) {
+        for(int viewId : op.sharedElements) {
+          View v = f.getView().findViewById(viewId);
+          if(v != null) {
+            ft.addSharedElement(v, v.getTransitionName());
+          }
+        }
+      }
+      
       op = op.next;
     }
     ft.commit();
