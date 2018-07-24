@@ -77,7 +77,7 @@ abstract class _Rigger implements IRigger {
     Class<?> clazz = mPuppetTarget.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);
     mBindContainerView = puppet.bondContainerView();
-    mCloseOnEmpty = puppet.closeIfEmpty();
+    mCloseIfEmpty = puppet.closeIfEmpty();
     mContainerViewId = puppet.containerViewId();
     if (mContainerViewId <= 0) {
       try {
