@@ -284,15 +284,15 @@ abstract class _Rigger implements IRigger {
       String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
       if (mStackManager.add(fragmentTAG, containerViewId)) {
         addFragmentWithAnim(fragment, containerViewId);
+        if(mSharedElements != null) {
+          mRiggerTransaction.addSharedElements(mSharedElements);
+          mSharedElements = null;
+        }
         mRiggerTransaction.hide(fragmentTAG);
       } else {
         throwException(new AlreadyExistException(fragmentTAG));
       }
       fragment.setUserVisibleHint(false);
-    }
-    if(mSharedElements != null) {
-      mRiggerTransaction.addSharedElements(mSharedElements);
-      mSharedElements = null;
     }
     mRiggerTransaction.commit();
   }
@@ -307,11 +307,11 @@ abstract class _Rigger implements IRigger {
       throwException(new UnSupportException("ContainerViewId must be effective in class " + mPuppetTarget.getClass()));
     }
     addFragmentWithAnim(fragment, mContainerViewId);
-    mRiggerTransaction.hide(getVisibleFragmentTags(getContainerViewId()));
     if(mSharedElements != null) {
       mRiggerTransaction.addSharedElements(mSharedElements);
       mSharedElements = null;
     }
+    mRiggerTransaction.hide(getVisibleFragmentTags(getContainerViewId()));
     mRiggerTransaction.show(fragmentTAG).commit();
   }
 
@@ -371,10 +371,10 @@ abstract class _Rigger implements IRigger {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
     if (mStackManager.add(fragmentTAG, containerViewId)) {
       addFragmentWithAnim(fragment, containerViewId);
-    }
-    if(mSharedElements != null) {
-      mRiggerTransaction.addSharedElements(mSharedElements);
-      mSharedElements = null;
+      if(mSharedElements != null) {
+        mRiggerTransaction.addSharedElements(mSharedElements);
+        mSharedElements = null;
+      }
     }
     String[] fragmentTags = mStackManager.getFragmentTags(containerViewId);
     for (String tag : fragmentTags) {

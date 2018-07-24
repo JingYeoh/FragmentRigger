@@ -242,7 +242,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         break;
       }
       
-      if(op.sharedElements != null && f != null) {
+      if(op.sharedElements != null && f != null && f.getView() != null) {
         for(int viewId : op.sharedElements) {
           View v = f.getView().findViewById(viewId);
           if(v != null) {
