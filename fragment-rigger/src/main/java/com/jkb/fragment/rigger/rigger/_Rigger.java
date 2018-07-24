@@ -67,6 +67,7 @@ abstract class _Rigger implements IRigger {
   @IdRes
   private int mContainerViewId;
   private boolean mBindContainerView;
+  private boolean mCloseIfEmpty;
   RiggerTransaction mRiggerTransaction;
   FragmentStackManager mStackManager;
 
@@ -76,6 +77,7 @@ abstract class _Rigger implements IRigger {
     Class<?> clazz = mPuppetTarget.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);
     mBindContainerView = puppet.bondContainerView();
+    mCloseOnEmpty = puppet.closeIfEmpty();
     mContainerViewId = puppet.containerViewId();
     if (mContainerViewId <= 0) {
       try {
@@ -245,7 +247,10 @@ abstract class _Rigger implements IRigger {
     Logger.d(mPuppetTarget, "onRiggerBackPressed() method is called");
     String topFragmentTag = mStackManager.peek();
     if (TextUtils.isEmpty(topFragmentTag)) {
-      close();
+      if(mCloseIfEmpty) {
+        Logger.d(mPuppetTarget, "Rigger was closed because of empty top");
+        close();
+      }
     } else {
       //call the top fragment's onBackPressed method.
       Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
