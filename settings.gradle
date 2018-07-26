@@ -1,1 +1,1 @@
-include ':app', ':fragment-rigger'
+include ':app', ':rigger', ':swiper'

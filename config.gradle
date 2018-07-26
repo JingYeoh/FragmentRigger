@@ -20,6 +20,16 @@ ext {
             website       : 'https://github.com/JustKiddingBaby/FragmentRigger'
     ]
 
+    swiper = [
+            publishCode   : 1,
+            publishVersion: "1.0.0",
+            userOrg       : 'jkb',
+            groupId       : 'com.justkiddingbaby',
+            artifactId    : 'fragment-swiper',
+            desc          : 'A library supprt swipe back to pop for activity and fragment.',
+            website       : 'https://github.com/JustKiddingBaby/FragmentRigger'
+    ]
+
     android = [
             minSdkVersion             : 12,
             targetSdkVersion          : 23,
@@ -70,6 +80,6 @@ def getCurrentFlavor() {
     if (matcher.find()) {
         return matcher.group(1).toLowerCase()
     } else {
-        return "";
+        return ""
     }
 }

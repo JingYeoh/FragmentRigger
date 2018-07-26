@@ -1,4 +1,4 @@
-package com.jkb.fragment.swiper.widget;
+package com.jkb.swiper.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,15 +9,15 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
-import com.jkb.fragment.rigger.R;
+import com.jkb.swiper.R;
 
 /**
  * Support {@link android.app.Activity}/{@link android.support.v4.app.Fragment} exit by finger swipe edge.
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Feb 09,2018.
  */
 

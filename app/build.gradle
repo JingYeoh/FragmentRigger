@@ -66,7 +66,7 @@ dependencies {
     compile rootProject.ext.dependencies.design
     compile rootProject.ext.dependencies.appcompatV7
 //    compile 'com.justkiddingbaby:fragment-rigger:1.2.0'
-    compile project(':fragment-rigger')
+    compile project(':rigger')
 
     compile 'com.squareup.picasso:picasso:2.5.2'
 }
