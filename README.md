@@ -61,9 +61,9 @@ You can use this `FragmentRigger` with one line annotation.
 - [x] **Option to configure fragment tag**
 - [x] **Add `onBackPressed` method support for the fragment that is not added into stack**
 - [ ] **Option to configure fragment launch mode**
-- [ ] **Fragment shared elements transition animations**
+- [x] **Fragment shared elements transition animations**
 - [ ] **Swipe edge to exit Fragment/Activity**
-- [ ] **Support DialogFragment**
+- [ ] **Support DialogFragment** [WIP]
 
 ### Problem solved
 * ~~Fragment view overlapping~~
