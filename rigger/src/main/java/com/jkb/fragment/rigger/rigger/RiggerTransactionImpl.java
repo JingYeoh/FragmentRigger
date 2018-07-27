@@ -176,7 +176,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
    */
   private void executePendingTransaction() {
     if (!mRigger.isResumed()) {
-      Logger.w(this, "the rigger is not resumed,the commit will be delayed");
+      Logger.w(this, "the puppet is not resumed, the commit will be delayed");
       return;
     }
     Op op = mTransactions.poll();
@@ -192,7 +192,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
         case OP_REMOVE: {
           Fragment f = find(op.fragmentTag);
           if (f == null) {
-            Logger.w(this, "Op:Remove.can not find fragment " + op.fragmentTag);
+            Logger.w(this, "Op:Remove. can not find fragment " + op.fragmentTag);
           } else {
             ft.remove(f);
             mAdded.remove(op.fragmentTag);
@@ -203,7 +203,7 @@ final class RiggerTransactionImpl extends RiggerTransaction {
           ft.setCustomAnimations(op.enterAnim, op.exitAnim);
           Fragment f = find(op.fragmentTag);
           if (f == null) {
-            Logger.w(this, "Op:Show.can not find fragment " + op.fragmentTag);
+            Logger.w(this, "Op:Show. can not find fragment " + op.fragmentTag);
           } else {
             ft.show(f);
           }
@@ -213,9 +213,27 @@ final class RiggerTransactionImpl extends RiggerTransaction {
           ft.setCustomAnimations(op.enterAnim, op.exitAnim);
           Fragment f = find(op.fragmentTag);
           if (f == null) {
-            Logger.w(this, "Op:Hide.can not find fragment " + op.fragmentTag);
+            Logger.w(this, "Op:Hide. can not find fragment " + op.fragmentTag);
           } else {
             ft.hide(f);
+          }
+        }
+        break;
+        case OP_ATTACH: {
+          Fragment f = find(op.fragmentTag);
+          if (f == null) {
+            Logger.w(this, "Op:Attach. can not find fragment " + op.fragmentTag);
+          } else {
+            ft.attach(f);
+          }
+        }
+        break;
+        case OP_DETACH: {
+          Fragment f = find(op.fragmentTag);
+          if (f == null) {
+            Logger.w(this, "Op:Detach. can not find fragment " + op.fragmentTag);
+          } else {
+            ft.detach(f);
           }
         }
         break;

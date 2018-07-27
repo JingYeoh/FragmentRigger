@@ -16,7 +16,7 @@ import com.yj.app.R;
  *         <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 23,2017
  */
-@Puppet(containerViewId = R.id.atyContent, bondContainerView = true)
+@Puppet(containerViewId = R.id.atyContent, stickyStack = true)
 public abstract class BaseActivity extends AppCompatActivity {
 
   @Override

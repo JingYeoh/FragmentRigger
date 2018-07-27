@@ -5,8 +5,10 @@ import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIMA
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_LAZYLOAD_VIEW_CREATED;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPRESSED;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +17,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import com.jkb.fragment.rigger.annotation.Animator;
@@ -22,6 +25,7 @@ import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.rigger.utils.RiggerConsts;
+import com.jkb.fragment.swiper.widget.SwipeLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
@@ -30,9 +34,9 @@ import java.util.UUID;
  * Fragment Rigger.rig the Fragment puppet.
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 20,2017
  */
 
@@ -51,6 +55,7 @@ final class _FragmentRigger extends _Rigger {
   private RiggerTransaction mParentRiggerTransaction;
   private String mFragmentTag;
   private Bundle mSavedFragmentState;
+  private Bundle mForResultTarget;
   //anim
   int mEnterAnim;
   int mExitAnim;
@@ -60,8 +65,6 @@ final class _FragmentRigger extends _Rigger {
   private boolean mAbleLazyLoad = false;
   private boolean mHasInitView = false;
   private boolean mHasInvokeLazyLoad = false;
-
-  private Bundle mForResultTarget;
 
   _FragmentRigger(@NonNull Fragment fragment) {
     super(fragment);
@@ -204,10 +207,13 @@ final class _FragmentRigger extends _Rigger {
 
   @Override
   View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    super.onCreateView(inflater, container, savedInstanceState);
+    View view = super.onCreateView(inflater, container, savedInstanceState);
     mHasInitView = true;
     initLazyLoadStatus();
-    return null;
+    SwipeLayout swipeLayout = buildSwipLayout();
+    if (swipeLayout == null) return null;
+    swipeLayout.addView(view);
+    return swipeLayout;
   }
 
   @Override
@@ -304,6 +310,7 @@ final class _FragmentRigger extends _Rigger {
     }
   }
 
+  @SuppressLint("ResourceType")
   @Override
   public void startFragment(@NonNull Fragment fragment) {
     //if the fragment has effective containerViewId,then the operation is operated by itself.

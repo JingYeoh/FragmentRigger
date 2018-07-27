@@ -3,8 +3,10 @@ package com.jkb.fragment.rigger.rigger;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_CONTAINERVIEWID;
 import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_INTERRUPT_BACKPRESSED;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.IdRes;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -29,6 +32,8 @@ import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
+import com.jkb.fragment.swiper.annotation.Swiper;
+import com.jkb.fragment.swiper.widget.SwipeLayout;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +43,9 @@ import java.util.Stack;
  * Rigger.Used to repeat different Rigger(Strategy pattern)
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 20,2017
  */
 
@@ -69,13 +74,15 @@ abstract class _Rigger implements IRigger {
   private boolean mBindContainerView;
   RiggerTransaction mRiggerTransaction;
   FragmentStackManager mStackManager;
+  // swiper
+  private Swiper mSwiper;
 
   _Rigger(Object puppetTarget) {
     this.mPuppetTarget = puppetTarget;
     //init containerViewId
     Class<?> clazz = mPuppetTarget.getClass();
     Puppet puppet = clazz.getAnnotation(Puppet.class);
-    mBindContainerView = puppet.bondContainerView();
+    mBindContainerView = puppet.stickyStack();
     mContainerViewId = puppet.containerViewId();
     if (mContainerViewId <= 0) {
       try {
@@ -84,6 +91,8 @@ abstract class _Rigger implements IRigger {
       } catch (Exception ignored) {
       }
     }
+    // init swiper
+    mSwiper = clazz.getAnnotation(Swiper.class);
     //init helper
     mStackManager = new FragmentStackManager();
   }
@@ -281,6 +290,7 @@ abstract class _Rigger implements IRigger {
     mRiggerTransaction.commit();
   }
 
+  @SuppressLint("ResourceType")
   @Override
   public void startFragment(@NonNull Fragment fragment) {
     String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
@@ -515,7 +525,6 @@ abstract class _Rigger implements IRigger {
   private String[] getVisibleFragmentTags(@IdRes int containerViewId) {
     List<String> result = new ArrayList<>();
     String[] fragmentTags = mStackManager.getFragmentTags(containerViewId);
-    if (fragmentTags == null) return result.toArray(new String[result.size()]);
     for (String tag : fragmentTags) {
       Fragment fragment = mRiggerTransaction.find(tag);
       if (fragment != null && !fragment.isHidden() &&
@@ -524,6 +533,21 @@ abstract class _Rigger implements IRigger {
       }
     }
     return result.toArray(new String[result.size()]);
+  }
+
+  SwipeLayout buildSwipLayout() {
+    if (mSwiper == null) return null;
+    SwipeLayout swipeLayout = new SwipeLayout(mContext);
+    swipeLayout.setPuppet(mPuppetTarget);
+    // setup params
+    swipeLayout.setEnableSwipe(mSwiper.enable());
+    swipeLayout.setParallaxOffset(mSwiper.parallaxOffset());
+    swipeLayout.setSwipEdgeSide(mSwiper.edgeSide());
+
+    LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    swipeLayout.setLayoutParams(params);
+    swipeLayout.setBackgroundColor(Color.TRANSPARENT);
+    return swipeLayout;
   }
 
   /**

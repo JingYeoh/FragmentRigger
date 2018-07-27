@@ -1,11 +1,13 @@
 package com.jkb.fragment.rigger.rigger;
 
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
 import com.jkb.fragment.rigger.exception.UnSupportException;
-import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
+import com.jkb.fragment.swiper.widget.SwipeLayout;
 
 /**
  * Activity Rigger.rig the Activity puppet.
@@ -32,6 +34,7 @@ final class _ActivityRigger extends _Rigger {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mContext = mActivity;
+    setupSwiper();
     if (mRiggerTransaction == null) {
       mRiggerTransaction = new RiggerTransactionImpl(this, mActivity.getSupportFragmentManager());
     }
@@ -94,5 +97,24 @@ final class _ActivityRigger extends _Rigger {
   @Override
   public void setResult(int resultCode, Bundle bundle) {
     throwException(new UnSupportException("setResult() method can only be called by Fragment"));
+  }
+
+  private void setupSwiper() {
+    SwipeLayout swipeLayout = buildSwipLayout();
+    if (swipeLayout == null) return;
+
+    TypedArray a = mActivity.getTheme().obtainStyledAttributes(new int[]{
+        android.R.attr.windowBackground
+    });
+    int background = a.getResourceId(0, 0);
+    a.recycle();
+    // replace content view
+    ViewGroup decor = (ViewGroup) mActivity.getWindow().getDecorView();
+    ViewGroup decorChild = (ViewGroup) decor.getChildAt(0);
+    decorChild.setBackgroundResource(background);
+    decor.removeView(decorChild);
+    swipeLayout.addView(decorChild);
+    mActivity.setContentView(decorChild);
+    decor.addView(swipeLayout);
   }
 }

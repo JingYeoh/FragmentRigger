@@ -36,7 +36,7 @@ public @interface Swiper {
    *
    * @return if the value contained {@link SwipeEdge#NONE}, then it is not allowed to swipe.
    */
-  SwipeEdge[] enableEdgeSide() default SwipeEdge.LEFT;
+  SwipeEdge[] edgeSide() default SwipeEdge.LEFT;
 
   /**
    * Allow or not to show the parallax effect.

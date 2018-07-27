@@ -33,18 +33,6 @@ public @interface Puppet {
   int containerViewId() default 0;
 
   /**
-   * Optional identifier for the Puppet.
-   *
-   * The puppet will bind the first Fragment that is first onto the stack.
-   * the puppet will be closed as the first Fragment is closing when the bondContainerView is true.
-   * the puppet will show the content view as the first Fragment is closing when the bondContainerView is false.
-   *
-   * It is not used since Version 1.3.0, please use {@link #stickyStack()} instead.
-   */
-  @Deprecated
-  boolean bondContainerView() default false;
-
-  /**
    * Allow or not exit the host {@link android.app.Activity}/{@link android.support.v4.app.Fragment} as the
    * stack size = 1 .
    *
