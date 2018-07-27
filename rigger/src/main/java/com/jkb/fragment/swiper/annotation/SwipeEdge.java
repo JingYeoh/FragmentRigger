@@ -1,4 +1,4 @@
-package com.jkb.swiper.annotation;
+package com.jkb.fragment.swiper.annotation;
 
 /**
  * TODO: please input the description for this class.

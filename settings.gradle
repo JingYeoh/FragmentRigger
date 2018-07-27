@@ -1,1 +1,1 @@
-include ':app', ':rigger', ':swiper'
+include ':app', ':rigger'

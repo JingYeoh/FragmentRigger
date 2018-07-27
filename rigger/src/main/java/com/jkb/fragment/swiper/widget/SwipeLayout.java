@@ -1,4 +1,4 @@
-package com.jkb.swiper.widget;
+package com.jkb.fragment.swiper.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,10 +9,10 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
-import com.jkb.swiper.R;
+import com.jkb.fragment.rigger.R;
 
 /**
- * Support {@link android.app.Activity}/{@link android.support.v4.app.Fragment} exit by finger swipe edge.
+ * The widget support {@link android.app.Activity}/{@link android.support.v4.app.Fragment} to exit by swipe edge.
  *
  * @author JingYeoh
  * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
@@ -21,7 +21,7 @@ import com.jkb.swiper.R;
  * @since Feb 09,2018.
  */
 
-public class SwiperLayout extends FrameLayout {
+public class SwipeLayout extends FrameLayout {
 
   //attributes
   private boolean mAbleParallax;
@@ -30,25 +30,25 @@ public class SwiperLayout extends FrameLayout {
   private float mEdgeShadowWidth;
   private boolean mAbleEdgeShadowGradient;
 
-  public SwiperLayout(@NonNull Context context) {
+  public SwipeLayout(@NonNull Context context) {
     this(context, null);
   }
 
-  public SwiperLayout(@NonNull Context context,
+  public SwipeLayout(@NonNull Context context,
       @Nullable AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public SwiperLayout(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+  public SwipeLayout(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     initAttributes(context, attrs);
   }
 
   private void initAttributes(Context context, AttributeSet attrs) {
-    TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SwiperLayout);
-    mAbleParallax = ta.getBoolean(R.styleable.SwiperLayout_parallax, true);
-    mAbleShowEdgeShadow = ta.getBoolean(R.styleable.SwiperLayout_edgeShadow, true);
-    mEdgeShadowCoor = ta.getColor(R.styleable.SwiperLayout_edgeShadowColor, Color.GRAY);
+    TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SwipeLayout);
+    mAbleParallax = ta.getBoolean(R.styleable.SwipeLayout_parallax, true);
+    mAbleShowEdgeShadow = ta.getBoolean(R.styleable.SwipeLayout_edgeShadow, true);
+    mEdgeShadowCoor = ta.getColor(R.styleable.SwipeLayout_edgeShadowColor, Color.GRAY);
 
     ta.recycle();
   }

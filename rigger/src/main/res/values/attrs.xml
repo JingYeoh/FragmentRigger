@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <declare-styleable name="SwiperLayout">
+  <declare-styleable name="SwipeLayout">
 
     <attr format="enum" name="edgeSide">
       <enum name="none" value="0"/>
