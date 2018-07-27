@@ -542,7 +542,7 @@ abstract class _Rigger implements IRigger {
     // setup params
     swipeLayout.setEnableSwipe(mSwiper.enable());
     swipeLayout.setParallaxOffset(mSwiper.parallaxOffset());
-    swipeLayout.setSwipEdgeSide(mSwiper.edgeSide());
+    swipeLayout.setSwipeEdgeSide(mSwiper.edgeSide());
 
     LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     swipeLayout.setLayoutParams(params);
