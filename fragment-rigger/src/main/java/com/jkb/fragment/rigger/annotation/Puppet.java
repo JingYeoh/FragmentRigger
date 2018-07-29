@@ -54,4 +54,15 @@ public @interface Puppet {
    * @return The default value is false.
    */
   boolean stickyStack() default false;
+  
+  /**
+   * Allow or not exit the host {@link android.app.Activity}/{@link android.support.v4.app.Fragment} when
+   * the stack size = 0
+   *
+   * If the value is true , the host object(Activity/Fragment) will not be exit
+   * Otherwise , the host object(Activity/Fragment) will act as normal.
+   *
+   * @return The default value is true.
+   */
+  boolean closeIfEmpty() default true;
 }

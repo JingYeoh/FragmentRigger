@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
+import com.jkb.fragment.rigger.helper.SharedElement;
+
 /**
  * API for performing a set of Fragment operations.
  *
@@ -37,6 +39,9 @@ abstract class RiggerTransaction {
    * @return Returns the same RiggerTransaction instance.
    */
   abstract RiggerTransaction add(@IdRes int containerViewId, Fragment fragment, @NonNull String tag);
+
+  abstract RiggerTransaction replace(@IdRes int containerViewId, Fragment fragment, @NonNull String tag);
+  abstract RiggerTransaction replace(@IdRes int containerViewId, Fragment fragment, @NonNull String tag, SharedElement... elements);
 
   /**
    * Remove existing fragment.
@@ -71,6 +76,7 @@ abstract class RiggerTransaction {
    * @return Returns the same RiggerTransaction instance.
    */
   abstract RiggerTransaction hide(String... tags);
+
 
   /**
    * Schedules a commit of this transaction.  The commit does

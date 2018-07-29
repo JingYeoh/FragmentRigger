@@ -9,7 +9,9 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
-import com.jkb.fragment.rigger.R;
+
+import com.jkb.fragment.R;
+
 
 /**
  * Support {@link android.app.Activity}/{@link android.support.v4.app.Fragment} exit by finger swipe edge.
