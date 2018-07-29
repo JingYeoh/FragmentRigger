@@ -12,9 +12,9 @@ import java.lang.annotation.Target;
  * Annotation class that can only used on {@link android.support.v4.app.Fragment}.
  *
  * @author JingYeoh
- *         <a href="mailto:yangjing9611@foxmail.com">Email me</a>
- *         <a href="https://github.com/justkiddingbaby">Github</a>
- *         <a href="http://blog.justkiddingbaby.com">Blog</a>
+ * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
+ * <a href="https://github.com/justkiddingbaby">Github</a>
+ * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Dec 04,2017
  */
 @Inherited
@@ -22,8 +22,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LazyLoad {
 
-  /**
-   * Whether to use lazy load.default value is true.
-   */
-  boolean value() default true;
+    /**
+     * Whether to use lazy load.default value is true.
+     */
+    boolean value() default true;
 }

@@ -12,5 +12,5 @@ package com.jkb.fragment.swiper.annotation;
 
 public enum SwipeEdge {
 
-  LEFT, RIGHT, TOP, BOTTOM, NONE
+    LEFT, RIGHT, TOP, BOTTOM, NONE
 }
