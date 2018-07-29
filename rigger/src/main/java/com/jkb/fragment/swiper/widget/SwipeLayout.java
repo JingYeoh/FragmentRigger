@@ -1,17 +1,22 @@
 package com.jkb.fragment.swiper.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.AttrRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.swiper.annotation.SwipeEdge;
+
+import java.util.Stack;
 
 /**
  * The widget support {@link android.app.Activity}/{@link android.support.v4.app.Fragment} to exit by swipe edge.
@@ -31,6 +36,7 @@ public class SwipeLayout extends FrameLayout {
     @FloatRange(from = 0.0f, to = 1.0f)
     private float mParallaxOffset;
     private SwipeEdge[] mSwipeEdgeSide;
+    private boolean mIsStickyWithHost;
 
     private Object mPuppet;
     private int mEdgeWidthOffset;
@@ -108,6 +114,7 @@ public class SwipeLayout extends FrameLayout {
         return true;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean result = super.onTouchEvent(event);
@@ -139,12 +146,61 @@ public class SwipeLayout extends FrameLayout {
     }
 
     private void onTouchMoved(int dx, int dy) {
-        boolean horization = Math.abs(dx) > Math.abs(dy);
-        
+        boolean horizontal = Math.abs(dx) > Math.abs(dy);
+        View preView = getPreView();
+        View topView = getTopView();
+        swipeHorizontal(dx, preView, topView);
+
+    }
+
+    private void swipeHorizontal(int dx, View preView, View topView) {
+        if (topView == null && preView == null) {
+            // TODO: 18-7-29 swipe Activity/Fragment
+        } else if (topView != null && preView == null) {
+            if (mIsStickyWithHost) {
+                // TODO: 18-7-29 swipe Activity/Fragment
+            } else {
+                topView.setTranslationX(dx);
+            }
+        } else if (topView != null) {
+            preView.setVisibility(VISIBLE);
+            topView.setTranslationX(dx);
+        }
     }
 
     private void inertiaScroll() {
 
+    }
+
+    private void swipeClose() {
+        boolean horizontal = Math.abs(mDX) > Math.abs(mDY);
+
+    }
+
+    private void swipeRestoration() {
+        boolean horizontal = Math.abs(mDX) > Math.abs(mDY);
+    }
+
+    @Nullable
+    private View getTopView() {
+        Stack<String> stack = Rigger.getRigger(mPuppet).getFragmentStack();
+        if (stack.empty()) {
+            return null;
+        }
+        String topTag = stack.peek();
+        Fragment fragment = Rigger.getRigger(topTag).findFragmentByTag(topTag);
+        return fragment == null ? null : fragment.getView();
+    }
+
+    @Nullable
+    private View getPreView() {
+        Stack<String> stack = Rigger.getRigger(mPuppet).getFragmentStack();
+        if (stack.size() <= 1) {
+            return null;
+        }
+        String topTag = stack.get(stack.size() - 2);
+        Fragment fragment = Rigger.getRigger(topTag).findFragmentByTag(topTag);
+        return fragment == null ? null : fragment.getView();
     }
 
     public void setParallaxOffset(float parallaxOffset) {
@@ -168,6 +224,10 @@ public class SwipeLayout extends FrameLayout {
 
     public void setEnableSwipe(boolean enable) {
         mIsEnable = enable;
+    }
+
+    public void setStickyWithHost(boolean stickyWithHost) {
+        mIsStickyWithHost = stickyWithHost;
     }
 
     private boolean canSwipe(SwipeEdge swipeEdge) {
