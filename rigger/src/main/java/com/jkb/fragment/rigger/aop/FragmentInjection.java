@@ -114,8 +114,8 @@ public class FragmentInjection extends RiggerInjection {
         Object[] args = joinPoint.getArgs();
 
         Method onCreate = getRiggerMethod("onCreateView", Object.class, LayoutInflater.class, ViewGroup.class,
-                Bundle.class);
-        Object riggerResult = onCreate.invoke(getRiggerInstance(), puppet, args[0], args[1], args[2]);
+            Bundle.class, View.class);
+        Object riggerResult = onCreate.invoke(getRiggerInstance(), puppet, args[0], args[1], args[2], result);
         return riggerResult == null ? result : riggerResult;
     }
 

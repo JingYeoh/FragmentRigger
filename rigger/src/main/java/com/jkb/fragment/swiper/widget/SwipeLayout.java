@@ -7,15 +7,14 @@ import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.swiper.annotation.SwipeEdge;
-
 import java.util.Stack;
 
 /**
@@ -37,14 +36,18 @@ public class SwipeLayout extends FrameLayout {
     private float mParallaxOffset;
     private SwipeEdge[] mSwipeEdgeSide;
     private boolean mIsStickyWithHost;
+    private int mEdgeWidthOffset;
 
     private Object mPuppet;
-    private int mEdgeWidthOffset;
+    private ViewDragHelper mDragHelper;
 
     private int mLastX;
     private int mLastY;
     private int mDX;
     private int mDY;
+    private int mLastXIntercept;
+    private int mLastYIntercept;
+    private int mEdgeFlag;
 
     public SwipeLayout(@NonNull Context context) {
         this(context, null);
@@ -56,6 +59,7 @@ public class SwipeLayout extends FrameLayout {
 
     public SwipeLayout(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragCallback());
     }
 
     public void setPuppet(@NonNull Object puppet) {
@@ -98,64 +102,89 @@ public class SwipeLayout extends FrameLayout {
         super.addView(child, index, params);
     }
 
+    private class ViewDragCallback extends ViewDragHelper.Callback {
+
+        @Override
+        public boolean tryCaptureView(View child, int pointerId) {
+            mEdgeFlag
+            if (canSwipe(SwipeEdge.LEFT, SwipeEdge.RIGHT)) {
+
+            }
+            boolean dragEnable = mDragHelper.isEdgeTouched(mEdgeFlag, pointerId);
+            return false;
+        }
+
+        @Override
+        public int clampViewPositionHorizontal(View child, int left, int dx) {
+            return super.clampViewPositionHorizontal(child, left, dx);
+        }
+
+        @Override
+        public int clampViewPositionVertical(View child, int top, int dy) {
+            return super.clampViewPositionVertical(child, top, dy);
+        }
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        boolean result = super.onInterceptTouchEvent(event);
-        if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return result;
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                break;
-            case MotionEvent.ACTION_MOVE:
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                break;
+        if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return super.onInterceptTouchEvent(event);
+        try {
+            mDragHelper.shouldInterceptTouchEvent(event);
+            return true;
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        boolean result = super.onTouchEvent(event);
-        if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return result;
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mLastX = (int) getX();
-                mLastY = (int) getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                float currentX = event.getX();
-                float currentY = event.getY();
-                int dx = (int) (mLastX - currentX);
-                int dy = (int) (mLastY - currentY);
-                onTouchMoved(dx, dy);
-                mLastX = (int) currentX;
-                mLastY = (int) currentY;
-                mDX = dx;
-                mDY = dy;
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                inertiaScroll();
-                mDX = 0;
-                mDY = 0;
-                break;
+        if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return super.onTouchEvent(event);
+        try {
+            mDragHelper.processTouchEvent(event);
+            return true;
+        } catch (Exception ignored) {
+            ignored.printStackTrace();
         }
-        return true;
+        return false;
+    }
+
+    private boolean onInterceptMoved(MotionEvent event) {
+        float x = event.getX();
+        float y = event.getY();
+        int deltaX = (int) x - mLastXIntercept;
+        int deltaY = (int) y - mLastYIntercept;
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            return canSwipe(SwipeEdge.LEFT, SwipeEdge.RIGHT) &&
+                (x <= mEdgeWidthOffset || x >= getMeasuredWidth() - mEdgeWidthOffset);
+        } else {
+            return canSwipe(SwipeEdge.TOP, SwipeEdge.BOTTOM) &&
+                (y <= mEdgeWidthOffset || y >= getMeasuredHeight() - mEdgeWidthOffset);
+        }
     }
 
     private void onTouchMoved(int dx, int dy) {
         boolean horizontal = Math.abs(dx) > Math.abs(dy);
         View preView = getPreView();
         View topView = getTopView();
-        swipeHorizontal(dx, preView, topView);
-
+        if (horizontal) {
+            swipeHorizontal(dx, preView, topView);
+        } else {
+            swipeVertically(dy, preView, topView);
+        }
     }
 
     private void swipeHorizontal(int dx, View preView, View topView) {
+        if (!canSwipe(SwipeEdge.LEFT, SwipeEdge.RIGHT)) return;
         if (topView == null && preView == null) {
             // TODO: 18-7-29 swipe Activity/Fragment
+            if (mPuppet instanceof Fragment) {
+                Fragment fragment = (Fragment) mPuppet;
+                View view = fragment.getView();
+                if (view == null) return;
+                view.setTranslationX(dx);
+            }
         } else if (topView != null && preView == null) {
             if (mIsStickyWithHost) {
                 // TODO: 18-7-29 swipe Activity/Fragment
@@ -165,6 +194,22 @@ public class SwipeLayout extends FrameLayout {
         } else if (topView != null) {
             preView.setVisibility(VISIBLE);
             topView.setTranslationX(dx);
+        }
+    }
+
+    private void swipeVertically(int dy, View preView, View topView) {
+        if (!canSwipe(SwipeEdge.TOP, SwipeEdge.BOTTOM)) return;
+        if (topView == null && preView == null) {
+            // TODO: 18-7-29 swipe Activity/Fragment
+        } else if (topView != null && preView == null) {
+            if (mIsStickyWithHost) {
+                // TODO: 18-7-29 swipe Activity/Fragment
+            } else {
+                topView.setTranslationY(dy);
+            }
+        } else if (topView != null) {
+            preView.setVisibility(VISIBLE);
+            topView.setTranslationY(dy);
         }
     }
 
@@ -188,7 +233,7 @@ public class SwipeLayout extends FrameLayout {
             return null;
         }
         String topTag = stack.peek();
-        Fragment fragment = Rigger.getRigger(topTag).findFragmentByTag(topTag);
+        Fragment fragment = Rigger.getRigger(mPuppet).findFragmentByTag(topTag);
         return fragment == null ? null : fragment.getView();
     }
 
@@ -199,9 +244,11 @@ public class SwipeLayout extends FrameLayout {
             return null;
         }
         String topTag = stack.get(stack.size() - 2);
-        Fragment fragment = Rigger.getRigger(topTag).findFragmentByTag(topTag);
+        Fragment fragment = Rigger.getRigger(mPuppet).findFragmentByTag(topTag);
         return fragment == null ? null : fragment.getView();
     }
+
+    /////////////////////////////Attributes setter/////////////////////////////////////
 
     public void setParallaxOffset(float parallaxOffset) {
         mParallaxOffset = parallaxOffset;
@@ -220,6 +267,17 @@ public class SwipeLayout extends FrameLayout {
             }
             setEnableSwipe(true);
         }
+        if (canSwipe(SwipeEdge.LEFT)) {
+            mEdgeFlag = ViewDragHelper.EDGE_LEFT;
+        }else if(canSwipe(SwipeEdge.RIGHT)){
+            mEdgeFlag = ViewDragHelper.EDGE_RIGHT;
+        }
+
+    }
+
+    public void setEdgeWidthOffset(int edgeWidthOffset) {
+        final float density = getContext().getResources().getDisplayMetrics().density;
+        mEdgeWidthOffset = (int) ((edgeWidthOffset * density) + 0.5f);
     }
 
     public void setEnableSwipe(boolean enable) {
@@ -230,12 +288,15 @@ public class SwipeLayout extends FrameLayout {
         mIsStickyWithHost = stickyWithHost;
     }
 
-    private boolean canSwipe(SwipeEdge swipeEdge) {
+    private boolean canSwipe(SwipeEdge... swipeEdges) {
+        if (swipeEdges == null || swipeEdges.length == 0) return false;
         if (mSwipeEdgeSide == null || mSwipeEdgeSide.length == 0) {
             return false;
         } else {
             for (SwipeEdge edge : mSwipeEdgeSide) {
-                if (edge == swipeEdge) return true;
+                for (SwipeEdge it : swipeEdges) {
+                    if (edge.equals(it)) return true;
+                }
             }
             return false;
         }

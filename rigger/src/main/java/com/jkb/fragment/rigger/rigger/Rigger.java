@@ -84,21 +84,21 @@ public final class Rigger {
         //filter the unsupported class
         if (!(puppet instanceof AppCompatActivity) && !(puppet instanceof Fragment)) {
             throw new RiggerException(
-                    "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
+                "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
         }
         //filter the unsupported class
         Class<?> clazz = puppet.getClass();
         Puppet puppetAnnotation = clazz.getAnnotation(Puppet.class);
         if (puppetAnnotation == null) {
             throw new RiggerException("Can not find Puppet annotation.please add Puppet annotation for the class " +
-                    puppet.getClass().getName());
+                puppet.getClass().getName());
         }
         //get the object's address code.
         int code = System.identityHashCode(puppet);
         IRigger rigger = getInstance().mPuppetMap.get(code);
         if (rigger == null) {
             throw new RiggerException(
-                    "UnKnown error " + puppet + " is not added into rigger. please check your config or contact author.");
+                "UnKnown error " + puppet + " is not added into rigger. please check your config or contact author.");
         }
         return rigger;
     }
@@ -122,6 +122,7 @@ public final class Rigger {
      * Remove a puppet object from caches.
      *
      * @param puppet Puppet object,Activity/Fragment
+     *
      * @return the result of this process.
      */
     private boolean removeRigger(Object puppet) {
@@ -175,9 +176,9 @@ public final class Rigger {
      *                           a previous saved state, this is the state.
      */
     private Object onCreateView(Object object, LayoutInflater inflater, @Nullable ViewGroup container,
-                                @Nullable Bundle savedInstanceState) {
+        @Nullable Bundle savedInstanceState, @Nullable View view) {
         Logger.i(object, TAG_HEADER + "onCreateView");
-        return createRigger(object).onCreateView(inflater, container, savedInstanceState);
+        return createRigger(object).onCreateView(inflater, container, savedInstanceState, view);
     }
 
     /**

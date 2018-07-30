@@ -1,7 +1,6 @@
 package com.jkb.fragment.swiper.annotation;
 
 import android.support.annotation.FloatRange;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -48,4 +47,11 @@ public @interface Swiper {
      */
     @FloatRange(from = 0.0f, to = 1.0f)
     float parallaxOffset() default 1.0f;
+
+    /**
+     * The width allow finger touched and swipe puppet.
+     *
+     * @return Default value is 20 dp.
+     */
+    int edgeWidthOffset() default 30;
 }

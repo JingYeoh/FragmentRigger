@@ -25,7 +25,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
-
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
@@ -35,7 +34,6 @@ import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.swiper.annotation.Swiper;
 import com.jkb.fragment.swiper.widget.SwipeLayout;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +62,7 @@ abstract class _Rigger implements IRigger {
             return new _FragmentRigger((Fragment) object);
         } else {
             throw new RiggerException(
-                    "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
+                "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
         }
     }
 
@@ -128,18 +126,19 @@ abstract class _Rigger implements IRigger {
      *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      *                           from a previous saved state as given here.
+     *
      * @return Return the View for the fragment's UI, or null.
      */
     View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                      @Nullable Bundle savedInstanceState) {
-        return null;
+        @Nullable Bundle savedInstanceState, @Nullable View view) {
+        return view;
     }
 
     /**
-     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle, View)}
      * has returned, but before any saved state has been restored in to the view.
      *
-     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle, View)}.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      *                           from a previous saved state as given here.
      */
@@ -299,7 +298,8 @@ abstract class _Rigger implements IRigger {
             throwException(new AlreadyExistException(fragmentTAG));
         }
         if (getContainerViewId() <= 0) {
-            throwException(new UnSupportException("ContainerViewId must be effective in class " + mPuppetTarget.getClass()));
+            throwException(
+                new UnSupportException("ContainerViewId must be effective in class " + mPuppetTarget.getClass()));
         }
         addFragmentWithAnim(fragment, mContainerViewId);
         mRiggerTransaction.hide(getVisibleFragmentTags(getContainerViewId()));
@@ -395,7 +395,7 @@ abstract class _Rigger implements IRigger {
         String fragmentTAG = rigger.getFragmentTAG();
         mRiggerTransaction.setCustomAnimations(rigger.mPopEnterAnim, rigger.mExitAnim);
         mRiggerTransaction.hide(fragmentTAG)
-                .commit();
+            .commit();
     }
 
     @Override
@@ -411,8 +411,8 @@ abstract class _Rigger implements IRigger {
         String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
         addFragmentWithAnim(fragment, containerViewId);
         mRiggerTransaction.remove(mStackManager.getFragmentTags(containerViewId))
-                .show(fragmentTAG)
-                .commit();
+            .show(fragmentTAG)
+            .commit();
         mStackManager.remove(containerViewId);
         mStackManager.add(fragmentTAG, containerViewId);
     }
@@ -520,6 +520,7 @@ abstract class _Rigger implements IRigger {
      * Return fragments tag which the fragment's view is visible and is add onto the container view.
      *
      * @param containerViewId The container view's id to be found.
+     *
      * @return The fragment tags.
      */
     private String[] getVisibleFragmentTags(@IdRes int containerViewId) {
@@ -528,7 +529,7 @@ abstract class _Rigger implements IRigger {
         for (String tag : fragmentTags) {
             Fragment fragment = mRiggerTransaction.find(tag);
             if (fragment != null && !fragment.isHidden() &&
-                    fragment.getView() != null && fragment.getView().getVisibility() == View.VISIBLE) {
+                fragment.getView() != null && fragment.getView().getVisibility() == View.VISIBLE) {
                 result.add(tag);
             }
         }
@@ -543,6 +544,7 @@ abstract class _Rigger implements IRigger {
         swipeLayout.setEnableSwipe(mSwiper.enable());
         swipeLayout.setParallaxOffset(mSwiper.parallaxOffset());
         swipeLayout.setSwipeEdgeSide(mSwiper.edgeSide());
+        swipeLayout.setEdgeWidthOffset(mSwiper.edgeWidthOffset());
 
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         swipeLayout.setLayoutParams(params);
@@ -568,11 +570,11 @@ abstract class _Rigger implements IRigger {
 
     static boolean shouldRunOnHWLayer(View v, Animation anim) {
         return ViewCompat.getLayerType(v) == ViewCompat.LAYER_TYPE_NONE
-                && ViewCompat.hasOverlappingRendering(v)
-                && modifiesAlpha(anim);
+            && ViewCompat.hasOverlappingRendering(v)
+            && modifiesAlpha(anim);
     }
 
-    static boolean modifiesAlpha(Animation anim) {
+    private static boolean modifiesAlpha(Animation anim) {
         if (anim instanceof AlphaAnimation) {
             return true;
         } else if (anim instanceof AnimationSet) {
