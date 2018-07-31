@@ -148,30 +148,6 @@ final class _FragmentRigger extends _Rigger {
         }
     }
 
-    /**
-     * Returns the container host.
-     */
-    private Object getContainerHost() {
-        Fragment parent = mFragment.getParentFragment();
-        while (true) {
-            if (parent == null) break;
-            IRigger rigger = Rigger.getRigger(parent);
-            String[] stack = ((_Rigger) rigger).mStackManager.getFragmentsWithoutStack();
-            for (String tag : stack) {
-                if (tag.equals(getFragmentTAG())) {
-                    return parent;
-                }
-            }
-            int containerViewId = rigger.getContainerViewId();
-            if (containerViewId > 0) break;
-            parent = parent.getParentFragment();
-        }
-        if (parent == null) {
-            return mActivity;
-        }
-        return parent;
-    }
-
     @Override
     public void onAttach(Context context) {
         mActivity = (Activity) context;
@@ -213,7 +189,7 @@ final class _FragmentRigger extends _Rigger {
         @Nullable Bundle savedInstanceState, @Nullable View view) {
         mHasInitView = true;
         initLazyLoadStatus();
-        SwipeLayout swipeLayout = buildSwipLayout();
+        SwipeLayout swipeLayout = buildSwipeLayout();
         if (swipeLayout == null || view == null) return null;
         swipeLayout.addView(view);
         return swipeLayout;
@@ -305,9 +281,9 @@ final class _FragmentRigger extends _Rigger {
             return;
         }
         // if this fragment is not contained into the stack ,then interrupt this method.
-        if (!Rigger.getRigger(getContainerHost()).getFragmentStack().contains(getFragmentTAG())) {
+        if (!Rigger.getRigger(getPuppetHost()).getFragmentStack().contains(getFragmentTAG())) {
             Logger.d(mFragment, "onRiggerBackPressed() method is called");
-            Rigger.getRigger(getContainerHost()).onBackPressed();
+            Rigger.getRigger(getPuppetHost()).onBackPressed();
         } else {
             super.onBackPressed();
         }
@@ -322,7 +298,7 @@ final class _FragmentRigger extends _Rigger {
             return;
         }
         //or the operation should be operated by parent who's container view'id is effective.
-        Rigger.getRigger(getContainerHost()).startFragment(fragment);
+        Rigger.getRigger(getPuppetHost()).startFragment(fragment);
     }
 
     @Override
@@ -334,26 +310,37 @@ final class _FragmentRigger extends _Rigger {
     public void close() {
         //start the exiting animation.
         if (mExitAnim != 0 && !mFragment.isHidden()) {
-            boolean isParentBond = Rigger.getRigger(getContainerHost()).isBondContainerView();
-            int parentStackSize = Rigger.getRigger(getContainerHost()).getFragmentStack().size();
+            boolean isParentBond = Rigger.getRigger(getPuppetHost()).isBondContainerView();
+            int parentStackSize = Rigger.getRigger(getPuppetHost()).getFragmentStack().size();
             //the exiting animation will not execute when the host's mBindContainerView is true and hots's stack size
             // is one.
             if (!isParentBond || parentStackSize > 0) {
                 Animation animation = AnimationUtils.loadAnimation(mActivity, mExitAnim);
                 if (animation != null) {
-                    setHWLayerAnimListenerIfAlpha(mFragment.getView(), animation);
-                    mFragment.getView().startAnimation(animation);
+                    View view = mFragment.getView();
+                    if (view != null) {
+                        setHWLayerAnimListenerIfAlpha(view, animation);
+                        view.startAnimation(animation);
+                    }
                 }
             }
         }
         mStackManager.clear();
         mRiggerTransaction.removeAll();
-        Rigger.getRigger(getContainerHost()).close(mFragment);
+        Rigger.getRigger(getPuppetHost()).close(mFragment);
         Animation animation = null;
         if (mPopEnterAnim > 0) {
             animation = AnimationUtils.loadAnimation(mContext, mPopEnterAnim);
         }
-        ((_Rigger) Rigger.getRigger(getContainerHost())).startPopFragment(animation);
+        ((_Rigger) Rigger.getRigger(getPuppetHost())).startPopFragment(animation);
+    }
+
+    @Override
+    public void closeWithoutTransaction() {
+        mStackManager.clear();
+        mRiggerTransaction.removeAll();
+        Rigger.getRigger(getPuppetHost()).close(mFragment);
+        ((_Rigger) Rigger.getRigger(getPuppetHost())).startPopFragment(null);
     }
 
     @Override
@@ -385,7 +372,7 @@ final class _FragmentRigger extends _Rigger {
         int requestCode = mForResultTarget.getInt(BUNDLE_KEY_FOR_RESULT_REQUEST_CODE);
         //get the host object.
         String receiveTargetTag = mForResultTarget.getString(BUNDLE_KEY_FOR_RESULT_RECEIVE);
-        Object host = Rigger.getRigger(getContainerHost()).findFragmentByTag(receiveTargetTag);
+        Object host = Rigger.getRigger(getPuppetHost()).findFragmentByTag(receiveTargetTag);
         if (host == null) {
             Fragment startPuppet = mFragment.getParentFragment();
             while (true) {
@@ -412,8 +399,8 @@ final class _FragmentRigger extends _Rigger {
 
     /**
      * Init lazy load status.
-     * When the method {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} ia called.this fragment must be rebuild
-     * a new instance.
+     * When the method {@link #onCreateView(LayoutInflater, ViewGroup, Bundle, View)} ia called .
+     * this fragment must be rebuild a new instance.
      */
     private void initLazyLoadStatus() {
         mHasInitView = false;

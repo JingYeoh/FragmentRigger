@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
-
 import java.util.Stack;
 
 /**
@@ -23,6 +21,13 @@ import java.util.Stack;
 public interface IRigger {
 
     /**
+     * Return the host object of this fragment. May return {@link android.app.Activity} if the fragment
+     * is has no parent fragment . otherwise , return {@link Fragment} .
+     */
+    @NonNull
+    Object getPuppetHost();
+
+    /**
      * Take care of popping the fragment back stack or finishing the activity
      * as appropriate.the method is called when you click the back key.
      */
@@ -33,6 +38,7 @@ public interface IRigger {
      * from XML or as supplied when added in a transaction.
      *
      * @param tag The fragment tag to be found.
+     *
      * @return The fragment if found or null otherwise.
      */
     Fragment findFragmentByTag(String tag);
@@ -166,6 +172,12 @@ public interface IRigger {
     void close();
 
     /**
+     * Closes the current Activity/Fragment.if this method is called by {@link Fragment},then this fragment will be
+     * removed from the parent's fragment stack. this puppet and the pre puppet will not show the transaction anim.
+     */
+    void closeWithoutTransaction();
+
+    /**
      * Closes a fragment and remove it from stack.
      *
      * @param fragment the fragment that will be finished.this is the current's child fragment.
@@ -207,6 +219,7 @@ public interface IRigger {
      * @param resultCode The result code to propagate back to the originating
      *                   fragment, often RESULT_CANCELED or RESULT_OK
      * @param bundle     The data to propagate back to the originating fragment.
+     *
      * @see Rigger#RESULT_OK
      * @see Rigger#RESULT_CANCELED
      */

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
-
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.swiper.widget.SwipeLayout;
@@ -85,6 +84,12 @@ final class _ActivityRigger extends _Rigger {
     }
 
     @Override
+    public void closeWithoutTransaction() {
+        close();
+        mActivity.overridePendingTransition(0, 0);
+    }
+
+    @Override
     public void setFragmentTag(@NonNull String tag) {
         Logger.w(mActivity.getClass(), "setFragmentTag(String tag) method can only be called by Fragment");
     }
@@ -101,11 +106,11 @@ final class _ActivityRigger extends _Rigger {
     }
 
     private void setupSwiper() {
-        SwipeLayout swipeLayout = buildSwipLayout();
+        SwipeLayout swipeLayout = buildSwipeLayout();
         if (swipeLayout == null) return;
 
         TypedArray a = mActivity.getTheme().obtainStyledAttributes(new int[]{
-                android.R.attr.windowBackground
+            android.R.attr.windowBackground
         });
         int background = a.getResourceId(0, 0);
         a.recycle();

@@ -42,16 +42,11 @@ public @interface Swiper {
      * Allow or not to show the parallax effect.
      * <p>
      * The parallax effect will be showed as the value > 0.
+     * <p>
+     * The effect range is from 0.0f to 1.0f.
      *
      * @return Default value is 1.0f.
      */
-    @FloatRange(from = 0.0f, to = 1.0f)
+    @FloatRange(from = -1f, to = 1.0f)
     float parallaxOffset() default 1.0f;
-
-    /**
-     * The width allow finger touched and swipe puppet.
-     *
-     * @return Default value is 20 dp.
-     */
-    int edgeWidthOffset() default 30;
 }

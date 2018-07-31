@@ -3,10 +3,10 @@ package com.jkb.fragment.swiper.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.AttrRes;
-import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.swiper.annotation.SwipeEdge;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -32,22 +35,18 @@ public class SwipeLayout extends FrameLayout {
 
     // attributes
     private boolean mIsEnable;
-    @FloatRange(from = 0.0f, to = 1.0f)
     private float mParallaxOffset;
-    private SwipeEdge[] mSwipeEdgeSide;
-    private boolean mIsStickyWithHost;
-    private int mEdgeWidthOffset;
+    private List<SwipeEdge> mSwipeEdgeSide;
 
-    private Object mPuppet;
+    private Object mPuppetHost;
     private ViewDragHelper mDragHelper;
 
-    private int mLastX;
-    private int mLastY;
-    private int mDX;
-    private int mDY;
-    private int mLastXIntercept;
-    private int mLastYIntercept;
-    private int mEdgeFlag;
+    private static final float SCROLL_FINISH_THRESHOLD = 0.5f;
+    private static final int EDGE_FLAG_NONE = -1000;
+    private int mEdgeFlag = EDGE_FLAG_NONE;
+    private int mCurrentSwipeOrientation;
+    private float mScrollPercent;
+    private float mScrimOpacity;
 
     public SwipeLayout(@NonNull Context context) {
         this(context, null);
@@ -62,8 +61,8 @@ public class SwipeLayout extends FrameLayout {
         mDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragCallback());
     }
 
-    public void setPuppet(@NonNull Object puppet) {
-        mPuppet = puppet;
+    public void setPuppetHost(@NonNull Object puppet) {
+        mPuppetHost = puppet;
     }
 
     @Override
@@ -106,31 +105,188 @@ public class SwipeLayout extends FrameLayout {
 
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
-            mEdgeFlag
-            if (canSwipe(SwipeEdge.LEFT, SwipeEdge.RIGHT)) {
-
+            if (!mIsEnable || mEdgeFlag == EDGE_FLAG_NONE) {
+                return false;
             }
             boolean dragEnable = mDragHelper.isEdgeTouched(mEdgeFlag, pointerId);
-            return false;
+            if (dragEnable) {
+                if (mDragHelper.isEdgeTouched(ViewDragHelper.EDGE_LEFT, pointerId)) {
+                    mCurrentSwipeOrientation = ViewDragHelper.EDGE_LEFT;
+                } else if (mDragHelper.isEdgeTouched(ViewDragHelper.EDGE_RIGHT, pointerId)) {
+                    mCurrentSwipeOrientation = ViewDragHelper.EDGE_RIGHT;
+                } else if (mDragHelper.isEdgeTouched(ViewDragHelper.EDGE_TOP, pointerId)) {
+                    mCurrentSwipeOrientation = ViewDragHelper.EDGE_TOP;
+                } else if (mDragHelper.isEdgeTouched(ViewDragHelper.EDGE_BOTTOM, pointerId)) {
+                    mCurrentSwipeOrientation = ViewDragHelper.EDGE_BOTTOM;
+                } else {
+                    mCurrentSwipeOrientation = -1;
+                }
+            }
+            return dragEnable;
+        }
+
+        @Override
+        public void onEdgeTouched(int edgeFlags, int pointerId) {
+            super.onEdgeTouched(edgeFlags, pointerId);
+            if ((mEdgeFlag & edgeFlags) != 0) {
+                mCurrentSwipeOrientation = edgeFlags;
+            }
         }
 
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
-            return super.clampViewPositionHorizontal(child, left, dx);
+            int ret = 0;
+            if (canSwipe(SwipeEdge.LEFT) && (mCurrentSwipeOrientation & ViewDragHelper.EDGE_LEFT) != 0) {
+                ret = Math.min(child.getWidth(), Math.max(left, 0));
+            } else if (canSwipe(SwipeEdge.RIGHT) && (mCurrentSwipeOrientation & ViewDragHelper.EDGE_RIGHT) != 0) {
+                ret = Math.min(0, Math.max(left, -child.getWidth()));
+            }
+            return ret;
         }
 
         @Override
         public int clampViewPositionVertical(View child, int top, int dy) {
-            return super.clampViewPositionVertical(child, top, dy);
+            int ret = 0;
+            if (canSwipe(SwipeEdge.TOP) && (mCurrentSwipeOrientation & ViewDragHelper.EDGE_TOP) != 0) {
+                ret = Math.min(child.getHeight(), Math.max(top, 0));
+            } else if (canSwipe(SwipeEdge.BOTTOM) && (mCurrentSwipeOrientation & ViewDragHelper.EDGE_BOTTOM) != 0) {
+                ret = Math.min(0, Math.max(top, -child.getHeight()));
+            }
+            return ret;
         }
+
+        @Override
+        public int getViewHorizontalDragRange(View child) {
+            if (getTopFragment() != null) return 1;
+            return 0;
+        }
+
+        @Override
+        public int getViewVerticalDragRange(View child) {
+            if (getTopFragment() != null) return 1;
+            return 0;
+        }
+
+        @Override
+        public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+            super.onViewPositionChanged(changedView, left, top, dx, dy);
+
+            if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_LEFT) != 0) {
+                mScrollPercent = Math.abs((float) left / getWidth());
+            } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_RIGHT) != 0) {
+                mScrollPercent = Math.abs((float) left / getWidth());
+            } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_TOP) != 0) {
+                mScrollPercent = Math.abs((float) top / getHeight());
+            } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_BOTTOM) != 0) {
+                mScrollPercent = Math.abs((float) top / getHeight());
+            }
+            invalidate();
+
+            Fragment preFragment = getPreFragment();
+            Fragment topFragment = getTopFragment();
+            if (mScrollPercent == 0) {
+                if (preFragment != null && preFragment.getView() != null) {
+                    preFragment.getView().setVisibility(GONE);
+                }
+            } else if (mScrollPercent >= 1) {
+                if (preFragment != null) {
+                    View preView = preFragment.getView();
+                    if (preView != null) {
+                        preView.setX(0);
+                        preView.setY(0);
+                    }
+                }
+                if (topFragment != null) {
+                    Rigger.getRigger(topFragment).closeWithoutTransaction();
+                } else {
+                    Rigger.getRigger(mPuppetHost).closeWithoutTransaction();
+                }
+            } else {
+                if (preFragment != null) {
+                    View preView = preFragment.getView();
+                    if (preView != null && preView.getVisibility() != VISIBLE) {
+                        preView.setVisibility(VISIBLE);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            final int childWidth = releasedChild.getWidth();
+            final int childHeight = releasedChild.getHeight();
+
+            int left = 0, top = 0;
+            if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_LEFT) != 0) {
+                left = xvel > 0 || xvel == 0 && mScrollPercent > SCROLL_FINISH_THRESHOLD ? (childWidth) : 0;
+            } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_RIGHT) != 0) {
+                left = xvel < 0 || xvel == 0 && mScrollPercent > SCROLL_FINISH_THRESHOLD ? -(childWidth) : 0;
+            } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_TOP) != 0) {
+                top = yvel < 0 || yvel == 0 && mScrollPercent > SCROLL_FINISH_THRESHOLD ? (childHeight) : 0;
+            } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_BOTTOM) != 0) {
+                top = yvel < 0 || yvel == 0 && mScrollPercent > SCROLL_FINISH_THRESHOLD ? -(childHeight) : 0;
+            }
+
+            mDragHelper.settleCapturedViewAt(left, top);
+            invalidate();
+        }
+    }
+
+    @Override
+    public void computeScroll() {
+        mScrimOpacity = 1 - mScrollPercent;
+        if (mScrimOpacity >= 0) {
+            if (mDragHelper.continueSettling(true)) {
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+            computeScrollPreView();
+        }
+    }
+
+    private void computeScrollPreView() {
+        Fragment preFragment = getPreFragment();
+        if (preFragment == null) {
+            return;
+        }
+        View view = preFragment.getView();
+        if (view == null) {
+            return;
+        }
+        view.setX(0);
+        view.setY(0);
+        View capturedView = mDragHelper.getCapturedView();
+        if (capturedView == null) {
+            return;
+        }
+        int xOffset = 0;
+        int yOffset = 0;
+        switch (mCurrentSwipeOrientation) {
+            case ViewDragHelper.EDGE_LEFT:
+                xOffset = (capturedView.getLeft() - getWidth());
+                break;
+            case ViewDragHelper.EDGE_RIGHT:
+                xOffset = (capturedView.getLeft() + getWidth());
+                break;
+            case ViewDragHelper.EDGE_TOP:
+                yOffset = (capturedView.getTop() - getHeight());
+                break;
+            case ViewDragHelper.EDGE_BOTTOM:
+                yOffset = (capturedView.getTop() + getHeight());
+                break;
+        }
+        if (mParallaxOffset >= 0) {
+            xOffset *= mScrimOpacity * mParallaxOffset;
+            yOffset *= mScrimOpacity * mParallaxOffset;
+        }
+        view.setX(xOffset);
+        view.setY(yOffset);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return super.onInterceptTouchEvent(event);
         try {
-            mDragHelper.shouldInterceptTouchEvent(event);
-            return true;
+            return mDragHelper.shouldInterceptTouchEvent(event);
         } catch (Exception ignored) {
             ignored.printStackTrace();
         }
@@ -150,155 +306,119 @@ public class SwipeLayout extends FrameLayout {
         return false;
     }
 
-    private boolean onInterceptMoved(MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
-        int deltaX = (int) x - mLastXIntercept;
-        int deltaY = (int) y - mLastYIntercept;
-        if (Math.abs(deltaX) > Math.abs(deltaY)) {
-            return canSwipe(SwipeEdge.LEFT, SwipeEdge.RIGHT) &&
-                (x <= mEdgeWidthOffset || x >= getMeasuredWidth() - mEdgeWidthOffset);
-        } else {
-            return canSwipe(SwipeEdge.TOP, SwipeEdge.BOTTOM) &&
-                (y <= mEdgeWidthOffset || y >= getMeasuredHeight() - mEdgeWidthOffset);
-        }
-    }
-
-    private void onTouchMoved(int dx, int dy) {
-        boolean horizontal = Math.abs(dx) > Math.abs(dy);
-        View preView = getPreView();
-        View topView = getTopView();
-        if (horizontal) {
-            swipeHorizontal(dx, preView, topView);
-        } else {
-            swipeVertically(dy, preView, topView);
-        }
-    }
-
-    private void swipeHorizontal(int dx, View preView, View topView) {
-        if (!canSwipe(SwipeEdge.LEFT, SwipeEdge.RIGHT)) return;
-        if (topView == null && preView == null) {
-            // TODO: 18-7-29 swipe Activity/Fragment
-            if (mPuppet instanceof Fragment) {
-                Fragment fragment = (Fragment) mPuppet;
-                View view = fragment.getView();
-                if (view == null) return;
-                view.setTranslationX(dx);
-            }
-        } else if (topView != null && preView == null) {
-            if (mIsStickyWithHost) {
-                // TODO: 18-7-29 swipe Activity/Fragment
-            } else {
-                topView.setTranslationX(dx);
-            }
-        } else if (topView != null) {
-            preView.setVisibility(VISIBLE);
-            topView.setTranslationX(dx);
-        }
-    }
-
-    private void swipeVertically(int dy, View preView, View topView) {
-        if (!canSwipe(SwipeEdge.TOP, SwipeEdge.BOTTOM)) return;
-        if (topView == null && preView == null) {
-            // TODO: 18-7-29 swipe Activity/Fragment
-        } else if (topView != null && preView == null) {
-            if (mIsStickyWithHost) {
-                // TODO: 18-7-29 swipe Activity/Fragment
-            } else {
-                topView.setTranslationY(dy);
-            }
-        } else if (topView != null) {
-            preView.setVisibility(VISIBLE);
-            topView.setTranslationY(dy);
-        }
-    }
-
-    private void inertiaScroll() {
-
-    }
-
-    private void swipeClose() {
-        boolean horizontal = Math.abs(mDX) > Math.abs(mDY);
-
-    }
-
-    private void swipeRestoration() {
-        boolean horizontal = Math.abs(mDX) > Math.abs(mDY);
-    }
-
     @Nullable
-    private View getTopView() {
-        Stack<String> stack = Rigger.getRigger(mPuppet).getFragmentStack();
+    private Fragment getTopFragment() {
+        Stack<String> stack = Rigger.getRigger(mPuppetHost).getFragmentStack();
         if (stack.empty()) {
             return null;
         }
         String topTag = stack.peek();
-        Fragment fragment = Rigger.getRigger(mPuppet).findFragmentByTag(topTag);
-        return fragment == null ? null : fragment.getView();
+        return Rigger.getRigger(mPuppetHost).findFragmentByTag(topTag);
     }
 
     @Nullable
-    private View getPreView() {
-        Stack<String> stack = Rigger.getRigger(mPuppet).getFragmentStack();
+    private Fragment getPreFragment() {
+        Stack<String> stack = Rigger.getRigger(mPuppetHost).getFragmentStack();
         if (stack.size() <= 1) {
             return null;
         }
         String topTag = stack.get(stack.size() - 2);
-        Fragment fragment = Rigger.getRigger(mPuppet).findFragmentByTag(topTag);
-        return fragment == null ? null : fragment.getView();
+        return Rigger.getRigger(mPuppetHost).findFragmentByTag(topTag);
     }
 
-    /////////////////////////////Attributes setter/////////////////////////////////////
+    ///////////////////////////// Attributes SETTER /////////////////////////////////////
 
     public void setParallaxOffset(float parallaxOffset) {
         mParallaxOffset = parallaxOffset;
     }
 
     public void setSwipeEdgeSide(SwipeEdge[] swipeEdgeSide) {
-        mSwipeEdgeSide = swipeEdgeSide;
-        if (mSwipeEdgeSide == null || mSwipeEdgeSide.length == 0) {
+        if (swipeEdgeSide == null || swipeEdgeSide.length == 0) {
+            mSwipeEdgeSide = new ArrayList<>();
             setEnableSwipe(false);
-        } else {
-            for (SwipeEdge edge : mSwipeEdgeSide) {
-                if (edge == SwipeEdge.NONE) {
-                    setEnableSwipe(false);
-                    return;
+            return;
+        }
+        mSwipeEdgeSide = Arrays.asList(swipeEdgeSide);
+        for (SwipeEdge edge : mSwipeEdgeSide) {
+            if (edge == SwipeEdge.NONE) {
+                if (swipeEdgeSide.length > 1) {
+                    throw new IllegalArgumentException("The Swiper#edgeSide can not contain other value as" +
+                        " the SwipeEdge.NONE is contained.");
+                }
+                setEnableSwipe(false);
+                return;
+            } else if (edge == SwipeEdge.ALL) {
+                if (swipeEdgeSide.length > 1) {
+                    throw new IllegalArgumentException("The Swiper#edgeSide can not contain other value as" +
+                        " the SwipeEdge.ALL is contained.");
                 }
             }
-            setEnableSwipe(true);
         }
+        setEnableSwipe(true);
+
+        if (canSwipe(SwipeEdge.NONE)) {
+            mEdgeFlag = EDGE_FLAG_NONE;
+            return;
+        }
+        if (canSwipe(SwipeEdge.ALL)) {
+            mEdgeFlag = ViewDragHelper.EDGE_ALL;
+            return;
+        }
+        mEdgeFlag = EDGE_FLAG_NONE;
         if (canSwipe(SwipeEdge.LEFT)) {
-            mEdgeFlag = ViewDragHelper.EDGE_LEFT;
-        }else if(canSwipe(SwipeEdge.RIGHT)){
-            mEdgeFlag = ViewDragHelper.EDGE_RIGHT;
+            if (mEdgeFlag > 0) {
+                mEdgeFlag |= ViewDragHelper.EDGE_LEFT;
+            } else {
+                mEdgeFlag = ViewDragHelper.EDGE_LEFT;
+            }
         }
-
-    }
-
-    public void setEdgeWidthOffset(int edgeWidthOffset) {
-        final float density = getContext().getResources().getDisplayMetrics().density;
-        mEdgeWidthOffset = (int) ((edgeWidthOffset * density) + 0.5f);
+        if (canSwipe(SwipeEdge.RIGHT)) {
+            if (mEdgeFlag > 0) {
+                mEdgeFlag |= ViewDragHelper.EDGE_RIGHT;
+            } else {
+                mEdgeFlag = ViewDragHelper.EDGE_RIGHT;
+            }
+        }
+        if (canSwipe(SwipeEdge.TOP)) {
+            if (mEdgeFlag > 0) {
+                mEdgeFlag |= ViewDragHelper.EDGE_TOP;
+            } else {
+                mEdgeFlag = ViewDragHelper.EDGE_TOP;
+            }
+        }
+        if (canSwipe(SwipeEdge.BOTTOM)) {
+            if (mEdgeFlag > 0) {
+                mEdgeFlag |= ViewDragHelper.EDGE_BOTTOM;
+            } else {
+                mEdgeFlag = ViewDragHelper.EDGE_BOTTOM;
+            }
+        }
     }
 
     public void setEnableSwipe(boolean enable) {
         mIsEnable = enable;
     }
 
-    public void setStickyWithHost(boolean stickyWithHost) {
-        mIsStickyWithHost = stickyWithHost;
-    }
-
     private boolean canSwipe(SwipeEdge... swipeEdges) {
-        if (swipeEdges == null || swipeEdges.length == 0) return false;
-        if (mSwipeEdgeSide == null || mSwipeEdgeSide.length == 0) {
-            return false;
-        } else {
-            for (SwipeEdge edge : mSwipeEdgeSide) {
-                for (SwipeEdge it : swipeEdges) {
-                    if (edge.equals(it)) return true;
-                }
-            }
+        if (swipeEdges == null || swipeEdges.length == 0) {
             return false;
         }
+        if (mSwipeEdgeSide == null || mSwipeEdgeSide.isEmpty()) {
+            return false;
+        }
+        List<SwipeEdge> newSwipeEdges = Arrays.asList(swipeEdges);
+        if (newSwipeEdges.contains(SwipeEdge.NONE)) {
+            return mSwipeEdgeSide.contains(SwipeEdge.NONE);
+        } else {
+            if (mSwipeEdgeSide.contains(SwipeEdge.ALL)) {
+                return true;
+            }
+        }
+        for (SwipeEdge it : swipeEdges) {
+            if (mSwipeEdgeSide.contains(it)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

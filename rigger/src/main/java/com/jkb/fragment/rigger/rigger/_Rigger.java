@@ -71,7 +71,7 @@ abstract class _Rigger implements IRigger {
     //data
     @IdRes
     private int mContainerViewId;
-    private boolean mBindContainerView;
+    private boolean mStickyStack;
     RiggerTransaction mRiggerTransaction;
     FragmentStackManager mStackManager;
     // swiper
@@ -82,7 +82,7 @@ abstract class _Rigger implements IRigger {
         //init containerViewId
         Class<?> clazz = mPuppetTarget.getClass();
         Puppet puppet = clazz.getAnnotation(Puppet.class);
-        mBindContainerView = puppet.stickyStack();
+        mStickyStack = puppet.stickyStack();
         mContainerViewId = puppet.containerViewId();
         if (mContainerViewId <= 0) {
             try {
@@ -95,6 +95,34 @@ abstract class _Rigger implements IRigger {
         mSwiper = clazz.getAnnotation(Swiper.class);
         //init helper
         mStackManager = new FragmentStackManager();
+    }
+
+    @NonNull
+    @Override
+    public Object getPuppetHost() {
+        if (mPuppetTarget instanceof Fragment) {
+            Fragment fragment = (Fragment) mPuppetTarget;
+            Fragment parent = fragment.getParentFragment();
+            while (true) {
+                if (parent == null) break;
+                IRigger rigger = Rigger.getRigger(parent);
+                String[] stack = ((_Rigger) rigger).mStackManager.getFragmentsWithoutStack();
+                for (String tag : stack) {
+                    if (tag.equals(getFragmentTAG())) {
+                        return parent;
+                    }
+                }
+                int containerViewId = rigger.getContainerViewId();
+                if (containerViewId > 0) break;
+                parent = parent.getParentFragment();
+            }
+            if (parent == null) {
+                return fragment.getHost();
+            }
+            return parent;
+        } else {
+            return mPuppetTarget;
+        }
     }
 
     /**
@@ -440,7 +468,7 @@ abstract class _Rigger implements IRigger {
 
     @Override
     public boolean isBondContainerView() {
-        return mBindContainerView;
+        return mStickyStack;
     }
 
     @Override
@@ -536,15 +564,14 @@ abstract class _Rigger implements IRigger {
         return result.toArray(new String[result.size()]);
     }
 
-    SwipeLayout buildSwipLayout() {
+    SwipeLayout buildSwipeLayout() {
         if (mSwiper == null) return null;
         SwipeLayout swipeLayout = new SwipeLayout(mContext);
-        swipeLayout.setPuppet(mPuppetTarget);
+        swipeLayout.setPuppetHost(getPuppetHost());
         // setup params
         swipeLayout.setEnableSwipe(mSwiper.enable());
         swipeLayout.setParallaxOffset(mSwiper.parallaxOffset());
         swipeLayout.setSwipeEdgeSide(mSwiper.edgeSide());
-        swipeLayout.setEdgeWidthOffset(mSwiper.edgeWidthOffset());
 
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         swipeLayout.setLayoutParams(params);
