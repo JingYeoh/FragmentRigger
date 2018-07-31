@@ -1,53 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
-  <Button
-    android:id="@+id/fs_startFragment"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/startfragment"
-    android:textAllCaps="false"/>
-  <Button
-    android:id="@+id/fs_startFragmentDelay"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/delay_startfragment"
-    android:textAllCaps="false"/>
-  <Button
-    android:id="@+id/fs_startFragmentForResult"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/startfragmentforresult"
-    android:textAllCaps="false"/>
+    <Button
+        android:id="@+id/fs_startFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/startfragment"
+        android:textAllCaps="false" />
 
-  <Button
-    android:id="@+id/fs_showFragment"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/showfragment"
-    android:textAllCaps="false"/>
+    <Button
+        android:id="@+id/fs_startFragmentDelay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delay_startfragment"
+        android:textAllCaps="false" />
 
-  <Button
-    android:id="@+id/fs_replaceFragment"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/replacefragment"
-    android:textAllCaps="false"/>
-  <Button
-    android:id="@+id/fs_lazyload"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/lazyload"
-    android:textAllCaps="false"/>
-  <Button
-    android:id="@+id/fs_share"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="@string/sharedElement"
-    android:textAllCaps="false"
-    android:visibility="gone"/>
+    <Button
+        android:id="@+id/fs_startFragmentForResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/startfragmentforresult"
+        android:textAllCaps="false" />
 
+    <Button
+        android:id="@+id/fs_showFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/showfragment"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/fs_replaceFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/replacefragment"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/fs_lazyload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/lazyload"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/fs_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sharedElement"
+        android:textAllCaps="false"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/fs_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/startActivity"
+        android:textAllCaps="false"
+        android:visibility="visible" />
 </LinearLayout>

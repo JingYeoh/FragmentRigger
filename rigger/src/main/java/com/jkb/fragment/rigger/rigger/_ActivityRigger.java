@@ -3,8 +3,10 @@ package com.jkb.fragment.rigger.rigger;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
+
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.swiper.widget.SwipeLayout;
@@ -110,17 +112,20 @@ final class _ActivityRigger extends _Rigger {
         if (swipeLayout == null) return;
 
         TypedArray a = mActivity.getTheme().obtainStyledAttributes(new int[]{
-            android.R.attr.windowBackground
+                android.R.attr.windowBackground
         });
         int background = a.getResourceId(0, 0);
         a.recycle();
         // replace content view
         ViewGroup decor = (ViewGroup) mActivity.getWindow().getDecorView();
+        decor.setBackgroundColor(ContextCompat.getColor(mContext, android.R.color.transparent));
         ViewGroup decorChild = (ViewGroup) decor.getChildAt(0);
+        if (SwipeLayout.class.isInstance(decorChild)) {
+            return;
+        }
         decorChild.setBackgroundResource(background);
         decor.removeView(decorChild);
         swipeLayout.addView(decorChild);
-        mActivity.setContentView(decorChild);
         decor.addView(swipeLayout);
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+
 import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
@@ -11,6 +12,7 @@ import com.jkb.fragment.swiper.annotation.SwipeEdge;
 import com.jkb.fragment.swiper.annotation.Swiper;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
+
 import java.util.UUID;
 
 /**
@@ -22,9 +24,9 @@ import java.util.UUID;
  * <a href="http://blog.justkiddingbaby.com">Blog</a>
  * @since Nov 21,2017
  */
-@Swiper(edgeSide = {SwipeEdge.LEFT, SwipeEdge.RIGHT}, parallaxOffset = -1f)
+@Swiper(edgeSide = {SwipeEdge.LEFT, SwipeEdge.RIGHT})
 @Animator(enter = R.anim.push_left_in_no_alpha, exit = R.anim.push_right_out_no_alpha,
-    popEnter = R.anim.push_right_in_no_alpha, popExit = R.anim.push_left_out_no_alpha)
+        popEnter = R.anim.push_right_in_no_alpha, popExit = R.anim.push_left_out_no_alpha)
 @Puppet(containerViewId = R.id.firstContent)
 public class StartFragment extends BaseFragment implements OnClickListener {
 
