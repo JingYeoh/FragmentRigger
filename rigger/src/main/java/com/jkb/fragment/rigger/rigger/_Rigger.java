@@ -491,6 +491,11 @@ abstract class _Rigger implements IRigger {
         Log.i("Rigger", sb.toString());
     }
 
+    @Override
+    public boolean isAbleSwipeBack() {
+        return mSwiper != null && mSwiper.enable();
+    }
+
     private void printStack(StringBuilder sb, _Rigger rigger, Stack<String> stack, int level) {
         if (stack == null || stack.empty()) return;
         for (int p = stack.size() - 1; p >= 0; p--) {

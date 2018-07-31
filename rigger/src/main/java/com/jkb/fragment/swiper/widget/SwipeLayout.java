@@ -285,6 +285,14 @@ public class SwipeLayout extends FrameLayout {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return super.onInterceptTouchEvent(event);
+        if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return super.onTouchEvent(event);
+        Fragment topFragment = getTopFragment();
+        if (topFragment != null) {
+            boolean ableSwipeBack = Rigger.getRigger(topFragment).isAbleSwipeBack();
+            if (ableSwipeBack && topFragment.getView() != null && !topFragment.isHidden()) {
+                return false;
+            }
+        }
         try {
             return mDragHelper.shouldInterceptTouchEvent(event);
         } catch (Exception ignored) {
@@ -296,7 +304,6 @@ public class SwipeLayout extends FrameLayout {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return super.onTouchEvent(event);
         try {
             mDragHelper.processTouchEvent(event);
             return true;

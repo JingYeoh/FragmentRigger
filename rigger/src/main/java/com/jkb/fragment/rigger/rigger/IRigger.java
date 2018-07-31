@@ -234,4 +234,9 @@ public interface IRigger {
      * Printf the current stack in logcat.
      */
     void printStack();
+
+    /**
+     * Return the result that the puppet can be swiped back or not.
+     */
+    boolean isAbleSwipeBack();
 }
