@@ -47,6 +47,7 @@ public class SwipeLayout extends FrameLayout {
     private int mCurrentSwipeOrientation;
     private float mScrollPercent;
     private float mScrimOpacity;
+    private float mEdgeSize;
 
     public SwipeLayout(@NonNull Context context) {
         this(context, null);
@@ -59,6 +60,8 @@ public class SwipeLayout extends FrameLayout {
     public SwipeLayout(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDragHelper = ViewDragHelper.create(this, 1.0f, new ViewDragCallback());
+        final float density = context.getResources().getDisplayMetrics().density;
+        mEdgeSize = (int) (20 * density + 0.5f);
     }
 
     public void setPuppetHost(@NonNull Object puppet) {
@@ -283,9 +286,31 @@ public class SwipeLayout extends FrameLayout {
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                float x = getX();
+                float y = getY();
+                boolean disallowIntercept = false;
+                if (canSwipe(SwipeEdge.LEFT) && x < getLeft() + mEdgeSize) {
+                    disallowIntercept = true;
+                } else if (canSwipe(SwipeEdge.RIGHT) && x < getLeft() - mEdgeSize) {
+                    disallowIntercept = true;
+                } else if (canSwipe(SwipeEdge.TOP) && y < getTop() + mEdgeSize) {
+                    disallowIntercept = true;
+                } else if (canSwipe(SwipeEdge.BOTTOM) && y < getBottom() - mEdgeSize) {
+                    disallowIntercept = true;
+                }
+                getParent().requestDisallowInterceptTouchEvent(disallowIntercept);
+                break;
+            }
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return super.onInterceptTouchEvent(event);
-        if (!mIsEnable || canSwipe(SwipeEdge.NONE)) return super.onTouchEvent(event);
         Fragment topFragment = getTopFragment();
         if (topFragment != null) {
             boolean ableSwipeBack = Rigger.getRigger(topFragment).isAbleSwipeBack();

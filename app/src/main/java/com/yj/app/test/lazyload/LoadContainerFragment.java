@@ -40,7 +40,7 @@ public class LoadContainerFragment extends BaseFragment {
       super.handleMessage(msg);
       findViewById(R.id.flc_load).setVisibility(View.GONE);
       if (mValue.equals("Me")) {
-        findViewById(R.id.flc_tv).setVisibility(View.GONE);
+//        findViewById(R.id.flc_tv).setVisibility(View.GONE);
         findViewById(R.id.lazyContent).setVisibility(View.VISIBLE);
       } else {
         findViewById(R.id.flc_tv).setVisibility(View.VISIBLE);
