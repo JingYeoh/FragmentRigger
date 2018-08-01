@@ -7,13 +7,11 @@ import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
-
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.base.BaseFragment;
 import com.yj.app.test.lazyload.LazyLoadFragment;
 import com.yj.app.test.replace.ReplaceFragment;
-import com.yj.app.test.share.SharedElementFragment;
 import com.yj.app.test.show.ShowFragment;
 import com.yj.app.test.start.ResultFragment;
 import com.yj.app.test.start.StartFragment;
@@ -47,7 +45,6 @@ public class TestFragment extends BaseFragment implements OnClickListener {
         findViewById(R.id.fs_replaceFragment).setOnClickListener(this);
         findViewById(R.id.fs_startFragmentForResult).setOnClickListener(this);
         findViewById(R.id.fs_lazyload).setOnClickListener(this);
-        findViewById(R.id.fs_share).setOnClickListener(this);
         findViewById(R.id.fs_activity).setOnClickListener(this);
     }
 
@@ -71,9 +68,6 @@ public class TestFragment extends BaseFragment implements OnClickListener {
                 break;
             case R.id.fs_lazyload:
                 Rigger.getRigger(this).startFragment(LazyLoadFragment.newInstance());
-                break;
-            case R.id.fs_share:
-                Rigger.getRigger(this).startFragment(SharedElementFragment.newInstance());
                 break;
             case R.id.fs_activity:
                 startActivity(new Intent(mContext, MainActivity.class));
@@ -104,6 +98,6 @@ public class TestFragment extends BaseFragment implements OnClickListener {
         String string = args.getString(BUNDLE_KEY);
         Logger.i(this, string);
         Toast.makeText(mContext, "requestCode=" + requestCode + ":::" + "resultCode=" + resultCode + "\n"
-                + "result=" + string, Toast.LENGTH_SHORT).show();
+            + "result=" + string, Toast.LENGTH_SHORT).show();
     }
 }

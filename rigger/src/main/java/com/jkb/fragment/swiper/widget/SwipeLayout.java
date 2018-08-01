@@ -3,8 +3,6 @@ package com.jkb.fragment.swiper.widget;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,13 +13,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
-
-import com.jkb.fragment.rigger.R;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.swiper.annotation.SwipeEdge;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +42,6 @@ public class SwipeLayout extends FrameLayout {
 
     private Object mPuppetHost;
     private ViewDragHelper mDragHelper;
-    private Resources.Theme mOriginTheme;
 
     private static final float SCROLL_FINISH_THRESHOLD = 0.5f;
     private static final int EDGE_FLAG_NONE = -1000;
@@ -75,10 +68,6 @@ public class SwipeLayout extends FrameLayout {
 
     public void setPuppetHost(@NonNull Object puppet) {
         mPuppetHost = puppet;
-        if (mPuppetHost instanceof Activity) {
-            Activity activity = (Activity) mPuppetHost;
-            mOriginTheme = activity.getTheme();
-        }
     }
 
     @Override
@@ -406,14 +395,14 @@ public class SwipeLayout extends FrameLayout {
             if (edge == SwipeEdge.NONE) {
                 if (swipeEdgeSide.length > 1) {
                     throw new IllegalArgumentException("The Swiper#edgeSide can not contain other value as" +
-                            " the SwipeEdge.NONE is contained.");
+                        " the SwipeEdge.NONE is contained.");
                 }
                 setEnableSwipe(false);
                 return;
             } else if (edge == SwipeEdge.ALL) {
                 if (swipeEdgeSide.length > 1) {
                     throw new IllegalArgumentException("The Swiper#edgeSide can not contain other value as" +
-                            " the SwipeEdge.ALL is contained.");
+                        " the SwipeEdge.ALL is contained.");
                 }
             }
         }

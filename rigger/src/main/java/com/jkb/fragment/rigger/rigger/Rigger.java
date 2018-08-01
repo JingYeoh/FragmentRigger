@@ -6,16 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.utils.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Rigger class.use this class to rig the puppet class.
@@ -40,13 +37,13 @@ public final class Rigger {
 
     private static final String TAG_HEADER = "----------Rigger------------->";
     private static volatile Rigger sInstance = null;
-    private Map<Integer, IRigger> mPuppetMap;
+    private SparseArray<IRigger> mPuppetMap;
 
     /**
      * Prevents this class from being instantiated.
      */
     private Rigger() {
-        mPuppetMap = new HashMap<>();
+        mPuppetMap = new SparseArray<>();
     }
 
     /**
@@ -114,6 +111,7 @@ public final class Rigger {
             rigger = _Rigger.create(puppet);
             mPuppetMap.put(code, rigger);
             Logger.i(puppet, "add puppet " + puppet + " to rigger list");
+            return (_Rigger) rigger;
         }
         return (_Rigger) rigger;
     }
@@ -127,7 +125,7 @@ public final class Rigger {
      */
     private boolean removeRigger(Object puppet) {
         int code = System.identityHashCode(puppet);
-        if (!mPuppetMap.containsKey(code)) {
+        if (mPuppetMap.indexOfKey(code) < 0) {
             return false;
         }
         mPuppetMap.remove(code);

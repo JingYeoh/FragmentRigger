@@ -1,6 +1,5 @@
 package com.jkb.fragment.swiper.annotation;
 
-import android.support.annotation.FloatRange;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -8,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Support for {@link android.app.Activity}/{@link android.support.v4.app.Fragment} exit page by swipe edge.
+ * Support for Activity/Fragment exit page by swipe edge.
  * <p>
  * This can only support the fragment added into the rigger stack for Fragment.
  *
@@ -24,7 +23,7 @@ import java.lang.annotation.Target;
 public @interface Swiper {
 
     /**
-     * Allow or not to exit {@link android.app.Activity}/{@link android.support.v4.app.Fragment} by swipe edge.
+     * Allow or not to exit Activity/Fragment by swipe edge.
      *
      * @return The default value is true.
      */
@@ -41,12 +40,11 @@ public @interface Swiper {
     /**
      * Allow or not to show the parallax effect.
      * <p>
-     * The parallax effect will be showed as the value > 0.
+     * The parallax effect will be showed as the value > 0. Otherwise , the parallax will not be showed.
      * <p>
      * The effect range is from 0.0f to 1.0f.
      *
      * @return Default value is 1.0f.
      */
-    @FloatRange(from = -1f, to = 1.0f)
     float parallaxOffset() default 1.0f;
 }

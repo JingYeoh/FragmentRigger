@@ -21,18 +21,20 @@ ext {
     ]
 
     android = [
-            minSdkVersion             : 12,
-            targetSdkVersion          : 23,
-            compileSdkVersion         : 23,
-            buildToolsVersion         : "25.0.0",
+            minSdkVersion             : 14,
+            targetSdkVersion          : 27,
+            compileSdkVersion         : 27,
+            buildToolsVersion         : "27.0.3",
             sourceCompatibilityVersion: JavaVersion.VERSION_1_8,
             targetCompatibilityVersion: JavaVersion.VERSION_1_8
     ]
 
     dependencies = [
-            appcompatV7: 'com.android.support:appcompat-v7:23.0.1',
-            design     : 'com.android.support:design:24.0.0',
-            aspectJ    : 'org.aspectj:aspectjrt:1.8.9'
+            appcompatV7 : 'com.android.support:appcompat-v7:27.1.1',
+            design      : 'com.android.support:design:27.1.1',
+            aspectJ     : 'org.aspectj:aspectjrt:1.8.9',
+            javapoet    : 'com.squareup:javapoet:1.11.1',
+            autoSerivice: 'com.google.auto.service:auto-service:1.0-rc3'
     ]
 
     store = [

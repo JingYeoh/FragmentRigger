@@ -25,7 +25,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
-
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
@@ -35,7 +34,6 @@ import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.swiper.annotation.Swiper;
 import com.jkb.fragment.swiper.widget.SwipeLayout;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +62,7 @@ abstract class _Rigger implements IRigger {
             return new _FragmentRigger((Fragment) object);
         } else {
             throw new RiggerException(
-                    "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
+                "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
         }
     }
 
@@ -78,6 +76,7 @@ abstract class _Rigger implements IRigger {
     FragmentStackManager mStackManager;
     // swiper
     private Swiper mSwiper;
+    private SwipeLayout mSwipeLayout;
 
     _Rigger(Object puppetTarget) {
         this.mPuppetTarget = puppetTarget;
@@ -119,7 +118,8 @@ abstract class _Rigger implements IRigger {
                 parent = parent.getParentFragment();
             }
             if (parent == null) {
-                return fragment.getHost();
+                Object host = fragment.getHost();
+                return host == null ? mPuppetTarget : host;
             }
             return parent;
         } else {
@@ -156,10 +156,11 @@ abstract class _Rigger implements IRigger {
      *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      *                           from a previous saved state as given here.
+     *
      * @return Return the View for the fragment's UI, or null.
      */
     View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                      @Nullable Bundle savedInstanceState, @Nullable View view) {
+        @Nullable Bundle savedInstanceState, @Nullable View view) {
         return view;
     }
 
@@ -328,7 +329,7 @@ abstract class _Rigger implements IRigger {
         }
         if (getContainerViewId() <= 0) {
             throwException(
-                    new UnSupportException("ContainerViewId must be effective in class " + mPuppetTarget.getClass()));
+                new UnSupportException("ContainerViewId must be effective in class " + mPuppetTarget.getClass()));
         }
         addFragmentWithAnim(fragment, mContainerViewId);
         mRiggerTransaction.hide(getVisibleFragmentTags(getContainerViewId()));
@@ -368,7 +369,10 @@ abstract class _Rigger implements IRigger {
         Fragment topFragment = mRiggerTransaction.find(topFragmentTag);
         if (!TextUtils.isEmpty(topFragmentTag) && topFragment != null) {
             if (animation != null) {
-                topFragment.getView().startAnimation(animation);
+                View view = topFragment.getView();
+                if (view != null) {
+                    view.startAnimation(animation);
+                }
                 //cancel the default animation and use the custom animation.
             }
             mRiggerTransaction.setCustomAnimations(0, 0);
@@ -424,7 +428,7 @@ abstract class _Rigger implements IRigger {
         String fragmentTAG = rigger.getFragmentTAG();
         mRiggerTransaction.setCustomAnimations(rigger.mPopEnterAnim, rigger.mExitAnim);
         mRiggerTransaction.hide(fragmentTAG)
-                .commit();
+            .commit();
     }
 
     @Override
@@ -440,8 +444,8 @@ abstract class _Rigger implements IRigger {
         String fragmentTAG = Rigger.getRigger(fragment).getFragmentTAG();
         addFragmentWithAnim(fragment, containerViewId);
         mRiggerTransaction.remove(mStackManager.getFragmentTags(containerViewId))
-                .show(fragmentTAG)
-                .commit();
+            .show(fragmentTAG)
+            .commit();
         mStackManager.remove(containerViewId);
         mStackManager.add(fragmentTAG, containerViewId);
     }
@@ -495,6 +499,12 @@ abstract class _Rigger implements IRigger {
     @Override
     public boolean isAbleSwipeBack() {
         return mSwiper != null && mSwiper.enable();
+    }
+
+    @Nullable
+    @Override
+    public SwipeLayout getSwipeLayout() {
+        return buildSwipeLayout();
     }
 
     private void printStack(StringBuilder sb, _Rigger rigger, Stack<String> stack, int level) {
@@ -554,6 +564,7 @@ abstract class _Rigger implements IRigger {
      * Return fragments tag which the fragment's view is visible and is add onto the container view.
      *
      * @param containerViewId The container view's id to be found.
+     *
      * @return The fragment tags.
      */
     private String[] getVisibleFragmentTags(@IdRes int containerViewId) {
@@ -562,7 +573,7 @@ abstract class _Rigger implements IRigger {
         for (String tag : fragmentTags) {
             Fragment fragment = mRiggerTransaction.find(tag);
             if (fragment != null && !fragment.isHidden() &&
-                    fragment.getView() != null && fragment.getView().getVisibility() == View.VISIBLE) {
+                fragment.getView() != null && fragment.getView().getVisibility() == View.VISIBLE) {
                 result.add(tag);
             }
         }
@@ -571,18 +582,19 @@ abstract class _Rigger implements IRigger {
 
     SwipeLayout buildSwipeLayout() {
         if (mSwiper == null) return null;
-        SwipeLayout swipeLayout = new SwipeLayout(mContext);
-        swipeLayout.setPuppetHost(getPuppetHost());
+        if (mSwipeLayout != null) return mSwipeLayout;
+        mSwipeLayout = new SwipeLayout(mContext);
+        mSwipeLayout.setPuppetHost(getPuppetHost());
         // setup params
-        swipeLayout.setEnableSwipe(mSwiper.enable());
-        swipeLayout.setParallaxOffset(mSwiper.parallaxOffset());
-        swipeLayout.setSwipeEdgeSide(mSwiper.edgeSide());
-        swipeLayout.setStickyWithHost(mStickyStack);
+        mSwipeLayout.setEnableSwipe(mSwiper.enable());
+        mSwipeLayout.setParallaxOffset(mSwiper.parallaxOffset());
+        mSwipeLayout.setSwipeEdgeSide(mSwiper.edgeSide());
+        mSwipeLayout.setStickyWithHost(mStickyStack);
 
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        swipeLayout.setLayoutParams(params);
-        swipeLayout.setBackgroundColor(Color.TRANSPARENT);
-        return swipeLayout;
+        mSwipeLayout.setLayoutParams(params);
+        mSwipeLayout.setBackgroundColor(Color.TRANSPARENT);
+        return mSwipeLayout;
     }
 
     /**
@@ -602,9 +614,9 @@ abstract class _Rigger implements IRigger {
     }
 
     static boolean shouldRunOnHWLayer(View v, Animation anim) {
-        return ViewCompat.getLayerType(v) == ViewCompat.LAYER_TYPE_NONE
-                && ViewCompat.hasOverlappingRendering(v)
-                && modifiesAlpha(anim);
+        return v.getLayerType() == View.LAYER_TYPE_NONE
+            && ViewCompat.hasOverlappingRendering(v)
+            && modifiesAlpha(anim);
     }
 
     private static boolean modifiesAlpha(Animation anim) {
@@ -641,7 +653,7 @@ abstract class _Rigger implements IRigger {
                 mView.post(new Runnable() {
                     @Override
                     public void run() {
-                        ViewCompat.setLayerType(mView, ViewCompat.LAYER_TYPE_HARDWARE, null);
+                        mView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                     }
                 });
             }
@@ -654,7 +666,7 @@ abstract class _Rigger implements IRigger {
                 mView.post(new Runnable() {
                     @Override
                     public void run() {
-                        ViewCompat.setLayerType(mView, ViewCompat.LAYER_TYPE_NONE, null);
+                        mView.setLayerType(View.LAYER_TYPE_NONE, null);
                     }
                 });
             }

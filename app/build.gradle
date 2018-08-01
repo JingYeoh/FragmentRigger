@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'android-aspectjx'
 
 android {
@@ -13,15 +12,11 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode rootProject.ext.app.versionCode
         versionName rootProject.ext.app.versionName
-
-        jackOptions {
-            enabled false
-        }
     }
 
     compileOptions {
-        sourceCompatibility rootProject.ext.android.sourceCompatibilityVersion
-        targetCompatibility rootProject.ext.android.targetCompatibilityVersion
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     signingConfigs {
@@ -63,10 +58,7 @@ android {
 }
 
 dependencies {
-    compile rootProject.ext.dependencies.design
-    compile rootProject.ext.dependencies.appcompatV7
-//    compile 'com.justkiddingbaby:fragment-rigger:1.2.0'
-    compile project(':rigger')
-
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation rootProject.ext.dependencies.design
+    implementation rootProject.ext.dependencies.appcompatV7
+    implementation project(':rigger')
 }

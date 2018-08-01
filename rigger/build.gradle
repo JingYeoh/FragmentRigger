@@ -22,6 +22,12 @@ android {
         versionName rootProject.ext.rigger.publishVersion
 
         multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
 
     compileOptions {
@@ -42,6 +48,8 @@ android {
 }
 
 dependencies {
-    compile rootProject.ext.dependencies.appcompatV7
-    compile rootProject.ext.dependencies.aspectJ
+    implementation rootProject.ext.dependencies.appcompatV7
+    api rootProject.ext.dependencies.aspectJ
+    annotationProcessor project(':rigger-processor')
+    api project(':rigger-annotation')
 }

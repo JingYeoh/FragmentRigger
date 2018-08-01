@@ -3,9 +3,11 @@ package com.jkb.fragment.rigger.rigger;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
+import com.jkb.fragment.swiper.widget.SwipeLayout;
 import java.util.Stack;
 
 /**
@@ -208,7 +210,7 @@ public interface IRigger {
     boolean isBondContainerView();
 
     /**
-     * Returns the value of lazyloading in {@link com.jkb.fragment.rigger.annotation.LazyLoad}
+     * Returns the value of lazy loading in {@link com.jkb.fragment.rigger.annotation.LazyLoad}
      */
     boolean isLazyLoading();
 
@@ -239,4 +241,11 @@ public interface IRigger {
      * Return the result that the puppet can be swiped back or not.
      */
     boolean isAbleSwipeBack();
+
+    /**
+     * Return the {@link SwipeLayout} as the puppet can be swiped back.
+     * Otherwise , return null.
+     */
+    @Nullable
+    SwipeLayout getSwipeLayout();
 }
