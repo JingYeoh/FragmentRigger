@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.utils.Logger;
-import com.jkb.fragment.swiper.widget.SwipeLayout;
+import com.jkb.fragment.swiper.SwipeLayout;
 
 /**
  * Activity Rigger.rig the Activity puppet.

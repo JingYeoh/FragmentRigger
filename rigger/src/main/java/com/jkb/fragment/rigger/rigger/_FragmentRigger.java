@@ -23,7 +23,7 @@ import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.rigger.utils.RiggerConsts;
-import com.jkb.fragment.swiper.widget.SwipeLayout;
+import com.jkb.fragment.swiper.SwipeLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;

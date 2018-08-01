@@ -1,4 +1,4 @@
-package com.jkb.fragment.swiper.widget;
+package com.jkb.fragment.swiper;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -14,8 +14,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.swiper.annotation.SwipeEdge;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -183,7 +185,7 @@ public class SwipeLayout extends FrameLayout {
         }
 
         @Override
-        public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
+        public void onViewPositionChanged(@NonNull View changedView, int left, int top, int dx, int dy) {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
 
             if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_LEFT) != 0) {
@@ -209,6 +211,13 @@ public class SwipeLayout extends FrameLayout {
                     if (preView != null) {
                         preView.setX(0);
                         preView.setY(0);
+                    }
+                } else {
+                    Activity activity = getPreActivity();
+                    if (activity != null) {
+                        View decorView = activity.getWindow().getDecorView();
+                        decorView.setX(0);
+                        decorView.setY(0);
                     }
                 }
                 if (topFragment != null) {
@@ -262,12 +271,7 @@ public class SwipeLayout extends FrameLayout {
         }
     }
 
-    private void computeScrollPreView() {
-        Fragment preFragment = getPreFragment();
-        if (preFragment == null) {
-            return;
-        }
-        View view = preFragment.getView();
+    private void computeScroll(@Nullable View view) {
         if (view == null) {
             return;
         }
@@ -299,6 +303,27 @@ public class SwipeLayout extends FrameLayout {
         }
         view.setX(xOffset);
         view.setY(yOffset);
+    }
+
+    private void computeScrollPreView() {
+        Fragment preFragment = getPreFragment();
+        if (preFragment == null) {
+            if (mPuppetHost instanceof Activity) {
+                computeScrollActivityView();
+            }
+            return;
+        }
+        View view = preFragment.getView();
+        computeScroll(view);
+    }
+
+    private void computeScrollActivityView() {
+        Activity activity = getPreActivity();
+        if (activity == null) {
+            return;
+        }
+        View decorView = activity.getWindow().getDecorView();
+        computeScroll(decorView);
     }
 
     @Override
@@ -378,6 +403,19 @@ public class SwipeLayout extends FrameLayout {
         return Rigger.getRigger(mPuppetHost).findFragmentByTag(topTag);
     }
 
+    @Nullable
+    private Activity getPreActivity() {
+        if (mPuppetHost instanceof Activity) {
+            Stack<Activity> stack = SwipeActivityManager.getInstance().getActivityStack();
+            int index = stack.indexOf(mPuppetHost);
+            if (index <= 0) {
+                return null;
+            }
+            return stack.get(index - 1);
+        }
+        return null;
+    }
+
     ///////////////////////////// Attributes SETTER /////////////////////////////////////
 
     public void setParallaxOffset(float parallaxOffset) {
@@ -395,14 +433,14 @@ public class SwipeLayout extends FrameLayout {
             if (edge == SwipeEdge.NONE) {
                 if (swipeEdgeSide.length > 1) {
                     throw new IllegalArgumentException("The Swiper#edgeSide can not contain other value as" +
-                        " the SwipeEdge.NONE is contained.");
+                            " the SwipeEdge.NONE is contained.");
                 }
                 setEnableSwipe(false);
                 return;
             } else if (edge == SwipeEdge.ALL) {
                 if (swipeEdgeSide.length > 1) {
                     throw new IllegalArgumentException("The Swiper#edgeSide can not contain other value as" +
-                        " the SwipeEdge.ALL is contained.");
+                            " the SwipeEdge.ALL is contained.");
                 }
             }
         }

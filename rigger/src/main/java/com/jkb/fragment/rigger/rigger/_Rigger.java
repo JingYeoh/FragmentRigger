@@ -33,7 +33,7 @@ import com.jkb.fragment.rigger.exception.UnSupportException;
 import com.jkb.fragment.rigger.helper.FragmentStackManager;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.jkb.fragment.swiper.annotation.Swiper;
-import com.jkb.fragment.swiper.widget.SwipeLayout;
+import com.jkb.fragment.swiper.SwipeLayout;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;

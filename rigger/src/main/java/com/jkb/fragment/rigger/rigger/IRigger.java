@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
-import com.jkb.fragment.swiper.widget.SwipeLayout;
+import com.jkb.fragment.swiper.SwipeLayout;
 import java.util.Stack;
 
 /**
