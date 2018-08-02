@@ -20,8 +20,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.swiper.annotation.SwipeEdge;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,6 +62,8 @@ public class SwipeLayout extends FrameLayout {
     private float mScrollPercent;
     private float mScrimOpacity;
     private float mEdgeSize;
+
+    private OnSwipeChangedListener mOnSwipeChangedListener;
 
     public SwipeLayout(@NonNull Context context) {
         this(context, null);
@@ -135,6 +139,21 @@ public class SwipeLayout extends FrameLayout {
                     mCurrentSwipeOrientation = ViewDragHelper.EDGE_BOTTOM;
                 } else {
                     mCurrentSwipeOrientation = -1;
+                }
+            }
+            if (mOnSwipeChangedListener != null) {
+                SwipeEdge swipeEdge = null;
+                if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_LEFT) != 0) {
+                    swipeEdge = SwipeEdge.LEFT;
+                } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_RIGHT) != 0) {
+                    swipeEdge = SwipeEdge.RIGHT;
+                } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_TOP) != 0) {
+                    swipeEdge = SwipeEdge.TOP;
+                } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_BOTTOM) != 0) {
+                    swipeEdge = SwipeEdge.BOTTOM;
+                }
+                if (swipeEdge != null) {
+                    mOnSwipeChangedListener.onEdgeTouched(SwipeLayout.this, swipeEdge, mPuppetHost);
                 }
             }
             return dragEnable;
@@ -214,6 +233,9 @@ public class SwipeLayout extends FrameLayout {
                     preFragment.getView().setVisibility(GONE);
                 }
             } else if (mScrollPercent >= 1) {
+                if (mOnSwipeChangedListener != null) {
+                    mOnSwipeChangedListener.onSwipeBacked(SwipeLayout.this, mPuppetHost);
+                }
                 if (preFragment != null) {
                     View preView = preFragment.getView();
                     if (preView != null) {
@@ -238,6 +260,9 @@ public class SwipeLayout extends FrameLayout {
                     Rigger.getRigger(mPuppetHost).closeWithoutTransaction();
                 }
             } else {
+                if (mOnSwipeChangedListener != null) {
+                    mOnSwipeChangedListener.onSwipeChanged(SwipeLayout.this, mPuppetHost, mScrollPercent);
+                }
                 if (preFragment != null) {
                     View preView = preFragment.getView();
                     if (preView != null && preView.getVisibility() != VISIBLE) {
@@ -305,7 +330,7 @@ public class SwipeLayout extends FrameLayout {
                 drawShadowChild(canvas, mShadowDrawables[2], childRect.left,
                         childRect.top - mShadowWidth, childRect.right, childRect.top);
             }
-        } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_RIGHT) != 0) {
+        } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_BOTTOM) != 0) {
             if (mShadowDrawables.length > 3) {
                 drawShadowChild(canvas, mShadowDrawables[3], childRect.left,
                         childRect.bottom, childRect.right, childRect.bottom + mShadowWidth);
@@ -612,5 +637,43 @@ public class SwipeLayout extends FrameLayout {
             }
         }
         return false;
+    }
+
+    public void setOnSwipeChangedListener(OnSwipeChangedListener onSwipeChangedListener) {
+        mOnSwipeChangedListener = onSwipeChangedListener;
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when the swipeLayout is swiping or
+     * status is changed.
+     *
+     * @see #setOnSwipeChangedListener(OnSwipeChangedListener)
+     */
+    public interface OnSwipeChangedListener {
+        /**
+         * Called when the swipe edge is touched.
+         *
+         * @param v      The view whose swipe status has changed.
+         * @param edge   The touched edge.
+         * @param puppet The puppet handle this swipe.
+         */
+        void onEdgeTouched(SwipeLayout v, SwipeEdge edge, Object puppet);
+
+        /**
+         * Called when the swipe status of a view is changed.
+         *
+         * @param v       The view whose swipe status has changed.
+         * @param puppet  The puppet handle this swipe.
+         * @param percent The percent of swipe progress.
+         */
+        void onSwipeChanged(SwipeLayout v, Object puppet, float percent);
+
+        /**
+         * Called when the view is swiped back.
+         *
+         * @param v      The view whose swipe status has changed.
+         * @param puppet The puppet handle this swipe.
+         */
+        void onSwipeBacked(SwipeLayout v, Object puppet);
     }
 }

@@ -5,13 +5,17 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+
 import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.rigger.Rigger;
+import com.jkb.fragment.rigger.utils.Logger;
+import com.jkb.fragment.swiper.SwipeLayout;
 import com.jkb.fragment.swiper.annotation.SwipeEdge;
 import com.jkb.fragment.swiper.annotation.Swiper;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
+
 import java.util.UUID;
 
 /**
@@ -43,6 +47,22 @@ public class StartFragment extends BaseFragment implements OnClickListener {
         Rigger.getRigger(this).getSwipeLayout().setShadowDrawable(new int[]{
                 R.drawable.swiper_shadow_left, R.drawable.swiper_shadow_right,
                 R.drawable.swiper_shadow_top, R.drawable.swiper_shadow_bottom
+        });
+        Rigger.getRigger(this).getSwipeLayout().setOnSwipeChangedListener(new SwipeLayout.OnSwipeChangedListener() {
+            @Override
+            public void onEdgeTouched(SwipeLayout v, SwipeEdge edge, Object puppet) {
+                Logger.d(StartFragment.this, "onEdgeTouched::SwipeEdge=" + edge);
+            }
+
+            @Override
+            public void onSwipeChanged(SwipeLayout v, Object puppet, float percent) {
+                Logger.d(StartFragment.this, "onSwipeChanged::percent=" + percent);
+            }
+
+            @Override
+            public void onSwipeBacked(SwipeLayout v, Object puppet) {
+                Logger.d(StartFragment.this, "onSwipeBacked");
+            }
         });
     }
 

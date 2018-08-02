@@ -5,9 +5,11 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.swiper.SwipeLayout;
+
 import java.util.Stack;
 
 /**
@@ -40,7 +42,6 @@ public interface IRigger {
      * from XML or as supplied when added in a transaction.
      *
      * @param tag The fragment tag to be found.
-     *
      * @return The fragment if found or null otherwise.
      */
     Fragment findFragmentByTag(String tag);
@@ -221,7 +222,6 @@ public interface IRigger {
      * @param resultCode The result code to propagate back to the originating
      *                   fragment, often RESULT_CANCELED or RESULT_OK
      * @param bundle     The data to propagate back to the originating fragment.
-     *
      * @see Rigger#RESULT_OK
      * @see Rigger#RESULT_CANCELED
      */
@@ -246,6 +246,5 @@ public interface IRigger {
      * Return the {@link SwipeLayout} as the puppet can be swiped back.
      * Otherwise , return null.
      */
-    @Nullable
     SwipeLayout getSwipeLayout();
 }
