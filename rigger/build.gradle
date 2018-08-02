@@ -25,8 +25,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility rootProject.ext.android.targetCompatibilityVersion
+        targetCompatibility rootProject.ext.android.targetCompatibilityVersion
     }
 
     buildTypes {

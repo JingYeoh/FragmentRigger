@@ -1,5 +1,9 @@
 package com.jkb.fragment.swiper.annotation;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.FloatRange;
+import android.support.annotation.IntRange;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -46,5 +50,45 @@ public @interface Swiper {
      *
      * @return Default value is 1.0f.
      */
+    @FloatRange(from = -1f, to = 1f)
     float parallaxOffset() default 1.0f;
+
+    /**
+     * The scrim color as the view is swiping.
+     *
+     * The scrim will not showed as the color is transparent.
+     *
+     * @return default color is black.
+     */
+    @ColorRes
+    int scrimColor() default android.R.color.black;
+
+    /**
+     * The scrim max alpha.
+     *
+     * The scrim will not showed as the value is 0.
+     *
+     * @return default is 128
+     */
+    @IntRange(from = 0, to = 255)
+    int scrimMaxAlpha() default 128;
+
+    /**
+     * The shadow drawable res for content view.
+     *
+     * If you don't need shadow , return null or 0.
+     *
+     * @return the max size is four , the value is left/right/top/bottom edge.
+     */
+    @DrawableRes
+    int[] shadowDrawable() default 0;
+
+    /**
+     * The shadow width.
+     *
+     * If you don't need shadow , return 0.
+     *
+     * @return default value is 20 dp
+     */
+    int shadowWidth() default 20;
 }

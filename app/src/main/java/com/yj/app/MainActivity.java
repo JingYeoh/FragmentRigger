@@ -12,6 +12,10 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void init(Bundle savedInstanceState) {
         Rigger.enableDebugLogging(true);
+        Rigger.getRigger(this).getSwipeLayout().setShadowDrawable(new int[]{
+                R.drawable.swiper_shadow_left, R.drawable.swiper_shadow_right,
+                R.drawable.swiper_shadow_top, R.drawable.swiper_shadow_bottom
+        });
         if (savedInstanceState == null) {
             Rigger.getRigger(this).startFragment(TestFragment.newInstance());
         }

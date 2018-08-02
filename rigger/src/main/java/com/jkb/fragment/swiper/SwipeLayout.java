@@ -3,10 +3,16 @@ package com.jkb.fragment.swiper;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
@@ -14,10 +20,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.swiper.annotation.SwipeEdge;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,14 +40,18 @@ import java.util.Stack;
  */
 public class SwipeLayout extends FrameLayout {
 
-    // attributes
     private boolean mIsEnable;
     private float mParallaxOffset;
     private List<SwipeEdge> mSwipeEdgeSide;
     private boolean mStickyWithHost;
+    private int mScrimMaxAlpha;
+    private int mShadowWidth;
 
     private Object mPuppetHost;
     private ViewDragHelper mDragHelper;
+    private Paint mScrimPaint;
+    private Drawable[] mShadowDrawables;
+    private Rect mTmpRect = new Rect();
 
     private static final float SCROLL_FINISH_THRESHOLD = 0.5f;
     private static final int EDGE_FLAG_NONE = -1000;
@@ -111,7 +119,7 @@ public class SwipeLayout extends FrameLayout {
     private class ViewDragCallback extends ViewDragHelper.Callback {
 
         @Override
-        public boolean tryCaptureView(View child, int pointerId) {
+        public boolean tryCaptureView(@NonNull View child, int pointerId) {
             if (!mIsEnable || mEdgeFlag == EDGE_FLAG_NONE) {
                 return false;
             }
@@ -141,7 +149,7 @@ public class SwipeLayout extends FrameLayout {
         }
 
         @Override
-        public int clampViewPositionHorizontal(View child, int left, int dx) {
+        public int clampViewPositionHorizontal(@NonNull View child, int left, int dx) {
             int ret = 0;
             if (canSwipe(SwipeEdge.LEFT) && (mCurrentSwipeOrientation & ViewDragHelper.EDGE_LEFT) != 0) {
                 ret = Math.min(child.getWidth(), Math.max(left, 0));
@@ -152,7 +160,7 @@ public class SwipeLayout extends FrameLayout {
         }
 
         @Override
-        public int clampViewPositionVertical(View child, int top, int dy) {
+        public int clampViewPositionVertical(@NonNull View child, int top, int dy) {
             int ret = 0;
             if (canSwipe(SwipeEdge.TOP) && (mCurrentSwipeOrientation & ViewDragHelper.EDGE_TOP) != 0) {
                 ret = Math.min(child.getHeight(), Math.max(top, 0));
@@ -163,7 +171,7 @@ public class SwipeLayout extends FrameLayout {
         }
 
         @Override
-        public int getViewHorizontalDragRange(View child) {
+        public int getViewHorizontalDragRange(@NonNull View child) {
             if (getTopFragment() != null) {
                 return 1;
             }
@@ -174,7 +182,7 @@ public class SwipeLayout extends FrameLayout {
         }
 
         @Override
-        public int getViewVerticalDragRange(View child) {
+        public int getViewVerticalDragRange(@NonNull View child) {
             if (getTopFragment() != null) {
                 return 1;
             }
@@ -240,7 +248,7 @@ public class SwipeLayout extends FrameLayout {
         }
 
         @Override
-        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+        public void onViewReleased(@NonNull View releasedChild, float xvel, float yvel) {
             final int childWidth = releasedChild.getWidth();
             final int childHeight = releasedChild.getHeight();
 
@@ -258,6 +266,60 @@ public class SwipeLayout extends FrameLayout {
             mDragHelper.settleCapturedViewAt(left, top);
             invalidate();
         }
+    }
+
+    @Override
+    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+        boolean result = super.drawChild(canvas, child, drawingTime);
+        if (child == getChildAt(0)) {
+            drawShadow(canvas, child);
+            drawScrim(canvas, child);
+        }
+        return result;
+    }
+
+    private void drawScrim(@NonNull Canvas canvas, @NonNull View child) {
+        int alpha = (int) (mScrollPercent * mScrimMaxAlpha);
+        mScrimPaint.setAlpha(alpha);
+        canvas.drawRect(child.getLeft(), child.getTop(), child.getRight(),
+                child.getBottom(), mScrimPaint);
+    }
+
+    private void drawShadow(@NonNull Canvas canvas, @NonNull View child) {
+        if (mShadowDrawables == null || mShadowDrawables.length == 0) {
+            return;
+        }
+        final Rect childRect = mTmpRect;
+        child.getHitRect(childRect);
+
+        if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_LEFT) != 0) {
+            drawShadowChild(canvas, mShadowDrawables[0], childRect.left - mShadowWidth,
+                    childRect.top, childRect.left, childRect.bottom);
+        } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_RIGHT) != 0) {
+            if (mShadowDrawables.length > 1) {
+                drawShadowChild(canvas, mShadowDrawables[1], childRect.right,
+                        childRect.top, childRect.right + mShadowWidth, childRect.bottom);
+            }
+        } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_TOP) != 0) {
+            if (mShadowDrawables.length > 2) {
+                drawShadowChild(canvas, mShadowDrawables[2], childRect.left,
+                        childRect.top - mShadowWidth, childRect.right, childRect.top);
+            }
+        } else if ((mCurrentSwipeOrientation & ViewDragHelper.EDGE_RIGHT) != 0) {
+            if (mShadowDrawables.length > 3) {
+                drawShadowChild(canvas, mShadowDrawables[3], childRect.left,
+                        childRect.bottom, childRect.right, childRect.bottom + mShadowWidth);
+            }
+        }
+    }
+
+    private void drawShadowChild(Canvas canvas, Drawable drawable, int left, int top, int right, int bottom) {
+        if (drawable == null) {
+            return;
+        }
+        drawable.setBounds(left, top, right, bottom);
+        drawable.setAlpha((int) (mScrimOpacity * mScrimMaxAlpha));
+        drawable.draw(canvas);
     }
 
     @Override
@@ -416,7 +478,7 @@ public class SwipeLayout extends FrameLayout {
         return null;
     }
 
-    ///////////////////////////// Attributes SETTER /////////////////////////////////////
+    ///////////////////////////// Attributes Setter /////////////////////////////////////
 
     public void setParallaxOffset(float parallaxOffset) {
         mParallaxOffset = parallaxOffset;
@@ -491,6 +553,42 @@ public class SwipeLayout extends FrameLayout {
 
     public void setStickyWithHost(boolean stickyWithHost) {
         mStickyWithHost = stickyWithHost;
+    }
+
+    public void setScrimColor(int scrimColor) {
+        if (mScrimPaint == null) {
+            mScrimPaint = new Paint();
+        }
+        mScrimPaint.setColor(scrimColor);
+        mScrimPaint.setStyle(Style.FILL);
+        invalidate();
+    }
+
+    public void setScrimMaxAlpha(int scrimMaxAlpha) {
+        mScrimMaxAlpha = scrimMaxAlpha;
+    }
+
+    public void setShadowDrawable(int[] shadowDrawable) {
+        if (shadowDrawable != null && shadowDrawable.length > 0) {
+            if (shadowDrawable.length > 4) {
+                throw new IllegalArgumentException("shadowDrawable can host only four child");
+            }
+            mShadowDrawables = new Drawable[shadowDrawable.length];
+            for (int i = 0; i < shadowDrawable.length; i++) {
+                int drawableId = shadowDrawable[i];
+                if (drawableId == 0) {
+                    mShadowDrawables[i] = null;
+                    continue;
+                }
+                mShadowDrawables[i] = ContextCompat.getDrawable(getContext(), drawableId);
+            }
+        }
+        invalidate();
+    }
+
+    public void setShadowWidth(int shadowWidth) {
+        final float density = getContext().getResources().getDisplayMetrics().density;
+        mShadowWidth = (int) (shadowWidth * density + 0.5f);
     }
 
     private boolean canSwipe(SwipeEdge... swipeEdges) {
