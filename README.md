@@ -42,6 +42,7 @@ You can use this `FragmentRigger` with one line annotation.
 * [Transition animations](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Transition-animations)
 * [Intercept onBackPressed](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Intercept-onBackPressed)
 * [startFragmentForResult](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult)
+* Swipe edge to exit Activity/Fragment
 * [How to use in library module](https://github.com/JustKiddingBaby/FragmentRigger/wiki/How-to-use-in-library-module)
 #### Information
 * [Errors in gradle](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Errors-in-gradle)
@@ -60,9 +61,9 @@ You can use this `FragmentRigger` with one line annotation.
 - [x] **Fragment transition animations**
 - [x] **Option to configure fragment tag**
 - [x] **Add `onBackPressed` method support for the fragment that is not added into stack**
+- [x] **Swipe edge to exit Fragment/Activity**
 - [ ] **Option to configure fragment launch mode**
 - [ ] **Fragment shared elements transition animations**
-- [ ] **Swipe edge to exit Fragment/Activity**
 - [ ] **Support DialogFragment**
 
 ### Problem solved
@@ -104,6 +105,24 @@ public class MainActivity extends AppCompatActivity{
   ...
   //add and show a fragment and add it to the stack,this fragment is placed in the container view.
    Rigger.getRigger(this).startFragment(TestFragment.newInstance());
+}
+```
+
+**3、Activity/Fragment swipe back to exit**
+>Add `Swiper` annotation for your `Activity/Fragment`.
+
+```java
+@Swiper
+@Puppet
+public class MainActivity extends AppCompatActivity{
+    // swiper can only used with puppet.
+}
+```
+```java
+@Swiper
+@Puppet
+public class TestFragment extends Fragment{
+    // swiper can only used with puppet.
 }
 ```
 

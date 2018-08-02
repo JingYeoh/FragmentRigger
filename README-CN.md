@@ -41,6 +41,7 @@
 * [转场动画](https://github.com/JustKiddingBaby/FragmentRigger/wiki/转场动画)
 * [onBackPressed拦截](https://github.com/JustKiddingBaby/FragmentRigger/wiki/onBackPressed拦截)
 * [startFragmentForResult方法](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult方法)
+* 滑动退出Activity/Fragment
 * [如何在library module中使用](https://github.com/JustKiddingBaby/FragmentRigger/wiki/如何在library-module中使用)
 #### 信息
 * [gradle错误](https://github.com/JustKiddingBaby/FragmentRigger/wiki/gradle%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98)
@@ -59,9 +60,9 @@
 - [x] **Fragment转场动画**
 - [x] **自定义Fragment tag**
 - [x] **为非栈内的Fragment添加onBackPressed支持**
+- [x] **滑动边缘退出Activity/Fragment**
 - [ ] **配置Fragment启动模式的选项**
 - [ ] **Fragment间共享元素转场动画**
-- [ ] **左滑退出**
 - [ ] **支持DialogFragment**
 
 ### 解决的问题
@@ -105,6 +106,25 @@ public class MainActivity extends AppCompatActivity{
   ...
   //add并show一个Fragment并添加至栈中，此时添加的Fragment是在@Puppet中的containerViewId中的
    Rigger.getRigger(this).startFragment(TestFragment.newInstance());
+}
+```
+
+
+**3、Activity/Fragment 滑动退出**
+>在需要滑动边缘退出的`Activity/Fragment`上添加`Swiper`注解.
+
+```java
+@Swiper
+@Puppet
+public class MainActivity extends AppCompatActivity{
+    // swiper 只可以使用在有 puppet 注解的类上.
+}
+```
+```java
+@Swiper
+@Puppet
+public class TestFragment extends Fragment{
+   // swiper 只可以使用在有 puppet 注解的类上.
 }
 ```
 
