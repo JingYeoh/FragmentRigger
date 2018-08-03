@@ -41,7 +41,7 @@
 * [转场动画](https://github.com/JustKiddingBaby/FragmentRigger/wiki/转场动画)
 * [onBackPressed拦截](https://github.com/JustKiddingBaby/FragmentRigger/wiki/onBackPressed拦截)
 * [startFragmentForResult方法](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult方法)
-* 滑动退出Activity/Fragment
+* [滑动退出Activity/Fragment](https://github.com/JustKiddingBaby/FragmentRigger/wiki/滑动边缘退出)
 * [如何在library module中使用](https://github.com/JustKiddingBaby/FragmentRigger/wiki/如何在library-module中使用)
 #### 信息
 * [gradle错误](https://github.com/JustKiddingBaby/FragmentRigger/wiki/gradle%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98)

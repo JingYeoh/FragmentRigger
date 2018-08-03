@@ -42,7 +42,7 @@ You can use this `FragmentRigger` with one line annotation.
 * [Transition animations](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Transition-animations)
 * [Intercept onBackPressed](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Intercept-onBackPressed)
 * [startFragmentForResult](https://github.com/JustKiddingBaby/FragmentRigger/wiki/startFragmentForResult)
-* Swipe edge to exit Activity/Fragment
+* [Swipe edge to exit Activity/Fragment](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Swipe-edge-to-exit)
 * [How to use in library module](https://github.com/JustKiddingBaby/FragmentRigger/wiki/How-to-use-in-library-module)
 #### Information
 * [Errors in gradle](https://github.com/JustKiddingBaby/FragmentRigger/wiki/Errors-in-gradle)
