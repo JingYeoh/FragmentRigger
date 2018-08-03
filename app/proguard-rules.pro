@@ -28,6 +28,7 @@
 
 -keep class com.jkb.fragment.rigger.rigger.** {*;}
 -keep interface com.jkb.fragment.rigger.rigger.** {*;}
+-keep class com.jkb.fragment.swiper.**{*;}
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.support.v4.app.Fragment

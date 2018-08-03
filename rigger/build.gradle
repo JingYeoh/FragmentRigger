@@ -1,15 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
-publish {
-    userOrg = rootProject.ext.rigger.userOrg
-    groupId = rootProject.ext.rigger.groupId
-    artifactId = rootProject.ext.rigger.artifactId
-    publishVersion = rootProject.ext.rigger.publishVersion
-    desc = rootProject.ext.rigger.desc
-    website = rootProject.ext.rigger.website
-}
-
 android {
 
     compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -43,5 +34,45 @@ android {
 
 dependencies {
     implementation rootProject.ext.dependencies.appcompatV7
-    api rootProject.ext.dependencies.aspectJ
+    implementation rootProject.ext.dependencies.aspectJ
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task copyDoc(type: Copy) {
+    from "${buildDir}/docs/"
+    into "docs"
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+}
+
+publish {
+    userOrg = rootProject.ext.rigger.userOrg
+    groupId = rootProject.ext.rigger.groupId
+    artifactId = rootProject.ext.rigger.artifactId
+    publishVersion = rootProject.ext.rigger.publishVersion
+    desc = rootProject.ext.rigger.desc
+    website = rootProject.ext.rigger.website
 }
