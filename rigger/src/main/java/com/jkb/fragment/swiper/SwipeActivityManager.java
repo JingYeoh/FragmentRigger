@@ -39,6 +39,9 @@ class SwipeActivityManager {
     }
 
     private void addToStack(@NonNull Activity activity) {
+        if (mActivityStack.contains(activity)) {
+            return;
+        }
         mActivityStack.add(activity);
     }
 
