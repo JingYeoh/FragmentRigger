@@ -6,10 +6,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.jkb.fragment.rigger.rigger.Rigger;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.base.BaseFragment;
+import com.yj.app.base.GlideApp;
 import com.yj.app.test.lazyload.LazyLoadFragment;
 import com.yj.app.test.replace.ReplaceFragment;
 import com.yj.app.test.show.ShowFragment;
@@ -46,6 +48,9 @@ public class TestFragment extends BaseFragment implements OnClickListener {
         findViewById(R.id.fs_startFragmentForResult).setOnClickListener(this);
         findViewById(R.id.fs_lazyload).setOnClickListener(this);
         findViewById(R.id.fs_activity).setOnClickListener(this);
+
+        ImageView imageView = (ImageView) findViewById(R.id.image);
+        GlideApp.with(this).load("https://timesks.oss-cn-shenzhen.aliyuncs.com/user/header/tt191.jpg").into(imageView);
     }
 
     @Override
