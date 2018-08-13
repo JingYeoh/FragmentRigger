@@ -10,6 +10,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.jkb.fragment.reflect.RiggerReflectManager;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.RiggerException;
 import com.jkb.fragment.rigger.utils.Logger;
@@ -81,21 +82,22 @@ public final class Rigger {
         //filter the unsupported class
         if (!(puppet instanceof AppCompatActivity) && !(puppet instanceof Fragment)) {
             throw new RiggerException(
-                "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
+                    "Puppet Annotation class can only used on android.app.Activity or android.support.v4.app.Fragment");
         }
         //filter the unsupported class
         Class<?> clazz = puppet.getClass();
-        Puppet puppetAnnotation = clazz.getAnnotation(Puppet.class);
+        Puppet puppetAnnotation = (Puppet) RiggerReflectManager.getInstance().getAnnotation(clazz, Puppet.class);
         if (puppetAnnotation == null) {
             throw new RiggerException("Can not find Puppet annotation.please add Puppet annotation for the class " +
-                puppet.getClass().getName());
+                    clazz.getName());
         }
         //get the object's address code.
         int code = System.identityHashCode(puppet);
         IRigger rigger = getInstance().mPuppetMap.get(code);
         if (rigger == null) {
             throw new RiggerException(
-                "UnKnown error " + puppet + " is not added into rigger. please check your config or contact author.");
+                    "UnKnown error " + puppet +
+                            " is not added into rigger. please check your config or contact author.");
         }
         return rigger;
     }
@@ -120,17 +122,14 @@ public final class Rigger {
      * Remove a puppet object from caches.
      *
      * @param puppet Puppet object,Activity/Fragment
-     *
-     * @return the result of this process.
      */
-    private boolean removeRigger(Object puppet) {
+    private void removeRigger(Object puppet) {
         int code = System.identityHashCode(puppet);
         if (mPuppetMap.indexOfKey(code) < 0) {
-            return false;
+            return;
         }
         mPuppetMap.remove(code);
         Logger.i(puppet, "remove puppet " + puppet + " from rigger list");
-        return true;
     }
 
     /**
@@ -174,7 +173,7 @@ public final class Rigger {
      *                           a previous saved state, this is the state.
      */
     private Object onCreateView(Object object, LayoutInflater inflater, @Nullable ViewGroup container,
-        @Nullable Bundle savedInstanceState, @Nullable View view) {
+            @Nullable Bundle savedInstanceState, @Nullable View view) {
         Logger.i(object, TAG_HEADER + "onCreateView");
         return createRigger(object).onCreateView(inflater, container, savedInstanceState, view);
     }

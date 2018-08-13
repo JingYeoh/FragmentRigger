@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import com.jkb.fragment.reflect.RiggerReflectManager;
 import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.exception.UnSupportException;
@@ -69,7 +70,7 @@ final class _FragmentRigger extends _Rigger {
         this.mFragment = fragment;
         //init lazy load.
         Class<? extends Fragment> clazz = mFragment.getClass();
-        LazyLoad lazyLoad = clazz.getAnnotation(LazyLoad.class);
+        LazyLoad lazyLoad = (LazyLoad) RiggerReflectManager.getInstance().getAnnotation(clazz, LazyLoad.class);
         if (lazyLoad != null) {
             mAbleLazyLoad = lazyLoad.value();
         }
@@ -85,16 +86,15 @@ final class _FragmentRigger extends _Rigger {
     @SuppressWarnings("All")
     private void invokeCustomFragmentTag(Class<? extends Fragment> clazz) {
         try {
-            Method method = clazz.getMethod(METHOD_GET_FRAGMENT_TAG);
-            Object value = method.invoke(mFragment);
-            if (value != null) {
-                if (!(value instanceof String)) {
-                    throwException(
-                        new UnSupportException("Method " + METHOD_GET_FRAGMENT_TAG + " return value must be String"));
+            Method method = RiggerReflectManager.getInstance().getMethod(clazz, METHOD_GET_FRAGMENT_TAG);
+            if (method != null) {
+                Object value = method.invoke(mFragment);
+                if (value != null && !(value instanceof String)) {
+                    throwException(new UnSupportException(
+                            "Method " + METHOD_GET_FRAGMENT_TAG + " return value must be String"));
                 }
                 mFragmentTag = (String) value;
             }
-        } catch (NoSuchMethodException ignore) {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
@@ -111,7 +111,7 @@ final class _FragmentRigger extends _Rigger {
      */
     @SuppressWarnings("All")
     private void invokeFragmentAnimators(Class<? extends Fragment> clazz) {
-        Animator animator = clazz.getAnnotation(Animator.class);
+        Animator animator = (Animator) RiggerReflectManager.getInstance().getAnnotation(clazz, Animator.class);
         if (animator != null) {
             mEnterAnim = animator.enter();
             mExitAnim = animator.exit();
@@ -119,28 +119,31 @@ final class _FragmentRigger extends _Rigger {
             mPopExitAnim = animator.popExit();
         }
         try {
-            Method method = clazz.getMethod(METHOD_GET_PUPPET_ANIMATIONS);
+            Method method = RiggerReflectManager.getInstance().getMethod(clazz, METHOD_GET_PUPPET_ANIMATIONS);
+            if (method == null) {
+                return;
+            }
             Object values = method.invoke(mFragment);
             if (values == null) {
                 throwException(
-                    new UnSupportException("Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value can't be null"));
+                        new UnSupportException(
+                                "Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value can't be null"));
             }
             if (!(values instanceof int[])) {
                 throwException(
-                    new UnSupportException(
-                        "Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's type must be int[]"));
+                        new UnSupportException(
+                                "Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's type must be int[]"));
             }
             int[] animators = (int[]) values;
             if (animators == null || animators.length != 4) {
                 throwException(
-                    new UnSupportException(
-                        "Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's length must be 4"));
+                        new UnSupportException(
+                                "Method " + METHOD_GET_PUPPET_ANIMATIONS + " return value's length must be 4"));
             }
             mEnterAnim = animators[0];
             mExitAnim = animators[1];
             mPopEnterAnim = animators[2];
             mPopExitAnim = animators[3];
-        } catch (NoSuchMethodException ignore) {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
@@ -162,11 +165,11 @@ final class _FragmentRigger extends _Rigger {
         //init rigger transaction
         if (mRiggerTransaction == null) {
             mRiggerTransaction = new RiggerTransactionImpl(Rigger.getRigger(mActivity),
-                mFragment.getChildFragmentManager());
+                    mFragment.getChildFragmentManager());
         }
         if (mParentRiggerTransaction == null) {
             mParentRiggerTransaction = new RiggerTransactionImpl(Rigger.getRigger(mActivity),
-                mFragment.getFragmentManager());
+                    mFragment.getFragmentManager());
         }
         //init params of startForResult
         initResultParams(savedInstanceState);
@@ -186,7 +189,7 @@ final class _FragmentRigger extends _Rigger {
 
     @Override
     View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-        @Nullable Bundle savedInstanceState, @Nullable View view) {
+            @Nullable Bundle savedInstanceState, @Nullable View view) {
         mHasInitView = true;
         initLazyLoadStatus();
         SwipeLayout swipeLayout = buildSwipeLayout();
@@ -208,7 +211,9 @@ final class _FragmentRigger extends _Rigger {
      */
     private void initResultParams(Bundle savedInstanceState) {
         Bundle bundle = savedInstanceState == null ? mFragment.getArguments() : savedInstanceState;
-        mForResultTarget = bundle.getParcelable(BUNDLE_KEY_FOR_RESULT);
+        if (bundle != null) {
+            mForResultTarget = bundle.getParcelable(BUNDLE_KEY_FOR_RESULT);
+        }
     }
 
     /**
@@ -265,12 +270,9 @@ final class _FragmentRigger extends _Rigger {
     public void onBackPressed() {
         boolean isInterrupt = false;
         Class<?> clazz = mFragment.getClass();
-        Method onBackPressed = null;
         try {
-            onBackPressed = clazz.getMethod(METHOD_ON_RIGGER_BACKPRESSED);
-            isInterrupt = (boolean) onBackPressed.invoke(mFragment);
-        } catch (NoSuchMethodException e) {
-            isInterrupt = false;
+            Method onBackPressed = RiggerReflectManager.getInstance().getMethod(clazz, METHOD_ON_RIGGER_BACKPRESSED);
+            isInterrupt = onBackPressed != null && (boolean) onBackPressed.invoke(mFragment);
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -367,7 +369,7 @@ final class _FragmentRigger extends _Rigger {
     public void setResult(int resultCode, Bundle bundle) {
         if (mForResultTarget == null) {
             throwException(
-                new UnSupportException("class " + this + " is not started by startFragmentForResult() method"));
+                    new UnSupportException("class " + this + " is not started by startFragmentForResult() method"));
         }
         int requestCode = mForResultTarget.getInt(BUNDLE_KEY_FOR_RESULT_REQUEST_CODE);
         //get the host object.
@@ -384,14 +386,13 @@ final class _FragmentRigger extends _Rigger {
             host = startPuppet == null ? mActivity : startPuppet;
         }
         //invoke the host#onFragmentResult method.
-        Class<?> clazz = host.getClass();
         try {
-            Method method = clazz.getMethod(RiggerConsts.METHOD_ON_FRAGMENT_RESULT, int.class, int.class, Bundle.class);
-            method.invoke(host, requestCode, resultCode, bundle);
-        } catch (NoSuchMethodException ignored) {
-            Logger
-                .w(this, "Not found method " + RiggerConsts.METHOD_ON_FRAGMENT_RESULT + " in class " +
-                    clazz.getSimpleName());
+            Method method = RiggerReflectManager.getInstance()
+                    .getMethod(host.getClass(), RiggerConsts.METHOD_ON_FRAGMENT_RESULT,
+                            int.class, int.class, Bundle.class);
+            if (method != null) {
+                method.invoke(host, requestCode, resultCode, bundle);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -417,15 +418,11 @@ final class _FragmentRigger extends _Rigger {
         //make sure the method onLazyViewCreated will be called only once.
         if (mHasInvokeLazyLoad) return;
 
-        Method onLazyLoadViewCreated = null;
-        try {
-            onLazyLoadViewCreated = mFragment.getClass()
-                .getMethod(METHOD_ON_LAZYLOAD_VIEW_CREATED, Bundle.class);
-        } catch (NoSuchMethodException e) {
-            Logger.e(mFragment, "can not find method " + METHOD_ON_LAZYLOAD_VIEW_CREATED);
-        }
+        Method onLazyLoadViewCreated = RiggerReflectManager.getInstance()
+                .getMethod(mFragment.getClass(), METHOD_ON_LAZYLOAD_VIEW_CREATED, Bundle.class);
         if (onLazyLoadViewCreated == null) {
             throwException(new UnSupportException("can not find method " + METHOD_ON_LAZYLOAD_VIEW_CREATED));
+            return;
         }
         try {
             onLazyLoadViewCreated.invoke(mFragment, mSavedFragmentState);

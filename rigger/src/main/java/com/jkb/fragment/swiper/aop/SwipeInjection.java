@@ -1,14 +1,13 @@
 package com.jkb.fragment.swiper.aop;
 
 import android.app.Activity;
-import android.os.Bundle;
-
+import android.support.annotation.NonNull;
+import com.jkb.fragment.reflect.RiggerReflectManager;
+import java.lang.reflect.Method;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-
-import java.lang.reflect.Method;
 
 /**
  * Using AspectJ tools reach AOP. this class is used to inject
@@ -78,10 +77,13 @@ public class SwipeInjection {
     /**
      * Returns the instance of SwiperActivityManager class by reflect.
      */
+    @NonNull
     Object getSwiperInstance() throws Exception {
-        Class<?> riggerClazz = Class.forName("com.jkb.fragment.swiper.SwipeActivityManager");
-        Method getInstance = riggerClazz.getDeclaredMethod("getInstance");
-        getInstance.setAccessible(true);
+        Class clazz = RiggerReflectManager.getInstance().getClass("com.jkb.fragment.swiper.SwipeActivityManager");
+        assert clazz != null;
+        Method getInstance = RiggerReflectManager.getInstance()
+                .getDeclaredMethod(clazz, "getInstance");
+        assert getInstance != null;
         return getInstance.invoke(null);
     }
 
@@ -89,10 +91,6 @@ public class SwipeInjection {
      * Returns the method object of SwiperActivityManager by reflect.
      */
     Method invokeSwiperMethod(String methodName, Class<?>... params) throws Exception {
-        Object object = getSwiperInstance();
-        Class<?> clazz = object.getClass();
-        Method method = clazz.getDeclaredMethod(methodName, params);
-        method.setAccessible(true);
-        return method;
+        return RiggerReflectManager.getInstance().getDeclaredMethod(getSwiperInstance().getClass(), methodName, params);
     }
 }

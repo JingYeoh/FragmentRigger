@@ -2,8 +2,6 @@ package com.yj.app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -55,7 +53,8 @@ public class TestFragment extends BaseFragment implements OnClickListener {
                 Rigger.getRigger(this).startFragment(StartFragment.newInstance(0));
                 break;
             case R.id.fs_startFragmentDelay:
-                startDelayed();
+                v.postDelayed(() -> Rigger.getRigger(TestFragment.this)
+                        .startFragment(StartFragment.newInstance(0)), 1000);
                 break;
             case R.id.fs_startFragmentForResult:
                 Rigger.getRigger(this).startFragmentForResult(this, ResultFragment.newInstance(), 1000);
@@ -73,24 +72,6 @@ public class TestFragment extends BaseFragment implements OnClickListener {
                 startActivity(new Intent(mContext, MainActivity.class));
                 break;
         }
-    }
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            Rigger.getRigger(TestFragment.this).startFragment(StartFragment.newInstance(0));
-        }
-    };
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mHandler != null) mHandler.removeMessages(111);
-    }
-
-    private void startDelayed() {
-        mHandler.sendEmptyMessageDelayed(111, 1000);
     }
 
     public void onFragmentResult(int requestCode, int resultCode, Bundle args) {

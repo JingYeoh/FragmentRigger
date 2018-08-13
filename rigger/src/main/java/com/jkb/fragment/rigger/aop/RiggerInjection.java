@@ -1,9 +1,8 @@
 package com.jkb.fragment.rigger.aop;
 
+import com.jkb.fragment.reflect.RiggerReflectManager;
 import com.jkb.fragment.rigger.rigger.Rigger;
-
 import java.lang.reflect.Method;
-
 import org.aspectj.lang.annotation.Pointcut;
 
 /**
@@ -31,20 +30,18 @@ class RiggerInjection {
      * Returns the instance of Rigger class by reflect.
      */
     Rigger getRiggerInstance() throws Exception {
-        Class<?> riggerClazz = Class.forName(Rigger.class.getName());
-        Method getInstance = riggerClazz.getDeclaredMethod("getInstance");
-        getInstance.setAccessible(true);
+        Class riggerClazz = RiggerReflectManager.getInstance().getClass(Rigger.class.getName());
+        assert riggerClazz != null;
+        Method getInstance = RiggerReflectManager.getInstance().getDeclaredMethod(riggerClazz, "getInstance");
+        assert getInstance != null;
         return (Rigger) getInstance.invoke(null);
     }
 
     /**
      * Returns the method object of Rigger by reflect.
      */
-    Method getRiggerMethod(String methodName, Class<?>... params) throws Exception {
-        Rigger rigger = getRiggerInstance();
-        Class<? extends Rigger> clazz = rigger.getClass();
-        Method method = clazz.getDeclaredMethod(methodName, params);
-        method.setAccessible(true);
-        return method;
+    Method getRiggerMethod(String methodName, Class<?>... params) {
+        Class clazz = RiggerReflectManager.getInstance().getClass(Rigger.class.getName());
+        return RiggerReflectManager.getInstance().getDeclaredMethod(clazz, methodName, params);
     }
 }

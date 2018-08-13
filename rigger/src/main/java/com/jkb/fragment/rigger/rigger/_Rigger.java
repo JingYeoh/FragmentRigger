@@ -25,6 +25,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
+import com.jkb.fragment.reflect.RiggerReflectManager;
 import com.jkb.fragment.rigger.annotation.Puppet;
 import com.jkb.fragment.rigger.exception.AlreadyExistException;
 import com.jkb.fragment.rigger.exception.NotExistException;
@@ -82,18 +83,19 @@ abstract class _Rigger implements IRigger {
         this.mPuppetTarget = puppetTarget;
         //init containerViewId
         Class<?> clazz = mPuppetTarget.getClass();
-        Puppet puppet = clazz.getAnnotation(Puppet.class);
+        Puppet puppet = (Puppet) RiggerReflectManager.getInstance().getAnnotation(clazz, Puppet.class);
+        assert puppet != null;
         mStickyStack = puppet.stickyStack();
         mContainerViewId = puppet.containerViewId();
-        if (mContainerViewId <= 0) {
-            try {
-                Method containerViewId = clazz.getMethod(METHOD_GET_CONTAINERVIEWID);
+        try {
+            Method containerViewId = RiggerReflectManager.getInstance().getMethod(clazz, METHOD_GET_CONTAINERVIEWID);
+            if (containerViewId != null) {
                 mContainerViewId = (int) containerViewId.invoke(mPuppetTarget);
-            } catch (Exception ignored) {
             }
+        } catch (Exception ignored) {
         }
         // init swiper
-        mSwiper = clazz.getAnnotation(Swiper.class);
+        mSwiper = (Swiper) RiggerReflectManager.getInstance().getAnnotation(clazz, Swiper.class);
         //init helper
         mStackManager = new FragmentStackManager();
     }
@@ -272,11 +274,13 @@ abstract class _Rigger implements IRigger {
         Logger.d(mPuppetTarget, "onInterruptBackPressed() method is called");
         Class<?> clazz = mPuppetTarget.getClass();
         try {
-            Method onBackPressed = clazz.getMethod(METHOD_ON_INTERRUPT_BACKPRESSED);
-            return (boolean) onBackPressed.invoke(mPuppetTarget);
-        } catch (Exception e) {
-            return false;
+            Method onBackPressed = RiggerReflectManager.getInstance().getMethod(clazz, METHOD_ON_INTERRUPT_BACKPRESSED);
+            if (onBackPressed != null) {
+                return (boolean) onBackPressed.invoke(mPuppetTarget);
+            }
+        } catch (Exception ignore) {
         }
+        return false;
     }
 
     @Override
