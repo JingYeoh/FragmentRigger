@@ -98,6 +98,6 @@ public class TestFragment extends BaseFragment implements OnClickListener {
         String string = args.getString(BUNDLE_KEY);
         Logger.i(this, string);
         Toast.makeText(mContext, "requestCode=" + requestCode + ":::" + "resultCode=" + resultCode + "\n"
-            + "result=" + string, Toast.LENGTH_SHORT).show();
+                + "result=" + string, Toast.LENGTH_SHORT).show();
     }
 }
