@@ -189,6 +189,7 @@ public final class FragmentStackManager implements Cloneable, Serializable {
                 for (Fragment fragment : fragments) {
                     if (fragment == null) continue;
                     String tag = fragment.getTag();
+                    if(TextUtils.isEmpty(tag))continue;
                     if (!mFragmentStack.contains(tag) &&
                             !fragmentTags.contains(tag)) {
                         fragmentTags.add(tag);
