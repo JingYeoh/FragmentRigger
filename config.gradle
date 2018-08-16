@@ -11,8 +11,8 @@ ext {
     ]
 
     rigger = [
-            publishCode   : 10,
-            publishVersion: "1.4.2",
+            publishCode   : 11,
+            publishVersion: "1.4.3",
             userOrg       : 'jkb',
             groupId       : 'com.justkiddingbaby',
             artifactId    : 'fragment-rigger',
