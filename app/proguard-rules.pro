@@ -42,9 +42,10 @@
 }
 -keepclassmembers class * extends android.support.v4.app.Fragment {
    public int getContainerViewId();
-   public void onRiggerBackPressed();
+   public boolean onRiggerBackPressed();
    public void onFragmentResult(int,int,android.os.Bundle);
    public void onLazyLoadViewCreated(android.os.Bundle);
    public int[] getPuppetAnimations();
    public String getFragmentTag();
+   public boolean onInterruptBackPressed();
 }

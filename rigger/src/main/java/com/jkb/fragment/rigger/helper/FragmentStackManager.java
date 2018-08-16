@@ -3,12 +3,9 @@ package com.jkb.fragment.rigger.helper;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
-
 import java.io.Serializable;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -135,6 +132,7 @@ public final class FragmentStackManager implements Cloneable, Serializable {
      * Returns the container view id of the fragment.
      *
      * @param tag the tag name for fragment to be found.
+     *
      * @return 0 the default content.the effective id otherwise.
      */
     public int getContainer(String tag) {
@@ -183,20 +181,21 @@ public final class FragmentStackManager implements Cloneable, Serializable {
                 fragmentTags.add(entry.getKey());
             }
         }
-        if (mFm != null) {
-            List<Fragment> fragments = mFm.getFragments();
-            if (fragments != null) {
-                for (Fragment fragment : fragments) {
-                    if (fragment == null) continue;
-                    String tag = fragment.getTag();
-                    if(TextUtils.isEmpty(tag))continue;
-                    if (!mFragmentStack.contains(tag) &&
-                            !fragmentTags.contains(tag)) {
-                        fragmentTags.add(tag);
-                    }
-                }
-            }
-        }
+        // The fragment not added by Rigger should be ignored,otherwise the back pressed can not be processed.
+//        if (mFm != null) {
+//            List<Fragment> fragments = mFm.getFragments();
+//            if (fragments != null) {
+//                for (Fragment fragment : fragments) {
+//                    if (fragment == null) continue;
+//                    String tag = fragment.getTag();
+//                    if(TextUtils.isEmpty(tag))continue;
+//                    if (!mFragmentStack.contains(tag) &&
+//                            !fragmentTags.contains(tag)) {
+//                        fragmentTags.add(tag);
+//                    }
+//                }
+//            }
+//        }
         return fragmentTags.toArray(new String[fragmentTags.size()]);
     }
 
@@ -218,6 +217,7 @@ public final class FragmentStackManager implements Cloneable, Serializable {
      * Returns true if the tag is contained into the stack.
      *
      * @param tag the fragment tag to be examined
+     *
      * @return true if the tag is contained into the stack.
      */
     public boolean isFragmentIntoStack(String tag) {
