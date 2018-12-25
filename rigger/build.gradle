@@ -35,6 +35,7 @@ android {
 dependencies {
     implementation rootProject.ext.dependencies.appcompatV7
     implementation rootProject.ext.dependencies.aspectJ
+    implementation project(':annotation')
 }
 
 task sourcesJar(type: Jar) {

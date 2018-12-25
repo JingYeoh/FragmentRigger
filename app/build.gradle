@@ -61,4 +61,5 @@ dependencies {
     implementation rootProject.ext.dependencies.design
     implementation rootProject.ext.dependencies.appcompatV7
     implementation project(':rigger')
+    implementation project(':annotation')
 }
