@@ -18,7 +18,8 @@ public class MainActivity extends BaseActivity {
                 R.drawable.swiper_shadow_top, R.drawable.swiper_shadow_bottom
         });
         if (savedInstanceState == null) {
-            Rigger.getRigger(this).startFragment(TestFragment.newInstance());
+            TestFragment fragment = new TestFragment();
+            Rigger.getRigger(this).startFragment(fragment);
         }
     }
 }
