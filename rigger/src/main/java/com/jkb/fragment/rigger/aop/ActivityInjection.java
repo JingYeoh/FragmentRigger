@@ -24,35 +24,35 @@ public class ActivityInjection extends RiggerInjection {
 
     //****************PointCut***********************************
 
-    @Pointcut("execution(android.support.v4.app.FragmentActivity+.new()) && annotatedWithPuppet()")
+    @Pointcut("execution(androidx.fragment.app.FragmentActivity+.new()) && annotatedWithPuppet()")
     public void construct() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onCreate(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.FragmentActivity+.onCreate(..)) && annotatedWithPuppet()")
     public void onCreate() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onResumeFragments(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.FragmentActivity+.onResumeFragments(..)) && annotatedWithPuppet()")
     public void onResumeFragments() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onPause(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.FragmentActivity+.onPause(..)) && annotatedWithPuppet()")
     public void onPause() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onResume(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.FragmentActivity+.onResume(..)) && annotatedWithPuppet()")
     public void onResume() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onSaveInstanceState(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.FragmentActivity+.onSaveInstanceState(..)) && annotatedWithPuppet()")
     public void onSaveInstanceState() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onDestroy(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.FragmentActivity+.onDestroy(..)) && annotatedWithPuppet()")
     public void onDestroy() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onBackPressed(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.FragmentActivity+.onBackPressed(..)) && annotatedWithPuppet()")
     public void onBackPressed() {
     }
 

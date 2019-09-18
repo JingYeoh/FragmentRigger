@@ -43,11 +43,11 @@ public class SwipeInjection {
 
     //****************Helper************************************  && annotatedWithPuppet() && annotatedWithSwiper()
 
-    @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onCreate(..))")
+    @Pointcut("execution(* androidx.fragment.app.FragmentActivity+.onCreate(..))")
     public void onCreate() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.FragmentActivity+.onDestroy(..))")
+    @Pointcut("execution(* androidx.fragment.app.FragmentActivity+.onDestroy(..))")
     public void onDestroy() {
     }
 
