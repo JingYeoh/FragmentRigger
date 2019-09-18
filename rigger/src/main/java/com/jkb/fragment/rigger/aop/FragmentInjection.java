@@ -30,43 +30,43 @@ public class FragmentInjection extends RiggerInjection {
 
     //****************PointCut***********************************
 
-    @Pointcut("execution(android.support.v4.app.Fragment+.new()) && annotatedWithPuppet()")
+    @Pointcut("execution(androidx.fragment.app.Fragment+.new()) && annotatedWithPuppet()")
     public void constructor() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.Fragment+.onAttach(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.Fragment+.onAttach(..)) && annotatedWithPuppet()")
     public void onAttach() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.Fragment+.onCreate(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.Fragment+.onCreate(..)) && annotatedWithPuppet()")
     public void onCreate() {
     }
 
-    @Pointcut("call(* android.support.v4.app.Fragment+.onViewCreated(..)) && annotatedWithPuppet()")
+    @Pointcut("call(* androidx.fragment.app.Fragment+.onViewCreated(..)) && annotatedWithPuppet()")
     public void onViewCreated() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.Fragment+.onCreateView(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.Fragment+.onCreateView(..)) && annotatedWithPuppet()")
     public void onCreateView() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.Fragment+.onResume(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.Fragment+.onResume(..)) && annotatedWithPuppet()")
     public void onResume() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.Fragment+.onSaveInstanceState(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.Fragment+.onSaveInstanceState(..)) && annotatedWithPuppet()")
     public void onSaveInstanceState() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.Fragment+.onDestroy(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.Fragment+.onDestroy(..)) && annotatedWithPuppet()")
     public void onDestroy() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.Fragment+.onDetach(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.Fragment+.onDetach(..)) && annotatedWithPuppet()")
     public void onDetach() {
     }
 
-    @Pointcut("execution(* android.support.v4.app.Fragment+.setUserVisibleHint(..)) && annotatedWithPuppet()")
+    @Pointcut("execution(* androidx.fragment.app.Fragment+.setUserVisibleHint(..)) && annotatedWithPuppet()")
     public void setUserVisibleHint() {
     }
 

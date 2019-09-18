@@ -7,9 +7,7 @@ import com.jkb.fragment.rigger.rigger.Rigger;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
 import com.yj.app.test.ContainerFragment;
-import com.yj.app.utils.Rotate3d;
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * @author JingYeoh

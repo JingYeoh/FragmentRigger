@@ -2,10 +2,11 @@ package com.yj.app.utils;
 
 import android.graphics.Camera;
 import android.graphics.Matrix;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+
+import androidx.annotation.NonNull;
 
 /**
  * @author JingYeoh

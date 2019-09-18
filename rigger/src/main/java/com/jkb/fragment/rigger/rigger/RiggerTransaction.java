@@ -1,9 +1,10 @@
 package com.jkb.fragment.rigger.rigger;
 
-import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+
+import androidx.fragment.app.Fragment;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 
 /**
  * API for performing a set of Fragment operations.
@@ -75,8 +76,9 @@ abstract class RiggerTransaction {
     abstract void commit();
 
     /**
-     * Set the animations for fragment,the animations will be showed when {@link FragmentTransaction#show(Fragment)} or
-     * {@link FragmentTransaction#hide(Fragment)} is called.
+     * Set the animations for fragment,the animations will be showed when
+     * {@link androidx.fragment.app.FragmentTransaction#show(Fragment)} or
+     * {@link androidx.fragment.app.FragmentTransaction#hide(Fragment)} is called.
      *
      * @param enter the animation when the fragment is showing.
      * @param exit  the animation when the fragment is hiding.

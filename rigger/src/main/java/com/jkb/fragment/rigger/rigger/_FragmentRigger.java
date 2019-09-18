@@ -1,23 +1,19 @@
 package com.jkb.fragment.rigger.rigger;
 
-import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_FRAGMENT_TAG;
-import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIMATIONS;
-import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_LAZYLOAD_VIEW_CREATED;
-import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPRESSED;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.LazyLoad;
@@ -29,6 +25,11 @@ import com.jkb.fragment.swiper.SwipeLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
+
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_FRAGMENT_TAG;
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_GET_PUPPET_ANIMATIONS;
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_LAZYLOAD_VIEW_CREATED;
+import static com.jkb.fragment.rigger.utils.RiggerConsts.METHOD_ON_RIGGER_BACKPRESSED;
 
 /**
  * Fragment Rigger.rig the Fragment puppet.

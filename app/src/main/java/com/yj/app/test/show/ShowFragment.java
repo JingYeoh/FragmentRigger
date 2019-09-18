@@ -1,7 +1,7 @@
 package com.yj.app.test.show;
 
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import com.jkb.fragment.rigger.rigger.Rigger;

@@ -1,9 +1,11 @@
 package com.yj.app.test;
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+
+import androidx.core.content.ContextCompat;
+
 import com.jkb.fragment.rigger.annotation.LazyLoad;
 import com.jkb.fragment.rigger.utils.Logger;
 import com.yj.app.R;

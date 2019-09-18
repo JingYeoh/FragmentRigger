@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 /**
  * Used to mark a fragment is using lazy load.
  * Lazy load:fragment's container view will be created and init the data when the fragment is showed.
- * Annotation class that can only used on {@link android.support.v4.app.Fragment}.
+ * Annotation class that can only used on {@link  androidx.fragment.app.Fragment}.
  *
  * @author JingYeoh
  * <a href="mailto:yangjing9611@foxmail.com">Email me</a>
