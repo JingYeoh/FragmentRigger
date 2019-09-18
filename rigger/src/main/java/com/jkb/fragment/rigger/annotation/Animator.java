@@ -1,6 +1,7 @@
 package com.jkb.fragment.rigger.annotation;
 
-import android.support.annotation.AnimRes;
+
+import androidx.annotation.AnimRes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

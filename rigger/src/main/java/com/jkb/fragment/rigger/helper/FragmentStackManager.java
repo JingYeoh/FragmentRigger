@@ -1,10 +1,12 @@
 package com.jkb.fragment.rigger.helper;
 
+import  androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
