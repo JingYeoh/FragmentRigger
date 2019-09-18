@@ -30,8 +30,8 @@ ext {
     ]
 
     dependencies = [
-            appcompatV7 : 'com.android.support:appcompat-v7:27.1.1',
-            design      : 'com.android.support:design:27.1.1',
+            appcompatV7 : 'androidx.appcompat:appcompat:1.0.0',
+            design      : 'com.google.android.material:material:1.0.0',
             aspectJ     : 'org.aspectj:aspectjrt:1.8.9',
             javapoet    : 'com.squareup:javapoet:1.11.1',
             autoSerivice: 'com.google.auto.service:auto-service:1.0-rc3'
