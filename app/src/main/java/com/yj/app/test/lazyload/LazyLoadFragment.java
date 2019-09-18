@@ -1,9 +1,11 @@
 package com.yj.app.test.lazyload;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.widget.Toast;
+
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.yj.app.R;
 import com.yj.app.base.BaseFragment;
 import java.util.Timer;

@@ -1,10 +1,12 @@
 package com.yj.app.test.start;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.jkb.fragment.rigger.annotation.Animator;
 import com.jkb.fragment.rigger.annotation.Puppet;
