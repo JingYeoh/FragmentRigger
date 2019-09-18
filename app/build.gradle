@@ -40,16 +40,16 @@ android {
             versionNameSuffix rootProject.ext.app.versionNameSuffix
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug {
-            minifyEnabled true
-            //是否清理无用资源
-            shrinkResources false
-            //是否启用zipAlign压缩
-            zipAlignEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.myConfig
-            versionNameSuffix rootProject.ext.app.versionNameSuffix
-        }
+//        debug {
+//            minifyEnabled true
+//            //是否清理无用资源
+//            shrinkResources false
+//            //是否启用zipAlign压缩
+//            zipAlignEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.myConfig
+//            versionNameSuffix rootProject.ext.app.versionNameSuffix
+//        }
     }
 
     lintOptions {
@@ -60,6 +60,6 @@ android {
 dependencies {
     implementation rootProject.ext.dependencies.design
     implementation rootProject.ext.dependencies.appcompatV7
-//    implementation project(':rigger')
-    implementation "com.justkiddingbaby:fragment-rigger:${rigger.publishVersion}"
+    implementation project(':rigger')
+//    implementation "com.justkiddingbaby:fragment-rigger:${rigger.publishVersion}"
 }
