@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-aspectjx'
 
 android {
-
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
 
@@ -12,6 +11,9 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode rootProject.ext.app.versionCode
         versionName rootProject.ext.app.versionName
+        
+        // 添加测试配置
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -49,11 +51,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.myConfig
             versionNameSuffix rootProject.ext.app.versionNameSuffix
+            
+            // 调试版本启用测试覆盖率
+            testCoverageEnabled true
         }
     }
 
     lintOptions {
         abortOnError false
+        checkAllWarnings true
+    }
+    
+    // 添加测试选项
+    testOptions {
+        unitTests.returnDefaultValues = true
+        animationsDisabled = true
     }
 }
 
@@ -62,4 +74,19 @@ dependencies {
     implementation rootProject.ext.dependencies.appcompatV7
 //    implementation project(':rigger')
     implementation "com.justkiddingbaby:fragment-rigger:${rigger.publishVersion}"
+    
+    // 添加测试依赖
+    testImplementation rootProject.ext.dependencies.junit
+    androidTestImplementation rootProject.ext.dependencies.testRunner
+    androidTestImplementation rootProject.ext.dependencies.espresso
+}
+
+// 配置AspectJ插件
+aspectjx {
+    // 包含所有包
+    includeAll()
+    
+    // 排除Android SDK包
+    exclude 'android.support'
+    exclude 'com.android'
 }
