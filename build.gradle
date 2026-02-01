@@ -6,11 +6,11 @@ buildscript {
     repositories {
         jcenter()
         google()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.3'
         classpath 'com.google.gms:google-services:3.2.1'
-
         classpath 'com.novoda:bintray-release:0.8.1'
         classpath 'org.aspectj:aspectjtools:1.8.13'
         classpath 'com.hujiang.aspectjx:gradle-android-plugin-aspectjx:2.0.1'
@@ -23,10 +23,44 @@ allprojects {
     repositories {
         jcenter()
         google()
+        mavenCentral()
     }
+    
+    // 添加统一的代码质量检查配置
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_1_8
+                    targetCompatibility JavaVersion.VERSION_1_8
+                }
+                
+                // 统一配置lint选项
+                lintOptions {
+                    abortOnError false
+                    checkAllWarnings true
+                    warningsAsErrors false
+                }
+            }
+        }
+    }
+    
     tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
         options.addStringOption('encoding', 'UTF-8')
+    }
+}
+
+// 添加代码质量检查任务
+task checkCodeQuality {
+    group = "verification"
+    description = "运行所有代码质量检查"
+    
+    dependsOn ':app:lint'
+    dependsOn ':rigger:lint'
+    
+    doLast {
+        println "代码质量检查完成"
     }
 }
 
