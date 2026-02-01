@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
-
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
 
@@ -13,6 +12,9 @@ android {
         versionName rootProject.ext.rigger.publishVersion
 
         multiDexEnabled true
+        
+        // 添加测试配置
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -25,16 +27,32 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        
+        debug {
+            testCoverageEnabled true
+        }
     }
 
     lintOptions {
         abortOnError false
+        checkAllWarnings true
+    }
+    
+    // 添加测试选项
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 
 dependencies {
     implementation rootProject.ext.dependencies.appcompatV7
     implementation rootProject.ext.dependencies.aspectJ
+    
+    // 添加测试依赖
+    testImplementation rootProject.ext.dependencies.junit
+    testImplementation rootProject.ext.dependencies.mockito
+    androidTestImplementation rootProject.ext.dependencies.testRunner
+    androidTestImplementation rootProject.ext.dependencies.espresso
 }
 
 task sourcesJar(type: Jar) {
@@ -45,6 +63,9 @@ task sourcesJar(type: Jar) {
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    
+    // 添加AspectJ依赖到classpath
+    classpath += configurations.implementation
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -66,6 +87,24 @@ tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:none', '-quiet')
     options.addStringOption('encoding', 'UTF-8')
     options.addStringOption('charSet', 'UTF-8')
+    
+    // 改进Javadoc配置
+    options {
+        memberLevel = JavadocMemberLevel.PUBLIC
+        author = true
+        version = true
+        links "https://docs.oracle.com/javase/8/docs/api/"
+    }
+}
+
+// 添加测试任务
+task runUnitTests(type: Test) {
+    description = "运行单元测试"
+    group = "verification"
+    
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 publish {
