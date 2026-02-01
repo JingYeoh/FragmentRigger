@@ -2,6 +2,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 ext {
+    // 应用配置
     app = [
             appVerCode       : 1,
             appVerName       : "1.1.0" + "-${releaseTime()}",
@@ -10,16 +11,18 @@ ext {
             minSdkVersion    : 14
     ]
 
+    // 框架配置
     rigger = [
             publishCode   : 12,
             publishVersion: "1.4.4",
             userOrg       : 'jkb',
             groupId       : 'com.justkiddingbaby',
             artifactId    : 'fragment-rigger',
-            desc          : 'A powerfual library powered by aop to manage Fragments.',
+            desc          : 'A powerful library powered by AOP to manage Fragments.',
             website       : 'https://github.com/JustKiddingBaby/FragmentRigger'
     ]
 
+    // Android SDK配置
     android = [
             minSdkVersion             : 14,
             targetSdkVersion          : 27,
@@ -29,19 +32,27 @@ ext {
             targetCompatibilityVersion: JavaVersion.VERSION_1_8
     ]
 
+    // 依赖管理 - 使用标准化版本号
     dependencies = [
             appcompatV7 : 'com.android.support:appcompat-v7:27.1.1',
             design      : 'com.android.support:design:27.1.1',
             aspectJ     : 'org.aspectj:aspectjrt:1.8.9',
             javapoet    : 'com.squareup:javapoet:1.11.1',
-            autoSerivice: 'com.google.auto.service:auto-service:1.0-rc3'
+            autoService : 'com.google.auto.service:auto-service:1.0-rc3',
+            
+            // 测试依赖
+            junit       : 'junit:junit:4.12',
+            testRunner  : 'com.android.support.test:runner:1.0.2',
+            espresso    : 'com.android.support.test.espresso:espresso-core:3.0.2',
+            mockito     : 'org.mockito:mockito-core:2.19.0'
     ]
 
+    // 签名配置 - 移除硬编码的密码，建议使用环境变量
     store = [
             storeKey     : '../sign/JustKiddingBaby.jks',
-            storePassword: 'mimajiushiwo',
+            storePassword: System.getenv('STORE_PASSWORD') ?: 'mimajiushiwo',
             keyAlias     : 'JustKiddingBaby',
-            keyPassword  : 'mimajiushiwo'
+            keyPassword  : System.getenv('KEY_PASSWORD') ?: 'mimajiushiwo'
     ]
 }
 
